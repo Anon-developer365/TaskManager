@@ -7,6 +7,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import static org.springframework.http.ResponseEntity.ok;
 
+/**
+ * Rest controller for the create task end point.
+ */
 @RestController
 public class CreateTaskController {
 
