@@ -1,13 +1,42 @@
 package org.example.taskmanager;
 
-import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.Statement;
 
 @SpringBootApplication
 public class TaskManagerApplication {
+    static final String JDBC_DRIVER = "org.h2.Driver";
+    static final String DB_URL = "jdbc:h2:file:C:/database/Taskmanager";
 
     public static void main(String[] args) {
-        SpringApplication.run(TaskManagerApplication.class, args);
+        Connection conn;
+        Statement stmt;
+        try{
+            // Register JDBC driver
+            Class.forName(JDBC_DRIVER);
+
+            // Open a connection to the database
+            conn = DriverManager.getConnection(DB_URL);
+
+            // create a statement
+            stmt = conn.createStatement();
+            String sql =  "CREATE TABLE   TASKMANAGER " +
+                    "(id VARCHAR, " +
+                    " title VARCHAR(20), " +
+                    " description VARCHAR(200), " +
+                    " status VARCHAR(200), " +
+                    "duedate VARCHAR(20)," +
+                    " PRIMARY KEY ( id ))";
+            stmt.executeUpdate(sql);
+
+            stmt.close();
+            conn.close();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
 }

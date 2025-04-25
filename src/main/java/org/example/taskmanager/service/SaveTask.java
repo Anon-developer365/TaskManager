@@ -18,43 +18,23 @@ public class SaveTask {
      * @return returns a success message with the assigned ID of the task.
      */
     public String saveData(Task task) {
-        Connection conn = null;
-        Statement stmt = null;
-        try{
+        try (Connection conn = DriverManager.getConnection(DB_URL); Statement stmt = conn.createStatement()) {
             // set a connection to the driver
-            conn = DriverManager.getConnection(DB_URL);
 
             // set up a query
-            stmt = conn.createStatement();
-            PreparedStatement pstmt = conn.prepareStatement("INSERT INTO Taskmanager(Id, Title, description, status)" + "VALUES(?,?,?,?)");
+            PreparedStatement pstmt = conn.prepareStatement("INSERT INTO Taskmanager(Id, Title, description, status, dueDate)" + "VALUES(?,?,?,?,?)");
             pstmt.setString(1, task.getId());
             pstmt.setString(2, task.getTitle());
             pstmt.setString(3, task.getDescription());
             pstmt.setString(4, task.getStatus());
+            pstmt.setString(5, task.getDueDate().toString());
 
             pstmt.executeUpdate();
 
-            // STEP 4: Clean-up environment
-            stmt.close();
-            conn.close();
-        } catch(SQLException se) {
-            // Handle errors for JDBC
-            se.printStackTrace();
-        } catch(Exception e) {
-            // Handle errors for Class.forName
-            e.printStackTrace();
-        } finally {
-            // finally block used to close resources
-            try {
-                if(stmt!=null) stmt.close();
-            } catch(SQLException se2) {
-            } // nothing we can do
-            try {
-                if(conn!=null) conn.close();
-            } catch(SQLException se) {
-                se.printStackTrace();
-            } // end finally try
-        } // end try
+            // catch any exceptions
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
         return task.getId() + " successfully saved";
     }
 }
