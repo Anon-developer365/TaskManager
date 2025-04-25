@@ -38,3 +38,6 @@ This class handles the call to update the status of a particular task using the 
 
 ## Save Task
 This class saves a new task in the database. 
+
+## Create Data Base 
+Creates a database and is called from main when the application is started. 
