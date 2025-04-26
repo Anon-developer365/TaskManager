@@ -15,7 +15,7 @@ public class CreateTaskTests {
 
     @Test
     void whenDetailsAreGivenANewTaskIsCreated(){
-        Task task = createTask.createNewTask("case23", "", "open case", "open status", "20-05-2025 09:00:00");
+        Task task = createTask.createNewTask("case title", "", "open status", "20-05-2025 09:00:00");
         assert task != null;
         assert task.getDueDate().equals(dueDate);
     }

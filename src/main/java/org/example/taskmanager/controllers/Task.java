@@ -17,7 +17,6 @@ import java.time.LocalDateTime;
 @Data
 public class Task {
     private String id;
-    private String caseNumber;
     private String title;
     private String description;
     private String status;

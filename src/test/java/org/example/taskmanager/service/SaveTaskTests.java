@@ -20,11 +20,10 @@ public class SaveTaskTests {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
         LocalDateTime dueDate = LocalDateTime.parse(date, formatter);
 
-        String expectedResult = uuid + " successfully saved";
         SaveTask saveTask = new SaveTask();
-        Task task = new Task(uuid.toString(), "case20", "develop database", "", "open status", dueDate);
+        Task task = new Task(uuid.toString(), "develop database", "", "open status", dueDate);
         String result = saveTask.saveData(task);
-        assert result.equals(expectedResult);
+        assert result.equals(uuid.toString());
 
     }
 
@@ -36,13 +35,12 @@ public class SaveTaskTests {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
         LocalDateTime dueDate = LocalDateTime.parse(date, formatter);
 
-        String expectedResult = uuid + " successfully saved";
         SaveTask saveTask = new SaveTask();
-        Task task = new Task(uuid.toString(), "case20", "develop database", "", "open status", dueDate);
+        Task task = new Task(uuid.toString(), "develop database", "", "open status", dueDate);
         String result = saveTask.saveData(task);
-        assert result.equals(expectedResult);
+        assert result.equals(uuid.toString());
 
-        final String DB_URL = "jdbc:h2:file:C:/database/Taskmanager";
+        final String DB_URL = "jdbc:h2:file:database:/Taskmanager";
         Connection conn;
         Statement stmt;
         conn = DriverManager.getConnection(DB_URL);
@@ -54,7 +52,6 @@ public class SaveTaskTests {
         while(rs.next()) {
             id.add(rs.getString("id"));
         }
-        //assert id.get(0).equals(uuid.toString());
         assert id.contains(uuid.toString());
     }
 }

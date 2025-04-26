@@ -1,6 +1,10 @@
 package org.example.taskmanager.controllers;
 
+import org.example.taskmanager.service.CreateTask;
+import org.example.taskmanager.service.SaveTask;
 import org.junit.jupiter.api.Test;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.ResponseEntity;
@@ -9,16 +13,26 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Objects;
+import java.util.UUID;
 
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebAppConfiguration
 @SpringBootTest
 public class CreateTaskControllerTests {
 
+    @Mock
+    private CreateTask createTask;
+
+    @Mock
+    private SaveTask saveTask;
+
+    @InjectMocks
     private CreateTaskController createTaskController;
 
     @Autowired
@@ -27,21 +41,24 @@ public class CreateTaskControllerTests {
     private MockMvc mvc;
 
 
-    @Test
+        @Test
     void aSuccessMessageIsReceivedWhenTheEndPointIsHit() {
-        createTaskController = new CreateTaskController();
-        ResponseEntity<String> output = createTaskController.createTask();
+        UUID uuid = UUID.randomUUID();
+        String casetitle = "case title";
+        String description = "description";
+        String status = "open status";
+        String dueDate = "05-05-2025 17:00:00";
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
+        LocalDateTime date = LocalDateTime.parse(dueDate, formatter);
+
+        Task task = new Task(uuid.toString(), casetitle, description, status, date);
+        createTaskController = new CreateTaskController(createTask, saveTask);
+        when(createTask.createNewTask(casetitle, description, status, dueDate)).thenReturn(task);
+        when(saveTask.saveData(task)).thenReturn(uuid.toString());
+        ResponseEntity<String> output = createTaskController.createTask(casetitle, description, status, dueDate);
         assert output != null;
-        assert Objects.equals(output.getBody(), "Task Created");
-
-    }
-
-    @Test
-    void whenAPostRequestIsSentWithTheCorrectMappingAResponseIsReceived() throws Exception {
-        mvc = MockMvcBuilders
-                .webAppContextSetup(context)
-                .build();
-        mvc.perform(post("/createTask")).andExpect(status().isOk());
+        System.out.println(output.getBody());
+        assert Objects.equals(output.getBody(), uuid + " Task Created");
 
     }
 

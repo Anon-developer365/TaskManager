@@ -1,15 +1,18 @@
 package org.example.taskmanager.service;
 
+import org.example.taskmanager.config.DatabaseConfig;
 import org.example.taskmanager.controllers.Task;
+import org.springframework.stereotype.Service;
 
 import java.sql.*;
 
 /**
  * Class to save a task in the task manager database.
  */
+@Service
 public class SaveTask {
     // database URL
-    static final String DB_URL = "jdbc:h2:file:C:/database/Taskmanager";
+    static final String DB_URL = "jdbc:h2:file:database:/Taskmanager";
 
 
     /**
@@ -35,7 +38,7 @@ public class SaveTask {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
-        return task.getId() + " successfully saved";
+        return task.getId();
     }
 }
 

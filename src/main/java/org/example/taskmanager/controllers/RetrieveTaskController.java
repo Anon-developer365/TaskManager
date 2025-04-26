@@ -14,6 +14,6 @@ public class RetrieveTaskController {
     @RequestMapping(value = "/getTask", method = RequestMethod.GET)
     public ResponseEntity<Task> getTask(String Id) {
         LocalDateTime dateTime = LocalDateTime.parse("2025-05-05T17:00:00");
-        return ok(new Task(Id, "case23", "case title", "", "open status", dateTime));
+        return ok(new Task(Id, "case title", "", "open status", dateTime));
     }
 }
