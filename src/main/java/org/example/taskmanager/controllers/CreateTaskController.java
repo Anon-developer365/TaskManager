@@ -20,12 +20,27 @@ public class CreateTaskController {
 
     private final SaveTask saveTask;
 
+    /**
+     * Autowired constructor for create task controller.
+     *
+     * @param createTask service to create a task with local date.
+     * @param saveTask save task service to save task data in the database.
+     */
     @Autowired
     public CreateTaskController(final CreateTask createTask, final SaveTask saveTask) {
         this.createTask = createTask;
         this.saveTask = saveTask;
     }
 
+    /**
+     * Method to call required services in order to create a task and save this within the database.
+     *
+     * @param title case title
+     * @param description description of the case.
+     * @param status case status
+     * @param dueDate date the task is due to be completed.
+     * @return a string containing the newly created task id with a success message.
+     */
     @RequestMapping(value = "/createTask", method = RequestMethod.POST)
     public ResponseEntity<String> createTask(String title, String description, String status, String dueDate) {
        Task task = createTask.createNewTask(title, description, status, dueDate);

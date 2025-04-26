@@ -4,11 +4,24 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.Statement;
 
+/**
+ * Create database class to create a H2 database in the directory database.
+ */
 public class CreateDataBase {
 
+    /**
+     * JDBC driver
+     */
     static final String JDBC_DRIVER = "org.h2.Driver";
+
+    /**
+     * url for database connection.
+     */
     static final String DB_URL = "jdbc:h2:file:database:/Taskmanager";
 
+    /**
+     * Method to create database.
+     */
     public void createDatabase() {
         Connection conn;
         Statement stmt;
