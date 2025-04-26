@@ -1,6 +1,9 @@
 package org.example.taskmanager.controllers;
 
+import org.example.taskmanager.service.UpdateStatus;
 import org.junit.jupiter.api.Test;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.ResponseEntity;
@@ -10,7 +13,9 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
 import java.util.Objects;
+import java.util.UUID;
 
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -22,15 +27,22 @@ public class UpdateStatusControllerTests {
 
     private MockMvc mvc;
 
+    @Mock
+    UpdateStatus updateStatus;
+
+    @InjectMocks
     private UpdateStatusController updateStatusController;
 
 
     @Test
     void aSuccessMessageIsReceivedWhenDetailsAreProvided() {
+        UUID uuid = UUID.randomUUID();
+
         String status = "This is a new status";
         String expectedResult = "status updated to " + status;
-        updateStatusController = new UpdateStatusController();
-        ResponseEntity<String> output = updateStatusController.updateStatus("1", status);
+        updateStatusController = new UpdateStatusController(updateStatus);
+        when(updateStatus.updateStatus(uuid.toString(), status)).thenReturn(true);
+        ResponseEntity<String> output = updateStatusController.updateStatus(uuid.toString(), status);
         assert output != null;
         assert Objects.equals(output.getBody(), expectedResult);
 

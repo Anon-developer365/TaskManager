@@ -37,18 +37,18 @@ public class CreateTaskControllerIntegrationTests {
         stmt = conn.createStatement();
         String sql = "SELECT * FROM taskmanager";
         ResultSet rs = stmt.executeQuery(sql);
-        List<String> id = new ArrayList<>();
+        List<String> results = new ArrayList<>();
 
         while(rs.next()) {
-            id.add(rs.getString("id"));
-            id.add(rs.getString("title"));
-            id.add(rs.getString("status"));
-            id.add(rs.getString("duedate"));
-            id.add(rs.getString("description"));
+            results.add(rs.getString("id"));
+            results.add(rs.getString("title"));
+            results.add(rs.getString("status"));
+            results.add(rs.getString("duedate"));
+            results.add(rs.getString("description"));
         }
 
-        assert id.contains("case title");
-        assert id.contains("open status");
+        assert results.contains("case title");
+        assert results.contains("open status");
 
     }
 }

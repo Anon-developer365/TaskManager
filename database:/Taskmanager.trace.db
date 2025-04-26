@@ -1,9 +1,0 @@
-2025-04-25 17:03:19 jdbc[3]: exception
-org.h2.jdbc.JdbcSQLSyntaxErrorException: Table "FAKEABASE" not found; SQL statement:
-SELECT * FROM Fakeabase [42102-214]
-2025-04-25 17:43:03 jdbc[3]: exception
-org.h2.jdbc.JdbcSQLSyntaxErrorException: Table "TASKMANAGER" already exists; SQL statement:
-CREATE TABLE   TASKMANAGER (id VARCHAR,  title VARCHAR(20),  description VARCHAR(200),  status VARCHAR(200), duedate VARCHAR(20), PRIMARY KEY ( id )) [42101-214]
-2025-04-25 17:43:48 jdbc[3]: exception
-org.h2.jdbc.JdbcSQLSyntaxErrorException: Table "TASKMANAGER" already exists; SQL statement:
-CREATE TABLE   TASKMANAGER (id VARCHAR,  title VARCHAR(20),  description VARCHAR(200),  status VARCHAR(200), duedate VARCHAR(20), PRIMARY KEY ( id )) [42101-214]

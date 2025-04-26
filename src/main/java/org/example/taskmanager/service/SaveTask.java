@@ -1,6 +1,5 @@
 package org.example.taskmanager.service;
 
-import org.example.taskmanager.config.DatabaseConfig;
 import org.example.taskmanager.controllers.Task;
 import org.springframework.stereotype.Service;
 
