@@ -20,7 +20,7 @@ public class SaveTask {
      * @return returns a success message with the assigned ID of the task.
      */
     public String saveData(Task task) {
-        try (Connection conn = DriverManager.getConnection(DB_URL); Statement stmt = conn.createStatement()) {
+        try (Connection conn = DriverManager.getConnection(DB_URL)) {
             // set a connection to the driver
 
             // set up a query
@@ -32,6 +32,7 @@ public class SaveTask {
             pstmt.setString(5, task.getDueDate().toString());
 
             pstmt.executeUpdate();
+
 
             // catch any exceptions
         } catch (Exception e) {

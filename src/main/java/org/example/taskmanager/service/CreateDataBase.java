@@ -30,8 +30,6 @@ public class CreateDataBase {
                     " PRIMARY KEY ( id ))";
             stmt.executeUpdate(sql);
 
-            stmt.close();
-            conn.close();
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

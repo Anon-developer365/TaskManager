@@ -45,7 +45,7 @@ public class SaveTaskTests {
         Statement stmt;
         conn = DriverManager.getConnection(DB_URL);
         stmt = conn.createStatement();
-        String sql = "SELECT * FROM taskmanager";
+        String sql = "SELECT * FROM Taskmanager";
         ResultSet rs = stmt.executeQuery(sql);
         List<String> id = new ArrayList<>();
 
@@ -53,5 +53,8 @@ public class SaveTaskTests {
             id.add(rs.getString("id"));
         }
         assert id.contains(uuid.toString());
+        stmt.close();
+        conn.close();
     }
+
 }
