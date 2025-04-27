@@ -11,6 +11,8 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.UUID;
 
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
 public class GetATaskTest {
     static final String DB_URL = "jdbc:h2:file:database:/Taskmanager";
     private GetATask getATask;
@@ -34,16 +36,19 @@ public class GetATaskTest {
         pstmt.setString(5, dueDate);
 
         pstmt.executeUpdate();
-         /**
-        Task task = new Task(uuid.toString(), "case title", "description", "open status", date);
-        SaveTask saveTask = new SaveTask();
-        saveTask.saveData(task);
-        Task task1 = getATask.getATask(uuid.toString());
-          **/
         Task task = getATask.getATask(uuid.toString());
         assert task != null;
         assert task.getId().equals(uuid.toString());
 
+    }
 
+    @Test
+    void checkIfATaskIsRequestedAndDoesNotExistsAnErrorIsThrown() throws SQLException {
+        getATask = new GetATask();
+        UUID uuid = UUID.randomUUID();
+
+        Throwable thrown = assertThrows(RuntimeException.class, () -> getATask.getATask(uuid.toString()));
+        System.out.println(thrown.getMessage());
+        assert thrown.getMessage().contains("Task with id " + uuid + " not found");
     }
 }
