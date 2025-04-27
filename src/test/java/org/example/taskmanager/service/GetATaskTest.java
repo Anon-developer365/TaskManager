@@ -23,8 +23,6 @@ public class GetATaskTest {
         UUID uuid = UUID.randomUUID();
 
         String dueDate = "05-05-2025 17:00:00";
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
-        LocalDateTime date = LocalDateTime.parse(dueDate, formatter);
 
         Connection conn = DriverManager.getConnection(DB_URL);
 
@@ -43,12 +41,12 @@ public class GetATaskTest {
     }
 
     @Test
-    void checkIfATaskIsRequestedAndDoesNotExistsAnErrorIsThrown() throws SQLException {
+    void checkIfATaskIsRequestedAndDoesNotExistsAnErrorIsThrown() {
         getATask = new GetATask();
         UUID uuid = UUID.randomUUID();
 
         Throwable thrown = assertThrows(RuntimeException.class, () -> getATask.getATask(uuid.toString()));
         System.out.println(thrown.getMessage());
-        assert thrown.getMessage().contains("Task with id " + uuid + " not found");
+        assert thrown.getMessage().contains("Task with ID " + uuid + " not found");
     }
 }

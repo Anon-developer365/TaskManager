@@ -13,12 +13,13 @@ import static org.springframework.http.ResponseEntity.ok;
 @RestController
 public class RetrieveTaskController {
 
-    private GetATask getATask;
+    private final GetATask getATask;
 
     @Autowired
     public RetrieveTaskController(GetATask getATask) {
         this.getATask = getATask;
     }
+
     @RequestMapping(value = "/getTask", method = RequestMethod.GET)
     public ResponseEntity<Task> getTask(String Id) {
         Task task = getATask.getATask(Id);

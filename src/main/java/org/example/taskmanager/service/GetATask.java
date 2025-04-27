@@ -32,18 +32,18 @@ public class GetATask {
             pstmt.setString(1, Id);
             ResultSet rs = pstmt.executeQuery();
 
-            if (!rs.next()) {
-                throw new RuntimeException("Task with id " + Id + " not found");
-            }
-            while(rs.next()) {
 
-                task.setId(rs.getString("id"));
+            while(rs.next()) {
+                task.setId(rs.getString("ID"));
                 task.setTitle(rs.getString("title"));
                 task.setDescription(rs.getString("description"));
                 task.setStatus(rs.getString("status"));
                 task.setDueDate(LocalDateTime.parse(rs.getString("dueDate"), formatter));
             }
 
+            if(task.getId() == null) {
+                throw new RuntimeException("Task with ID " + Id + " not found");
+            }
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

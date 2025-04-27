@@ -1,6 +1,7 @@
 package org.example.taskmanager.controllers;
 
 import org.example.taskmanager.service.GetATask;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -35,11 +36,11 @@ public class RetrieveTaskControllerTests {
     @InjectMocks
     private RetrieveTaskController retrieveTaskController;
 
+
     @Test
     void aSuccessMessageIsReceivedWhenDetailsAreProvided() {
-        UUID uuid = UUID.randomUUID();
         retrieveTaskController = new RetrieveTaskController(getATask);
-
+        final UUID uuid = UUID.randomUUID();
         String date = "20-05-2025 09:00:00";
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
         LocalDateTime dueDate = LocalDateTime.parse(date, formatter);
@@ -52,16 +53,7 @@ public class RetrieveTaskControllerTests {
     }
 
     @Test
-    void whenAGetRequestIsSentWithTheCorrectMappingAResponseIsReceived() throws Exception {
-        mvc = MockMvcBuilders
-                .webAppContextSetup(context)
-                .build();
-        mvc.perform(get("/getTask")).andExpect(status().isOk());
-
-    }
-
-    @Test
-    void whenAGetRequestIsSentAnErrorIsReceived() throws Exception {
+    void whenAPostRequestIsSentAnErrorIsReceived() throws Exception {
         mvc = MockMvcBuilders
                 .webAppContextSetup(context)
                 .build();

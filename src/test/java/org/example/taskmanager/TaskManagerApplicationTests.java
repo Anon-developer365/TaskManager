@@ -18,7 +18,7 @@ class TaskManagerApplicationTests {
 
     @Test
     void checkADataBaseIsCreated() {
-        final String DB_URL = "jdbc:h2:file:C:/database/Taskmanager";
+        final String DB_URL = "jdbc:h2:file:database:/Taskmanager";
         assertDoesNotThrow(() -> {
             Connection conn = DriverManager.getConnection(DB_URL);
             Statement stmt = conn.createStatement();

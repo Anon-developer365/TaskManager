@@ -45,6 +45,9 @@ public class UpdateStatusTests {
                 results.add(rs.getString("description"));
             }
             assert results.contains("awaiting new part to continue development");
+            stmt1.close();
+            conn1.close();
+            pstmt.close();
         }
     }
 
