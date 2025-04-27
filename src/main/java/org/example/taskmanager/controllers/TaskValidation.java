@@ -13,17 +13,18 @@ import java.util.regex.Pattern;
 @ToString
 public class TaskValidation {
 
-    private static final String TITLE_REGEX = "[a-zA-Z0-9 \\s+]";
+    private static final String TITLE_REGEX = "\\w";
+
+    private static final String DESCRIPTION_REGEX = "\\w";
 
 
     public void verifyTask(Task task) {
         final List<String> allErrors = new ArrayList<>();
         allErrors.addAll(idCheck(task));
         allErrors.addAll(titleCheck(task));
-
+        allErrors.addAll(descriptionCheck(task));
         if (!allErrors.isEmpty()) {
-            EmptyTaskException emptyTaskException = new EmptyTaskException(allErrors.toString());
-            throw emptyTaskException;
+            throw new EmptyTaskException(allErrors.toString());
         }
     }
 
@@ -49,5 +50,20 @@ public class TaskValidation {
         }
         return errors;
     }
+
+    private List<String> descriptionCheck(Task task) {
+        final List<String> errors = new ArrayList<>();
+        if (!StringUtils.isBlank(task.getDescription())) {
+            final Pattern pattern = Pattern.compile(DESCRIPTION_REGEX);
+            final Matcher matcher = pattern.matcher(task.getDescription());
+            if (!matcher.find()) {
+                errors.add("Task description doesnt match pattern a-zA-Z0-9");
+            }
+
+        }
+        return errors;
+    }
+
+
 
 }
