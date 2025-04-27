@@ -21,7 +21,6 @@ public class SaveTask {
      */
     public String saveData(Task task) {
         try (Connection conn = DriverManager.getConnection(DB_URL)) {
-            // set a connection to the driver
 
             // set up a query
             PreparedStatement pstmt = conn.prepareStatement("INSERT INTO Taskmanager(Id, Title, description, status, dueDate)" + "VALUES(?,?,?,?,?)");

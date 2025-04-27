@@ -1,9 +1,6 @@
 package org.example.taskmanager.controllers;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.annotation.Nullable;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
@@ -18,6 +15,7 @@ import java.time.LocalDateTime;
 public class Task {
     private String id;
     private String title;
+    @Nullable
     private String description;
     private String status;
     private LocalDateTime DueDate;
