@@ -1,6 +1,6 @@
 package org.example.taskmanager.service;
 
-import org.example.taskmanager.controllers.Task;
+import org.example.taskmanager.pojo.Task;
 import org.junit.jupiter.api.Test;
 
 import java.sql.*;

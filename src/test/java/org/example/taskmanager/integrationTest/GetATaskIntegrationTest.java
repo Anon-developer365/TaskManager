@@ -1,10 +1,9 @@
 package org.example.taskmanager.integrationTest;
 
 import org.example.taskmanager.controllers.RetrieveTaskController;
-import org.example.taskmanager.controllers.Task;
+import org.example.taskmanager.pojo.Task;
 import org.example.taskmanager.service.GetATask;
 import org.junit.jupiter.api.Test;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import java.sql.Connection;

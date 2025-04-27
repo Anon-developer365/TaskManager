@@ -1,14 +1,12 @@
 package org.example.taskmanager.service;
 
-import org.example.taskmanager.controllers.Task;
+import org.example.taskmanager.pojo.Task;
 import org.junit.jupiter.api.Test;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;

@@ -1,7 +1,7 @@
 package org.example.taskmanager.controllers;
 
+import org.example.taskmanager.pojo.Task;
 import org.example.taskmanager.service.GetATask;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;

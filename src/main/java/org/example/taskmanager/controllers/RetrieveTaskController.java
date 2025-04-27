@@ -1,5 +1,6 @@
 package org.example.taskmanager.controllers;
 
+import org.example.taskmanager.pojo.Task;
 import org.example.taskmanager.service.GetATask;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;

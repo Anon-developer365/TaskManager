@@ -1,5 +1,6 @@
 package org.example.taskmanager.controllers;
 
+import org.example.taskmanager.pojo.Task;
 import org.example.taskmanager.service.CreateTask;
 import org.example.taskmanager.service.SaveTask;
 import org.springframework.beans.factory.annotation.Autowired;

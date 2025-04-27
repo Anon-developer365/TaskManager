@@ -1,6 +1,6 @@
 package org.example.taskmanager.service;
 
-import org.example.taskmanager.controllers.Task;
+import org.example.taskmanager.pojo.Task;
 import org.springframework.stereotype.Service;
 
 import java.sql.*;

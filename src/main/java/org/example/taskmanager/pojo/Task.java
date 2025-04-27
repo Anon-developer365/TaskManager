@@ -1,4 +1,4 @@
-package org.example.taskmanager.controllers;
+package org.example.taskmanager.pojo;
 
 import jakarta.annotation.Nullable;
 import lombok.AllArgsConstructor;
