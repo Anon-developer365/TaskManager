@@ -15,6 +15,7 @@ import org.springframework.web.context.WebApplicationContext;
 import java.util.Objects;
 import java.util.UUID;
 
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -30,6 +31,9 @@ public class UpdateStatusControllerTests {
     @Mock
     UpdateStatus updateStatus;
 
+    @Mock
+    UpdateStatusValidation updateStatusValidation;
+
     @InjectMocks
     private UpdateStatusController updateStatusController;
 
@@ -40,7 +44,8 @@ public class UpdateStatusControllerTests {
 
         String status = "This is a new status";
         String expectedResult = "status updated to " + status;
-        updateStatusController = new UpdateStatusController(updateStatus);
+        updateStatusController = new UpdateStatusController(updateStatus, updateStatusValidation);
+        doNothing().when(updateStatusValidation).verifyStatus(uuid.toString(), status);
         when(updateStatus.updateStatus(uuid.toString(), status)).thenReturn(true);
         ResponseEntity<String> output = updateStatusController.updateStatus(uuid.toString(), status);
         assert output != null;

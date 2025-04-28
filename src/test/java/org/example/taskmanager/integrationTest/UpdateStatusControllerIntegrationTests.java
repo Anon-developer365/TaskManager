@@ -1,6 +1,7 @@
 package org.example.taskmanager.integrationTest;
 
 import org.example.taskmanager.controllers.UpdateStatusController;
+import org.example.taskmanager.controllers.UpdateStatusValidation;
 import org.example.taskmanager.service.UpdateStatus;
 import org.junit.jupiter.api.Test;
 
@@ -15,10 +16,13 @@ public class UpdateStatusControllerIntegrationTests {
 
     private UpdateStatus updateStatus;
 
+    private UpdateStatusValidation updateStatusValidation;
+
     @Test
     void checkAStatusIsUpdateWhenFoundInTheDatabase() throws SQLException {
         updateStatus = new UpdateStatus();
-        updateStatusController = new UpdateStatusController(updateStatus);
+        updateStatusValidation = new UpdateStatusValidation();
+        updateStatusController = new UpdateStatusController(updateStatus, updateStatusValidation);
         UUID uuid = UUID.randomUUID();
         String caseTitle = "Case Title";
         String description = "Case Description";

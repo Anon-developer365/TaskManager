@@ -21,13 +21,19 @@ public class UpdateStatusController {
     private final UpdateStatus updateStatus;
 
     /**
+     * service to validate status and id.
+     */
+    private final UpdateStatusValidation updateStatusValidation;
+    /**
      * Autowired constructor for update service controller. ]
      *
      * @param updateStatus update status service.
      */
     @Autowired
-    public UpdateStatusController(UpdateStatus updateStatus) {
+    public UpdateStatusController(UpdateStatus updateStatus, UpdateStatusValidation updateStatusValidation) {
         this.updateStatus = updateStatus;
+        this.updateStatusValidation = updateStatusValidation;
+
     }
 
     /**
