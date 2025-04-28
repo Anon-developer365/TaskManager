@@ -1,6 +1,5 @@
 package org.example.taskmanager.controllers;
 
-import org.example.taskmanager.exceptions.EmptyTaskException;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
