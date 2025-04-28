@@ -44,6 +44,5 @@ public class GetATaskIntegrationTest {
         ResponseEntity<Task> results =  retrieveTaskController.getTask(uuid.toString());
         assert Objects.requireNonNull(results.getBody()).getId().equals(uuid.toString());
         assert results.getBody().getDueDate().toString().equals(dueDate);
-        System.out.println(results.getBody().getDueDate());
     }
 }

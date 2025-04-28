@@ -6,6 +6,9 @@ import lombok.ToString;
 
 import java.util.List;
 
+/**
+ * POJO class for error response object.
+ */
 @AllArgsConstructor
 @Data
 @ToString

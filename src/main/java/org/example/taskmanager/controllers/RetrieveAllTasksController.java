@@ -35,6 +35,12 @@ public class RetrieveAllTasksController {
         this.retrieveTasks = retrieveTasks;
     }
 
+    /**
+     * Method to retrieve all tasks in the database
+     *
+     * @return a list of tasks within the database.
+     * @throws SQLException
+     */
     @RequestMapping(value = "/getAllTasks", method = RequestMethod.GET)
     public ResponseEntity<List<Task>> getAllTasks() throws SQLException {
         List<Task> tasks = new ArrayList<>(retrieveTasks.getAllTasks());

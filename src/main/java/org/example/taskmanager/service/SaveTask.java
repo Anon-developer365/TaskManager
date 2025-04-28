@@ -13,7 +13,6 @@ public class SaveTask {
     // database URL
     static final String DB_URL = "jdbc:h2:file:database:/Taskmanager";
 
-
     /**
      * Method to save data in the task manager database.
      * @param task task required to be saved in the database.

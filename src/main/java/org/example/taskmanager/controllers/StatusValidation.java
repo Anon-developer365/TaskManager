@@ -7,10 +7,21 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+/**
+ * class to validate status of a task.
+ */
 public class StatusValidation {
-
+    /**
+     * Java regex to be used when validating status
+     */
     private static final String STATUS_REGEX = "\\w";
 
+    /**
+     * Method to validate status of a task
+     *
+     * @param status the status to be validated.
+     * @return a list either empty if the status is valid or containing the validation errors.
+     */
     public List<String> statusCheck(String status) {
         final List<String> errors = new ArrayList<>();
         if (StringUtils.isBlank(status)) {

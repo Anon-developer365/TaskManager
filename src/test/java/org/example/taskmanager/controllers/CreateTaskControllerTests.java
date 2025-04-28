@@ -61,7 +61,6 @@ public class CreateTaskControllerTests {
         when(saveTask.saveData(task)).thenReturn(uuid.toString());
         ResponseEntity<String> output = createTaskController.createTask(casetitle, description, status, dueDate);
         assert output != null;
-        System.out.println(output.getBody());
         assert Objects.equals(output.getBody(), uuid + " Task Created");
 
     }

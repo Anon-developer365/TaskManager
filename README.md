@@ -67,3 +67,6 @@ This class saves a new task in the database.
 ## Update status
 Updates the status of the task using the ID. 
 
+## Testing 
+Testing contains unit testing, mocking out any dependant classes and integration testing. 
+
