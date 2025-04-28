@@ -69,4 +69,5 @@ Updates the status of the task using the ID.
 
 ## Testing 
 Testing contains unit testing, mocking out any dependant classes and integration testing. 
-
+To run the tests CreateDataBaseTests found in test>java>service should be run first. 
+All other tests can then be run independently or by running mvn install. 
