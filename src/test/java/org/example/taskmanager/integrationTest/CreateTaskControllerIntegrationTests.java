@@ -1,6 +1,7 @@
 package org.example.taskmanager.integrationTest;
 
 import org.example.taskmanager.controllers.CreateTaskController;
+import org.example.taskmanager.controllers.TaskValidation;
 import org.example.taskmanager.service.CreateTask;
 import org.example.taskmanager.service.SaveTask;
 import org.junit.jupiter.api.Test;
@@ -21,11 +22,14 @@ public class CreateTaskControllerIntegrationTests {
 
     private SaveTask saveTask;
 
+    private TaskValidation taskValidation;
+
     @Test
     void aSuccessMessageIsReceivedWhenTheEndPointIsHit() throws SQLException {
         createTask = new CreateTask();
         saveTask = new SaveTask();
-        createTaskController = new CreateTaskController(createTask, saveTask);
+        taskValidation = new TaskValidation();
+        createTaskController = new CreateTaskController(createTask, saveTask, taskValidation);
         ResponseEntity<String> output = createTaskController.createTask("case title", "", "open status", "05-05-2025 17:00:00");
         assert output != null;
         assert output.getBody().contains("Task Created");

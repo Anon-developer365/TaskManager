@@ -20,6 +20,8 @@ public class CreateTaskController {
 
     private final SaveTask saveTask;
 
+    private final TaskValidation validation;
+
     /**
      * Autowired constructor for create task controller.
      *
@@ -27,9 +29,10 @@ public class CreateTaskController {
      * @param saveTask save task service to save task data in the database.
      */
     @Autowired
-    public CreateTaskController(final CreateTask createTask, final SaveTask saveTask) {
+    public CreateTaskController(final CreateTask createTask, final SaveTask saveTask, final TaskValidation validation) {
         this.createTask = createTask;
         this.saveTask = saveTask;
+        this.validation = validation;
     }
 
     /**
@@ -43,9 +46,10 @@ public class CreateTaskController {
      */
     @RequestMapping(value = "/createTask", method = RequestMethod.POST)
     public ResponseEntity<String> createTask(String title, String description, String status, String dueDate) {
-       Task task = createTask.createNewTask(title, description, status, dueDate);
-       String id = saveTask.saveData(task);
-       return ok(id + " Task Created");
+        validation.verifyTask(title, description, status, dueDate);
+        Task task = createTask.createNewTask(title, description, status, dueDate);
+        String id = saveTask.saveData(task);
+        return ok(id + " Task Created");
     }
 
 }

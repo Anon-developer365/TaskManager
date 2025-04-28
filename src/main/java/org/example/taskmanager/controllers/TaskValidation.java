@@ -3,12 +3,14 @@ package org.example.taskmanager.controllers;
 import io.micrometer.common.util.StringUtils;
 import lombok.ToString;
 import org.example.taskmanager.exceptions.EmptyTaskException;
+import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+@Service
 @ToString
 public class TaskValidation {
 

@@ -19,6 +19,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.Objects;
 import java.util.UUID;
 
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -32,6 +33,9 @@ public class CreateTaskControllerTests {
 
     @Mock
     private SaveTask saveTask;
+
+    @Mock
+    TaskValidation taskValidation;
 
     @InjectMocks
     private CreateTaskController createTaskController;
@@ -53,7 +57,8 @@ public class CreateTaskControllerTests {
         LocalDateTime date = LocalDateTime.parse(dueDate, formatter);
 
         Task task = new Task(uuid.toString(), casetitle, description, status, date);
-        createTaskController = new CreateTaskController(createTask, saveTask);
+        createTaskController = new CreateTaskController(createTask, saveTask, taskValidation);
+        doNothing().when(taskValidation).verifyTask(casetitle, description, status, dueDate);
         when(createTask.createNewTask(casetitle, description, status, dueDate)).thenReturn(task);
         when(saveTask.saveData(task)).thenReturn(uuid.toString());
         ResponseEntity<String> output = createTaskController.createTask(casetitle, description, status, dueDate);
