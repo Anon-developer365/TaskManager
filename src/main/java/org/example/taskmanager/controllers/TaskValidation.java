@@ -3,7 +3,6 @@ package org.example.taskmanager.controllers;
 import io.micrometer.common.util.StringUtils;
 import lombok.ToString;
 import org.example.taskmanager.exceptions.EmptyTaskException;
-import org.example.taskmanager.pojo.Task;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,12 +18,15 @@ public class TaskValidation {
 
     private static final String STATUS_REGEX = "\\w";
 
+    private static final String DUE_DATE_REGEX = "\\d\\d-\\d\\d-\\d\\d\\d\\d \\d\\d:\\d\\d:\\d\\d";
+
 
     public void verifyTask(String title, String description, String status, String dueDate) {
         final List<String> allErrors = new ArrayList<>();
         allErrors.addAll(titleCheck(title));
         allErrors.addAll(descriptionCheck(description));
         allErrors.addAll(statusCheck(status));
+        allErrors.addAll(dueDateCheck(dueDate));
         if (!allErrors.isEmpty()) {
             throw new EmptyTaskException(allErrors.toString());
         }
@@ -67,6 +69,21 @@ public class TaskValidation {
             final Matcher matcher = pattern.matcher(status);
             if (!matcher.find()) {
                 errors.add("Task status doesnt match pattern a-zA-Z0-9");
+            }
+
+        }
+        return errors;
+    }
+
+    private List<String> dueDateCheck(String dueDate) {
+        final List<String> errors = new ArrayList<>();
+        if (StringUtils.isBlank(dueDate)) {
+            errors.add("Task due date is empty");
+        } else {
+            final Pattern pattern = Pattern.compile(DUE_DATE_REGEX);
+            final Matcher matcher = pattern.matcher(dueDate);
+            if (!matcher.find()) {
+                errors.add("Task due date doesnt match the pattern dd-mm-yyyy hh:mm:ss");
             }
 
         }
