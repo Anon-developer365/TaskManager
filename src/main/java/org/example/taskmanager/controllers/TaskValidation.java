@@ -14,20 +14,21 @@ import java.util.regex.Pattern;
 @ToString
 public class TaskValidation {
 
+    private StatusValidation statusValidation;
+
     private static final String TITLE_REGEX = "\\w";
 
     private static final String DESCRIPTION_REGEX = "\\w";
-
-    private static final String STATUS_REGEX = "\\w";
 
     private static final String DUE_DATE_REGEX = "\\d\\d-\\d\\d-\\d\\d\\d\\d \\d\\d:\\d\\d:\\d\\d";
 
 
     public void verifyTask(String title, String description, String status, String dueDate) {
         final List<String> allErrors = new ArrayList<>();
+        statusValidation = new StatusValidation();
         allErrors.addAll(titleCheck(title));
         allErrors.addAll(descriptionCheck(description));
-        allErrors.addAll(statusCheck(status));
+        allErrors.addAll(statusValidation.statusCheck(status));
         allErrors.addAll(dueDateCheck(dueDate));
         if (!allErrors.isEmpty()) {
             throw new EmptyTaskException(allErrors.toString());
@@ -56,21 +57,6 @@ public class TaskValidation {
             final Matcher matcher = pattern.matcher(description);
             if (!matcher.find()) {
                 errors.add("Task description doesnt match pattern a-zA-Z0-9");
-            }
-
-        }
-        return errors;
-    }
-
-    private List<String> statusCheck(String status) {
-        final List<String> errors = new ArrayList<>();
-        if (StringUtils.isBlank(status)) {
-            errors.add("Task status is empty");
-        } else {
-            final Pattern pattern = Pattern.compile(STATUS_REGEX);
-            final Matcher matcher = pattern.matcher(status);
-            if (!matcher.find()) {
-                errors.add("Task status doesnt match pattern a-zA-Z0-9");
             }
 
         }
