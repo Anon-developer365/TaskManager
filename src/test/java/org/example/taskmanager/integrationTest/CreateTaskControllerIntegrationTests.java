@@ -30,7 +30,7 @@ public class CreateTaskControllerIntegrationTests {
         saveTask = new SaveTask();
         taskValidation = new TaskValidation();
         createTaskController = new CreateTaskController(createTask, saveTask, taskValidation);
-        ResponseEntity<String> output = createTaskController.createTask("case title", "", "open status", "05-05-2025 17:00:00");
+        ResponseEntity<String> output = createTaskController.createTask("case title", "", "open status", "05-05-2025 17:00");
         assert output != null;
         assert output.getBody().contains("Task Created");
 

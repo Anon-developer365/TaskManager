@@ -25,9 +25,7 @@ public class CreateTask {
     public Task createNewTask(String title, String description,
                               String status, String dueDate) {
         UUID uuid = UUID.randomUUID();
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
-        LocalDateTime date = LocalDateTime.parse(dueDate, formatter);
-        return new Task(uuid.toString(), title, description, status, date);
+        return new Task(uuid.toString(), title, description, status, dueDate);
 
     }
 

@@ -9,13 +9,11 @@ import java.time.format.DateTimeFormatter;
 public class CreateTaskTests {
 
     private CreateTask createTask = new CreateTask();
-    String date = "20-05-2025 09:00:00";
-    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
-    LocalDateTime dueDate = LocalDateTime.parse(date, formatter);
+    String dueDate = "20-05-2025 09:00";
 
     @Test
     void whenDetailsAreGivenANewTaskIsCreated(){
-        Task task = createTask.createNewTask("case title", "", "open status", "20-05-2025 09:00:00");
+        Task task = createTask.createNewTask("case title", "", "open status", "20-05-2025 09:00");
         assert task != null;
         assert task.getDueDate().equals(dueDate);
     }

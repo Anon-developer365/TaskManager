@@ -27,7 +27,7 @@ public class UpdateStatusControllerIntegrationTests {
         String caseTitle = "Case Title";
         String description = "Case Description";
         String status = "Original status";
-        String dueDate = "05-05-2025 17:00:00";
+        String dueDate = "05-05-2025 17:00";
 
         final String DB_URL = "jdbc:h2:file:database:/Taskmanager";
         Connection conn;
@@ -55,7 +55,7 @@ public class UpdateStatusControllerIntegrationTests {
             results.add(rs.getString("id"));
             results.add(rs.getString("title"));
             results.add(rs.getString("status"));
-            results.add(rs.getString("duedate"));
+            results.add(rs.getString("dueDate"));
             results.add(rs.getString("description"));
         }
 

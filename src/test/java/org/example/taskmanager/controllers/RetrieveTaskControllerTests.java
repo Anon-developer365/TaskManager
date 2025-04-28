@@ -41,9 +41,7 @@ public class RetrieveTaskControllerTests {
     void aSuccessMessageIsReceivedWhenDetailsAreProvided() {
         retrieveTaskController = new RetrieveTaskController(getATask);
         final UUID uuid = UUID.randomUUID();
-        String date = "20-05-2025 09:00:00";
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
-        LocalDateTime dueDate = LocalDateTime.parse(date, formatter);
+        String dueDate = "20-05-2025 09:00";
         Task task = new Task(uuid.toString(), "develop database", "", "open status", dueDate);
         when(getATask.getATask(uuid.toString())).thenReturn(task);
         ResponseEntity<Task> output = retrieveTaskController.getTask(uuid.toString());

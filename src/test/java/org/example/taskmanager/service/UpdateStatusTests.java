@@ -23,7 +23,7 @@ public class UpdateStatusTests {
             pstmt.setString(2, "case title");
             pstmt.setString(3, "description");
             pstmt.setString(4, "open status");
-            pstmt.setString(5, "05-05-2025 17:00:00");
+            pstmt.setString(5, "05-05-2025 17:00");
 
             pstmt.executeUpdate();
 

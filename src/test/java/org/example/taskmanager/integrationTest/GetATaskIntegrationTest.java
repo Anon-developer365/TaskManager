@@ -26,7 +26,7 @@ public class GetATaskIntegrationTest {
         String caseTitle = "Case Title";
         String description = "Case Description";
         String status = "Open status";
-        String dueDate = "05-05-2025 17:00:00";
+        String dueDate = "05-05-2025 17:00";
 
         final String DB_URL = "jdbc:h2:file:database:/Taskmanager";
         Connection conn;
@@ -43,5 +43,7 @@ public class GetATaskIntegrationTest {
 
         ResponseEntity<Task> results =  retrieveTaskController.getTask(uuid.toString());
         assert Objects.requireNonNull(results.getBody()).getId().equals(uuid.toString());
+        assert results.getBody().getDueDate().toString().equals(dueDate);
+        System.out.println(results.getBody().getDueDate());
     }
 }

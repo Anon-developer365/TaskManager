@@ -23,7 +23,7 @@ public class GetATask {
      * @return the task that wants to be retrieved.
      */
     public Task getATask(String Id) {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm");
         Task task = new Task(null, null, null, null, null);
         try (Connection conn = DriverManager.getConnection(DB_URL)) {
 
@@ -38,7 +38,7 @@ public class GetATask {
                 task.setTitle(rs.getString("title"));
                 task.setDescription(rs.getString("description"));
                 task.setStatus(rs.getString("status"));
-                task.setDueDate(LocalDateTime.parse(rs.getString("dueDate"), formatter));
+                task.setDueDate(rs.getString("dueDate"));
             }
 
             if(task.getId() == null) {

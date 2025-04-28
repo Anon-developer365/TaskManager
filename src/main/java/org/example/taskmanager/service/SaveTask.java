@@ -28,7 +28,7 @@ public class SaveTask {
             pstmt.setString(2, task.getTitle());
             pstmt.setString(3, task.getDescription());
             pstmt.setString(4, task.getStatus());
-            pstmt.setString(5, task.getDueDate().toString());
+            pstmt.setString(5, task.getDueDate());
 
             pstmt.executeUpdate();
 

@@ -22,7 +22,7 @@ public class TaskValidationTests {
         title = "";
         description = "description";
         status = "open status";
-        dueDate = "05-05-2025 17:00:00";
+        dueDate = "05-05-2025 17:00";
         List<String> expectedErrors = new ArrayList<>();
         expectedErrors.add("Task title is empty");
 
@@ -36,7 +36,7 @@ public class TaskValidationTests {
         title = "||";
         description = "description";
         status = "open status";
-        dueDate = "05-05-2025 17:00:00";
+        dueDate = "05-05-2025 17:00";
         List<String> expectedErrors = new ArrayList<>();
         expectedErrors.add("Task title doesnt match pattern a-zA-Z0-9");
 
@@ -50,7 +50,7 @@ public class TaskValidationTests {
         title = "case 23";
         description = "description";
         status = "open status";
-        dueDate = "05-05-2025 17:00:00";
+        dueDate = "05-05-2025 17:00";
 
         assertDoesNotThrow(() -> validation.verifyTask(title, description, status, dueDate));
 
@@ -62,7 +62,7 @@ public class TaskValidationTests {
         title = "Task title";
         description = "||";
         status = "open status";
-        dueDate = "05-05-2025 17:00:00";
+        dueDate = "05-05-2025 17:00";
         List<String> expectedErrors = new ArrayList<>();
         expectedErrors.add("Task description doesnt match pattern a-zA-Z0-9");
 
@@ -76,7 +76,7 @@ public class TaskValidationTests {
         title = "Task 23";
         description = "";
         status = "open status";
-        dueDate = "05-05-2025 17:00:00";
+        dueDate = "05-05-2025 17:00";
 
         assertDoesNotThrow(() -> validation.verifyTask(title, description, status, dueDate));
 
@@ -87,7 +87,7 @@ public class TaskValidationTests {
         title = "Task 23";
         description = "Awaiting 3 new parts for hard drive";
         status = "open status";
-        dueDate = "05-05-2025 17:00:00";
+        dueDate = "05-05-2025 17:00";
 
         assertDoesNotThrow(() -> validation.verifyTask(title, description, status, dueDate));
 
@@ -98,7 +98,7 @@ public class TaskValidationTests {
         title = "Task 23";
         description = "Awaiting 3 new parts for hard drive";
         status = "";
-        dueDate = "05-05-2025 17:00:00";
+        dueDate = "05-05-2025 17:00";
         List<String> expectedErrors = new ArrayList<>();
         expectedErrors.add("Task status is empty");
 
@@ -112,7 +112,7 @@ public class TaskValidationTests {
         title = "Task 23";
         description = "Awaiting 3 new parts for hard drive";
         status = "||";
-        dueDate = "05-05-2025 17:00:00";
+        dueDate = "05-05-2025 17:00";
         List<String> expectedErrors = new ArrayList<>();
         expectedErrors.add("Task status doesnt match pattern a-zA-Z0-9");
 

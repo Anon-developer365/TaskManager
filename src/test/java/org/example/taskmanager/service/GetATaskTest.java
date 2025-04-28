@@ -20,7 +20,7 @@ public class GetATaskTest {
         getATask = new GetATask();
         UUID uuid = UUID.randomUUID();
 
-        String dueDate = "05-05-2025 17:00:00";
+        String dueDate = "05-05-2025 17:00";
 
         Connection conn = DriverManager.getConnection(DB_URL);
 
@@ -36,6 +36,8 @@ public class GetATaskTest {
         assert task != null;
         assert task.getId().equals(uuid.toString());
 
+        pstmt.close();
+        conn.close();
     }
 
     @Test

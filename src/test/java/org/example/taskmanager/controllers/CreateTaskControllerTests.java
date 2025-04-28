@@ -46,17 +46,15 @@ public class CreateTaskControllerTests {
     private MockMvc mvc;
 
 
-        @Test
+    @Test
     void aSuccessMessageIsReceivedWhenTheEndPointIsHit() {
         UUID uuid = UUID.randomUUID();
         String casetitle = "case title";
         String description = "description";
         String status = "open status";
-        String dueDate = "05-05-2025 17:00:00";
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
-        LocalDateTime date = LocalDateTime.parse(dueDate, formatter);
+        String dueDate = "05-05-2025 17:00";
 
-        Task task = new Task(uuid.toString(), casetitle, description, status, date);
+        Task task = new Task(uuid.toString(), casetitle, description, status, dueDate);
         createTaskController = new CreateTaskController(createTask, saveTask, taskValidation);
         doNothing().when(taskValidation).verifyTask(casetitle, description, status, dueDate);
         when(createTask.createNewTask(casetitle, description, status, dueDate)).thenReturn(task);

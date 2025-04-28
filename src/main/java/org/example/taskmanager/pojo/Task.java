@@ -18,5 +18,5 @@ public class Task {
     @Nullable
     private String description;
     private String status;
-    private LocalDateTime DueDate;
+    private String DueDate;
 }
