@@ -21,13 +21,15 @@ public class CreateDataBaseTests {
         Statement stmt1 = conn1.createStatement();
         String reset = "DROP TABLE IF EXISTS Taskmanager";
         stmt1.executeUpdate(reset);
+        Connection conn = DriverManager.getConnection(DB_URL);
+        Statement stmt = conn.createStatement();
         createDataBase.createDatabase();
         assertDoesNotThrow(() -> {
-            Connection conn = DriverManager.getConnection(DB_URL);
-            Statement stmt = conn.createStatement();
             String sql = "SELECT * FROM taskmanager";
             stmt.executeQuery(sql);
         });
+        stmt.close();
+        conn.close();
     }
 
 

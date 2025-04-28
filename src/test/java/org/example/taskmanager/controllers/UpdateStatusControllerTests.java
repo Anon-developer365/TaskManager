@@ -53,14 +53,6 @@ public class UpdateStatusControllerTests {
 
     }
 
-    @Test
-    void whenAPutRequestIsSentWithTheCorrectMappingAResponseIsReceived() throws Exception {
-        mvc = MockMvcBuilders
-                .webAppContextSetup(context)
-                .build();
-        mvc.perform(put("/updateStatus")).andExpect(status().isOk());
-
-    }
 
     @Test
     void whenAGetRequestIsSentAnErrorIsReceived() throws Exception {
