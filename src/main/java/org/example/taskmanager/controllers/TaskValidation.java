@@ -17,32 +17,26 @@ public class TaskValidation {
 
     private static final String DESCRIPTION_REGEX = "\\w";
 
+    private static final String STATUS_REGEX = "\\w";
 
-    public void verifyTask(Task task) {
+
+    public void verifyTask(String title, String description, String status, String dueDate) {
         final List<String> allErrors = new ArrayList<>();
-        allErrors.addAll(idCheck(task));
-        allErrors.addAll(titleCheck(task));
-        allErrors.addAll(descriptionCheck(task));
+        allErrors.addAll(titleCheck(title));
+        allErrors.addAll(descriptionCheck(description));
+        allErrors.addAll(statusCheck(status));
         if (!allErrors.isEmpty()) {
             throw new EmptyTaskException(allErrors.toString());
         }
     }
 
-    private List<String> idCheck(Task task) {
+    private List<String> titleCheck(String title) {
         final List<String> errors = new ArrayList<>();
-        if (StringUtils.isBlank(task.getId())) {
-            errors.add("Task ID is empty");
-        }
-        return errors;
-    }
-
-    private List<String> titleCheck(Task task) {
-        final List<String> errors = new ArrayList<>();
-        if (StringUtils.isBlank(task.getTitle())) {
+        if (StringUtils.isBlank(title)) {
             errors.add("Task title is empty");
         } else {
             final Pattern pattern = Pattern.compile(TITLE_REGEX);
-            final Matcher matcher = pattern.matcher(task.getTitle());
+            final Matcher matcher = pattern.matcher(title);
             if (!matcher.find()) {
                 errors.add("Task title doesnt match pattern a-zA-Z0-9");
             }
@@ -51,13 +45,28 @@ public class TaskValidation {
         return errors;
     }
 
-    private List<String> descriptionCheck(Task task) {
+    private List<String> descriptionCheck(String description) {
         final List<String> errors = new ArrayList<>();
-        if (!StringUtils.isBlank(task.getDescription())) {
+        if (!StringUtils.isBlank(description)) {
             final Pattern pattern = Pattern.compile(DESCRIPTION_REGEX);
-            final Matcher matcher = pattern.matcher(task.getDescription());
+            final Matcher matcher = pattern.matcher(description);
             if (!matcher.find()) {
                 errors.add("Task description doesnt match pattern a-zA-Z0-9");
+            }
+
+        }
+        return errors;
+    }
+
+    private List<String> statusCheck(String status) {
+        final List<String> errors = new ArrayList<>();
+        if (StringUtils.isBlank(status)) {
+            errors.add("Task status is empty");
+        } else {
+            final Pattern pattern = Pattern.compile(STATUS_REGEX);
+            final Matcher matcher = pattern.matcher(status);
+            if (!matcher.find()) {
+                errors.add("Task status doesnt match pattern a-zA-Z0-9");
             }
 
         }
