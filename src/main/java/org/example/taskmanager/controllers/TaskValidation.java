@@ -26,7 +26,7 @@ public class TaskValidation {
 
     private static final String DESCRIPTION_REGEX = "\\w";
 
-    private static final String DUE_DATE_REGEX = "\\d\\d-\\d\\d-\\d\\d\\d\\d \\d\\d:\\d\\d";
+    private static final String DUE_DATE_REGEX = "\\d\\d\\d\\d-\\d\\d-\\d\\d \\d\\d:\\d\\d";
 
     /**
      * Method to verify task details
