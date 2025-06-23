@@ -1,0 +1,1 @@
+insert into taskmanager values ('integrate hibernate', '27-09-2025', '1', 'working', 'add hibernate to project')

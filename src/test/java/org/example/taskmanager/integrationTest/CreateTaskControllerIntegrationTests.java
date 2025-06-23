@@ -4,6 +4,7 @@ import org.example.taskmanager.controllers.CreateTaskController;
 import org.example.taskmanager.controllers.TaskValidation;
 import org.example.taskmanager.service.CreateTask;
 import org.example.taskmanager.service.SaveTask;
+import org.example.taskmanager.service.TaskRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.ResponseEntity;
@@ -24,10 +25,11 @@ public class CreateTaskControllerIntegrationTests {
 
     private TaskValidation taskValidation;
 
+    private TaskRepository taskRepository;
+
     @Test
     void aSuccessMessageIsReceivedWhenTheEndPointIsHit() throws SQLException {
         createTask = new CreateTask();
-        saveTask = new SaveTask();
         taskValidation = new TaskValidation();
         createTaskController = new CreateTaskController(createTask, saveTask, taskValidation);
         ResponseEntity<String> output = createTaskController.createTask("case title", "", "open status", "05-05-2025 17:00");

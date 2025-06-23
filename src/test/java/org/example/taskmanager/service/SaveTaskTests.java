@@ -2,27 +2,38 @@ package org.example.taskmanager.service;
 
 import org.example.taskmanager.pojo.Task;
 import org.junit.jupiter.api.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Example;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.repository.query.FluentQuery;
+import org.springframework.test.context.junit4.SpringRunner;
 
 import java.sql.*;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
+import java.util.function.Function;
 
+@SpringBootTest
 public class SaveTaskTests {
+
+    @Autowired
+    private SaveTask saveTask;
 
 
     @Test
     void testDataIsSavedInTheDatabase() {
         UUID uuid = UUID.randomUUID();
         String dueDate = "20-05-2025 09:00:00";
-
-        SaveTask saveTask = new SaveTask();
-        Task task = new Task(uuid.toString(), "develop database", "", "open status", dueDate);
+        Task task = new Task("2", "develop database", "create a database", "open status", dueDate);
         String result = saveTask.saveData(task);
-        assert result.equals(uuid.toString());
-
+        System.out.println(result);
+        assert result.equals("2");
     }
 
     @Test
@@ -31,7 +42,6 @@ public class SaveTaskTests {
         UUID uuid = UUID.randomUUID();
         String dueDate = "20-05-2025 09:00";
 
-        SaveTask saveTask = new SaveTask();
         Task task = new Task(uuid.toString(), "develop database", "", "open status", dueDate);
         String result = saveTask.saveData(task);
         assert result.equals(uuid.toString());
