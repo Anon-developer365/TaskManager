@@ -14,10 +14,12 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class RetrieveTasksTests {
 
     @Autowired
+    private TaskService taskService;
     private RetrieveTasks retrieveTasks;
 
     @Test
     void checkWhenThereAreTasksInTheDatabaseTheseAreAllReturned() throws SQLException {
+        retrieveTasks = new RetrieveTasks(taskService);
         List<Task> tasks = retrieveTasks.getAllTasks();
         assertEquals(1, tasks.size());
         assertEquals("1", tasks.get(0).getId());

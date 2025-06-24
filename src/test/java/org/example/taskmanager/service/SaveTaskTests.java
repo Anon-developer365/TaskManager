@@ -2,22 +2,14 @@ package org.example.taskmanager.service;
 
 import org.example.taskmanager.pojo.Task;
 import org.junit.jupiter.api.Test;
-import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.data.domain.Example;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
-import org.springframework.data.repository.query.FluentQuery;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.annotation.Commit;
 
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
-import java.util.function.Function;
 
 @SpringBootTest
 public class SaveTaskTests {
@@ -27,6 +19,7 @@ public class SaveTaskTests {
 
 
     @Test
+    @Commit
     void testDataIsSavedInTheDatabase() {
         UUID uuid = UUID.randomUUID();
         String dueDate = "20-05-2025 09:00:00";

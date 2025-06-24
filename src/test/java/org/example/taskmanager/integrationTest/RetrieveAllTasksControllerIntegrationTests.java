@@ -3,7 +3,9 @@ package org.example.taskmanager.integrationTest;
 import org.example.taskmanager.controllers.RetrieveAllTasksController;
 import org.example.taskmanager.pojo.Task;
 import org.example.taskmanager.service.RetrieveTasks;
+import org.example.taskmanager.service.TaskService;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 
 import java.sql.Connection;
@@ -20,11 +22,16 @@ public class RetrieveAllTasksControllerIntegrationTests {
 
     private RetrieveTasks retrieveTasks;
 
+    @Autowired
+    private TaskService taskService;
+
     static final String DB_URL = "jdbc:h2:file:database:/Taskmanager";
+
+
 
     @Test
     void checkTheServiceRunsSuccessfullyWhenAListIsReturned() throws SQLException {
-        retrieveTasks = new RetrieveTasks();
+        retrieveTasks = new RetrieveTasks(taskService);
         retrieveAllTasksController = new RetrieveAllTasksController(retrieveTasks);
 
         UUID uuid = UUID.randomUUID();

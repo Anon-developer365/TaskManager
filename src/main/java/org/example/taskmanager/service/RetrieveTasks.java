@@ -5,9 +5,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.sql.*;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -17,9 +14,13 @@ import java.util.List;
 public class RetrieveTasks {
 
     @Autowired
-    private TaskRepository taskRepository;
+    private TaskService taskService;
 
     static final String DB_URL = "jdbc:h2:file:database:/Taskmanager";
+
+    public RetrieveTasks(TaskService taskService) {
+        this.taskService = taskService;
+    }
 
     /**
      * Method to retrieve all task data from the database.
@@ -28,7 +29,7 @@ public class RetrieveTasks {
      * @throws SQLException
      */
     public List<Task> getAllTasks() throws SQLException {
-        return taskRepository.findAll();
+        return taskService.getTasks();
 
     }
 }
