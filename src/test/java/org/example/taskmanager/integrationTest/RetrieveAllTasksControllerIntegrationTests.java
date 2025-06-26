@@ -5,24 +5,24 @@ import org.example.taskmanager.pojo.Task;
 import org.example.taskmanager.service.RetrieveTasks;
 import org.example.taskmanager.service.TaskRepository;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.ResponseEntity;
 
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Objects;
 
+@DataJpaTest
 public class RetrieveAllTasksControllerIntegrationTests {
 
+    @Autowired
     private TaskRepository taskRepository;
 
     private RetrieveAllTasksController retrieveAllTasksController;
 
     private RetrieveTasks retrieveTasks;
-
-    public RetrieveAllTasksControllerIntegrationTests(TaskRepository taskRepository) {
-        this.taskRepository = taskRepository;
-    }
-
 
     @Test
     void checkTheServiceRunsSuccessfullyWhenAListIsReturned() throws SQLException {

@@ -2,17 +2,22 @@ package org.example.taskmanager.service;
 
 import org.example.taskmanager.pojo.Task;
 import org.junit.jupiter.api.Test;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 @SpringBootTest
 public class RetrieveTasksTests {
 
-    @Autowired
+    @Mock
     private TaskRepository taskRepository;
+    @InjectMocks
     private RetrieveTasks retrieveTasks;
 
 
@@ -21,7 +26,9 @@ public class RetrieveTasksTests {
         retrieveTasks = new RetrieveTasks(taskRepository);
         String dueDate = "20-05-2025 09:00:00";
         Task task = new Task("1", "develop database", "create a database", "open status", dueDate);
-        taskRepository.save(task);
+        List<Task> expectedResult = new ArrayList<>();
+        expectedResult.add(task);
+        Mockito.when(taskRepository.findAll()).thenReturn(expectedResult);
         List<Task> tasks = retrieveTasks.getAllTasks();
         assertEquals(1, tasks.size());
         assertEquals("1", tasks.get(0).getId());
@@ -29,6 +36,8 @@ public class RetrieveTasksTests {
 
     @Test
     void checkWhenThereAreNoTasksInTheDatabaseAnEmptyListIsReturned() {
+        List<Task> expectedResult = new ArrayList<>();
+        Mockito.when(taskRepository.findAll()).thenReturn(expectedResult);
         retrieveTasks = new RetrieveTasks(taskRepository);
         List<Task> tasks = retrieveTasks.getAllTasks();
         assertEquals(0, tasks.size());
