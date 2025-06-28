@@ -1,11 +1,10 @@
 package org.example.taskmanager.service;
 
 import org.example.taskmanager.pojo.Task;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.sql.*;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
+import java.util.Optional;
 
 
 /**
@@ -14,39 +13,34 @@ import java.time.format.DateTimeFormatter;
 @Service
 public class GetATask {
 
-    static final String DB_URL = "jdbc:h2:file:database:/Taskmanager";
+    private final TaskRepository taskRepository;
+
+    @Autowired
+    public GetATask(TaskRepository taskRepository) {
+        this.taskRepository = taskRepository;
+    }
 
     /**
      * Method to retrieve a task.
      *
-     * @param Id the id of the task to be returned.
+     * @param id the id of the task to be returned.
      * @return the task that wants to be retrieved.
      */
-    public Task getATask(String Id) {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm");
+    public Task getATask(String id) {
+        Optional<Task> foundTask = taskRepository.findById(id);
         Task task = new Task(null, null, null, null, null);
-        try (Connection conn = DriverManager.getConnection(DB_URL)) {
 
-            // set up a query
-            PreparedStatement pstmt = conn.prepareStatement("SELECT * FROM Taskmanager WHERE id = ?");
-            pstmt.setString(1, Id);
-            ResultSet rs = pstmt.executeQuery();
-
-
-            while(rs.next()) {
-                task.setId(rs.getString("ID"));
-                task.setTitle(rs.getString("title"));
-                task.setDescription(rs.getString("description"));
-                task.setStatus(rs.getString("status"));
-                task.setDueDate(rs.getString("dueDate"));
+            if(foundTask.isPresent()) {
+                if(foundTask.get().getId() == null) {
+                    throw new RuntimeException("Task with ID " + id + " not found");
+                } else {
+                    task.setId(foundTask.get().getId());
+                    task.setStatus(foundTask.get().getStatus());
+                    task.setDescription(foundTask.get().getDescription());
+                    task.setTitle(foundTask.get().getTitle());
+                    task.setDueDate(foundTask.get().getDueDate());
+                }
             }
-
-            if(task.getId() == null) {
-                throw new RuntimeException("Task with ID " + Id + " not found");
-            }
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
         return task;
     }
 }

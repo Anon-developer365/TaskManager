@@ -13,6 +13,7 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -33,16 +34,14 @@ public class GetATaskTest {
 
         String dueDate = "20-05-2025 09:00:00";
         Task task = new Task("1", "develop database", "create a database", "open status", dueDate);
-        List<Task> expectedResult = new ArrayList<>();
-        expectedResult.add(task);
-        Mockito.when(taskRepository.findAll()).thenReturn(expectedResult);
+        Mockito.when(taskRepository.findById("1")).thenReturn(Optional.of(task));
         Task actualTask = getATask.getATask("1");
-        assertEquals(actualTask.getId(), "1");
-        assertEquals(actualTask.getTitle(), "develop database");
+        assertEquals("1", actualTask.getId());
+        assertEquals("develop database", actualTask.getTitle());
     }
 
     @Test
     void checkIfATaskIsRequestedAndDoesNotExistsAnErrorIsThrown() {
-        getATask = new GetATask();
+        getATask = new GetATask(taskRepository);
     }
 }

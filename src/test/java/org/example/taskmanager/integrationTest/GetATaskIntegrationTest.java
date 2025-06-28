@@ -3,7 +3,10 @@ package org.example.taskmanager.integrationTest;
 import org.example.taskmanager.controllers.RetrieveTaskController;
 import org.example.taskmanager.pojo.Task;
 import org.example.taskmanager.service.GetATask;
+import org.example.taskmanager.service.TaskRepository;
+import org.junit.After;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 
 import java.sql.Connection;
@@ -15,11 +18,19 @@ import java.util.UUID;
 
 public class GetATaskIntegrationTest {
 
-    private final GetATask getATask = new GetATask();
+    private final TaskRepository taskRepository;
+
+    private GetATask getATask;
     private RetrieveTaskController retrieveTaskController;
+
+    @Autowired
+    public GetATaskIntegrationTest(TaskRepository taskRepository) {
+        this.taskRepository = taskRepository;
+    }
 
     @Test
     void checkIfATaskExistsItIsReturned() throws SQLException {
+        getATask = new GetATask(taskRepository);
         retrieveTaskController = new RetrieveTaskController(getATask);
 
         UUID uuid = UUID.randomUUID();
