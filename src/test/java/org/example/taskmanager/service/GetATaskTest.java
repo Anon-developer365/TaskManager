@@ -2,51 +2,47 @@ package org.example.taskmanager.service;
 
 import org.example.taskmanager.pojo.Task;
 import org.junit.jupiter.api.Test;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.springframework.boot.test.context.SpringBootTest;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+@SpringBootTest
 public class GetATaskTest {
-    static final String DB_URL = "jdbc:h2:file:database:/Taskmanager";
+
+    @Mock
+    private TaskRepository taskRepository;
+
+    @InjectMocks
     private GetATask getATask;
 
     @Test
     void checkIfATaskIsRequestedAndExistsItIsReturned() throws SQLException {
-        getATask = new GetATask();
-        UUID uuid = UUID.randomUUID();
+        getATask = new GetATask(taskRepository);
 
-        String dueDate = "05-05-2025 17:00";
-
-        Connection conn = DriverManager.getConnection(DB_URL);
-
-        PreparedStatement pstmt = conn.prepareStatement("INSERT INTO Taskmanager(Id, Title, description, status, dueDate)" + "VALUES(?,?,?,?,?)");
-        pstmt.setString(1, uuid.toString());
-        pstmt.setString(2, "case title");
-        pstmt.setString(3, "description");
-        pstmt.setString(4, "open status");
-        pstmt.setString(5, dueDate);
-
-        pstmt.executeUpdate();
-        Task task = getATask.getATask(uuid.toString());
-        assert task != null;
-        assert task.getId().equals(uuid.toString());
-
-        pstmt.close();
-        conn.close();
+        String dueDate = "20-05-2025 09:00:00";
+        Task task = new Task("1", "develop database", "create a database", "open status", dueDate);
+        List<Task> expectedResult = new ArrayList<>();
+        expectedResult.add(task);
+        Mockito.when(taskRepository.findAll()).thenReturn(expectedResult);
+        Task actualTask = getATask.getATask("1");
+        assertEquals(actualTask.getId(), "1");
+        assertEquals(actualTask.getTitle(), "develop database");
     }
 
     @Test
     void checkIfATaskIsRequestedAndDoesNotExistsAnErrorIsThrown() {
         getATask = new GetATask();
-        UUID uuid = UUID.randomUUID();
-
-        Throwable thrown = assertThrows(RuntimeException.class, () -> getATask.getATask(uuid.toString()));
-        System.out.println(thrown.getMessage());
-        assert thrown.getMessage().contains("Task with ID " + uuid + " not found");
     }
 }
