@@ -26,7 +26,7 @@ public class TaskValidation {
 
     private static final String DESCRIPTION_REGEX = "\\w";
 
-    private static final String DUE_DATE_REGEX = "\\d\\d-\\d\\d-\\d\\d\\d\\d \\d\\d:\\d\\d";
+    private static final String DUE_DATE_REGEX = "\\d\\d\\d\\d-\\d\\d-\\d\\d \\d\\d:\\d\\d";
 
     /**
      * Method to verify task details
@@ -102,7 +102,7 @@ public class TaskValidation {
             final Pattern pattern = Pattern.compile(DUE_DATE_REGEX);
             final Matcher matcher = pattern.matcher(dueDate);
             if (!matcher.find()) {
-                errors.add("Task due date doesnt match the pattern dd-mm-yyyy hh:mm:ss");
+                errors.add("Task due date doesnt match the pattern yyyy-dd-mm hh:mm:ss");
             }
 
         }

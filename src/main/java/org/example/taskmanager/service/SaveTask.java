@@ -10,13 +10,11 @@ import org.springframework.stereotype.Service;
 @Service
 public class SaveTask {
 
-    @Autowired
-    private TaskService taskService;
-    // database URL
-    static final String DB_URL = "jdbc:h2:mem:c1d5e563-2bfb-4251-a42d-2dfc2e79b621";
+    private final TaskRepository taskRepository;
 
-    public SaveTask(TaskService taskService) {
-        this.taskService = taskService;
+    @Autowired
+    public SaveTask(TaskRepository taskRepository) {
+        this.taskRepository = taskRepository;
     }
 
     /**
@@ -24,8 +22,9 @@ public class SaveTask {
      * @param task task required to be saved in the database.
      * @return returns a success message with the assigned ID of the task.
      */
+
     public String saveData(Task task) {
-        taskService.saveTask(task);
+        taskRepository.save(task);
         return task.getId();
     }
 }
