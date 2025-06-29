@@ -42,6 +42,9 @@ public class GetATaskTest {
 
     @Test
     void checkIfATaskIsRequestedAndDoesNotExistsAnErrorIsThrown() {
+
         getATask = new GetATask(taskRepository);
+        Mockito.when(taskRepository.findById("1")).thenReturn(null);
+        assertThrows(RuntimeException.class, () -> getATask.getATask("1"));
     }
 }
