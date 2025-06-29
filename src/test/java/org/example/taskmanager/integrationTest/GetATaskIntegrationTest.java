@@ -4,18 +4,16 @@ import org.example.taskmanager.controllers.RetrieveTaskController;
 import org.example.taskmanager.pojo.Task;
 import org.example.taskmanager.service.GetATask;
 import org.example.taskmanager.service.TaskRepository;
-import org.junit.After;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.http.ResponseEntity;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
 import java.util.Objects;
-import java.util.UUID;
 
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
+@DataJpaTest
 public class GetATaskIntegrationTest {
 
     private final TaskRepository taskRepository;
@@ -29,31 +27,54 @@ public class GetATaskIntegrationTest {
     }
 
     @Test
-    void checkIfATaskExistsItIsReturned() throws SQLException {
+    void checkIfATaskExistsItIsReturned() {
         getATask = new GetATask(taskRepository);
         retrieveTaskController = new RetrieveTaskController(getATask);
 
-        UUID uuid = UUID.randomUUID();
-        String caseTitle = "Case Title";
-        String description = "Case Description";
-        String status = "Open status";
-        String dueDate = "05-05-2025 17:00";
+        String dueDate = "20-05-2025 09:00:00";
+        Task task = new Task("2", "develop database", "create a database", "open status", dueDate);
+        taskRepository.save(task);
 
-        final String DB_URL = "jdbc:h2:file:database:/Taskmanager";
-        Connection conn;
-        conn = DriverManager.getConnection(DB_URL);
+        ResponseEntity<Task> results =  retrieveTaskController.getTask("2");
+        assert Objects.requireNonNull(results.getBody()).getId().equals("2");
+        assert results.getBody().getDueDate().equals(dueDate);
+    }
 
-        PreparedStatement pstmt = conn.prepareStatement("INSERT INTO Taskmanager(Id, Title, description, status, dueDate)" + "VALUES(?,?,?,?,?)");
-        pstmt.setString(1, uuid.toString());
-        pstmt.setString(2, caseTitle);
-        pstmt.setString(3, description);
-        pstmt.setString(4, status);
-        pstmt.setString(5, dueDate);
+    @Test
+    void checkIfThereIsMoreThanOneTaskOnlyTheRequestedTaskIsReturned() {
+        getATask = new GetATask(taskRepository);
+        retrieveTaskController = new RetrieveTaskController(getATask);
 
-        pstmt.executeUpdate();
+        String dueDate = "20-05-2025 09:00:00";
+        Task task = new Task("1", "develop database", "create a database", "open status", dueDate);
+        Task taskTwo = new Task("2", "update database", "update a database", "working", dueDate);
+        taskRepository.save(task);
+        taskRepository.save(taskTwo);
 
-        ResponseEntity<Task> results =  retrieveTaskController.getTask(uuid.toString());
-        assert Objects.requireNonNull(results.getBody()).getId().equals(uuid.toString());
-        assert results.getBody().getDueDate().toString().equals(dueDate);
+        ResponseEntity<Task> results =  retrieveTaskController.getTask("2");
+        assert Objects.requireNonNull(results.getBody()).getId().equals("2");
+        assert results.getBody().getDueDate().equals(dueDate);
+    }
+
+    @Test
+    void IfThereAreNoTasksAnErrorIsReturned() {
+        getATask = new GetATask(taskRepository);
+        retrieveTaskController = new RetrieveTaskController(getATask);
+
+        assertThrows(RuntimeException.class, () -> retrieveTaskController.getTask("2"));
+
+    }
+
+    @Test
+    void IfThereAreTasksButTheIdDoesNotatchAnErrorIsReturned() {
+        getATask = new GetATask(taskRepository);
+        retrieveTaskController = new RetrieveTaskController(getATask);
+
+        String dueDate = "20-05-2025 09:00:00";
+        Task task = new Task("1", "develop database", "create a database", "open status", dueDate);
+        taskRepository.save(task);
+
+        assertThrows(RuntimeException.class, () -> retrieveTaskController.getTask("2"));
+
     }
 }

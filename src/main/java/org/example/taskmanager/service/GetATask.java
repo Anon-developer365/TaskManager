@@ -30,8 +30,7 @@ public class GetATask {
         Optional<Task> foundTask = taskRepository.findById(id);
         Task task = new Task(null, null, null, null, null);
 
-            if(foundTask.isPresent()) {
-                if(foundTask.get().getId() == null) {
+            if(foundTask.isEmpty() || foundTask.get().getId() == null) {
                     throw new RuntimeException("Task with ID " + id + " not found");
                 } else {
                     task.setId(foundTask.get().getId());
@@ -40,7 +39,6 @@ public class GetATask {
                     task.setTitle(foundTask.get().getTitle());
                     task.setDueDate(foundTask.get().getDueDate());
                 }
-            }
         return task;
     }
 }
