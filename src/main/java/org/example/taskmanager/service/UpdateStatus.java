@@ -1,10 +1,10 @@
 package org.example.taskmanager.service;
 
+import org.example.taskmanager.pojo.Task;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
+import java.util.Optional;
 
 /**
  * Update status class created to update the status of a task.
@@ -12,8 +12,12 @@ import java.sql.PreparedStatement;
 @Service
 public class UpdateStatus {
 
-    // database URL
-    static final String DB_URL = "jdbc:h2:file:database:/Taskmanager";
+    private final TaskRepository taskRepository;
+
+    @Autowired
+    public UpdateStatus(TaskRepository taskRepository) {
+        this.taskRepository = taskRepository;
+    }
 
     /**
      * Method to update the task with the matching Id number to the new status.
@@ -23,21 +27,14 @@ public class UpdateStatus {
      * @return boolean returns true if a task is updated.
      */
     public boolean updateStatus(String id, String status) {
-        boolean success;
-        try (Connection conn = DriverManager.getConnection(DB_URL)) {
+        Optional<Task> task = taskRepository.findById(id);
+        if(task.isEmpty() || task.get().getId() == null) {
+            throw new RuntimeException("Task with ID " + id + " not found");
+        } else {
+            Task updatedTask = new Task(id, task.get().getTitle(), task.get().getDescription(), status, task.get().getDueDate());
+            taskRepository.save(updatedTask);
 
-            // set up a query
-            PreparedStatement pstmt = conn.prepareStatement("UPDATE taskmanager SET status = ? WHERE id = ?");
-            pstmt.setString(1, status);
-            pstmt.setString(2, id);
-
-            pstmt.executeUpdate();
-            success = true;
-
-            // catch any exceptions
-        } catch (Exception e) {
-            throw new RuntimeException(e);
         }
-        return success;
+        return true;
     }
 }

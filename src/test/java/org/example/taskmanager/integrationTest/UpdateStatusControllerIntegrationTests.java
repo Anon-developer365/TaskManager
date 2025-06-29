@@ -2,6 +2,7 @@ package org.example.taskmanager.integrationTest;
 
 import org.example.taskmanager.controllers.UpdateStatusController;
 import org.example.taskmanager.controllers.UpdateStatusValidation;
+import org.example.taskmanager.service.TaskRepository;
 import org.example.taskmanager.service.UpdateStatus;
 import org.junit.jupiter.api.Test;
 
@@ -12,6 +13,8 @@ import java.util.UUID;
 
 public class UpdateStatusControllerIntegrationTests {
 
+    private TaskRepository taskRepository;
+
     private UpdateStatusController updateStatusController;
 
     private UpdateStatus updateStatus;
@@ -20,7 +23,7 @@ public class UpdateStatusControllerIntegrationTests {
 
     @Test
     void checkAStatusIsUpdateWhenFoundInTheDatabase() throws SQLException {
-        updateStatus = new UpdateStatus();
+        updateStatus = new UpdateStatus(taskRepository);
         updateStatusValidation = new UpdateStatusValidation();
         updateStatusController = new UpdateStatusController(updateStatus, updateStatusValidation);
         UUID uuid = UUID.randomUUID();
