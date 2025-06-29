@@ -24,7 +24,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 public class UpdateStatusControllerTests {
     @Autowired
-    private WebApplicationContext context;
+    private final WebApplicationContext context;
 
     private MockMvc mvc;
 
@@ -36,6 +36,10 @@ public class UpdateStatusControllerTests {
 
     @InjectMocks
     private UpdateStatusController updateStatusController;
+
+    public UpdateStatusControllerTests(WebApplicationContext context) {
+        this.context = context;
+    }
 
 
     @Test

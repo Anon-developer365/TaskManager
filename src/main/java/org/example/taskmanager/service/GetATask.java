@@ -4,7 +4,6 @@ import org.example.taskmanager.pojo.Task;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
 
 
 /**
@@ -13,8 +12,15 @@ import java.util.Optional;
 @Service
 public class GetATask {
 
+    /**
+     * Task repository for service.
+     */
     private final TaskRepository taskRepository;
 
+    /**
+     * Autowired constructor for task repository.
+     * @param taskRepository task repository.
+     */
     @Autowired
     public GetATask(TaskRepository taskRepository) {
         this.taskRepository = taskRepository;
@@ -27,18 +33,11 @@ public class GetATask {
      * @return the task that wants to be retrieved.
      */
     public Task getATask(String id) {
-        Optional<Task> foundTask = taskRepository.findById(id);
-        Task task = new Task(null, null, null, null, null);
+        Task foundTask = taskRepository.getReferenceById(id);
 
-            if(foundTask.isEmpty() || foundTask.get().getId() == null) {
+            if(foundTask.getId() == null) {
                     throw new RuntimeException("Task with ID " + id + " not found");
-                } else {
-                    task.setId(foundTask.get().getId());
-                    task.setStatus(foundTask.get().getStatus());
-                    task.setDescription(foundTask.get().getDescription());
-                    task.setTitle(foundTask.get().getTitle());
-                    task.setDueDate(foundTask.get().getDueDate());
                 }
-        return task;
+        return foundTask;
     }
 }

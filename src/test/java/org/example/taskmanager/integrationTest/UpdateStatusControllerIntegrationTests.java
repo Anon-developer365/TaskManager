@@ -2,18 +2,20 @@ package org.example.taskmanager.integrationTest;
 
 import org.example.taskmanager.controllers.UpdateStatusController;
 import org.example.taskmanager.controllers.UpdateStatusValidation;
+import org.example.taskmanager.pojo.Task;
 import org.example.taskmanager.service.TaskRepository;
 import org.example.taskmanager.service.UpdateStatus;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.http.ResponseEntity;
 
-import java.sql.*;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
+@DataJpaTest
 public class UpdateStatusControllerIntegrationTests {
 
-    private TaskRepository taskRepository;
+    private final TaskRepository taskRepository;
 
     private UpdateStatusController updateStatusController;
 
@@ -21,47 +23,25 @@ public class UpdateStatusControllerIntegrationTests {
 
     private UpdateStatusValidation updateStatusValidation;
 
+    @Autowired
+    public UpdateStatusControllerIntegrationTests(TaskRepository taskRepository) {
+        this.taskRepository = taskRepository;
+    }
+
     @Test
-    void checkAStatusIsUpdateWhenFoundInTheDatabase() throws SQLException {
+    void checkAStatusIsUpdateWhenFoundInTheDatabase() {
         updateStatus = new UpdateStatus(taskRepository);
         updateStatusValidation = new UpdateStatusValidation();
         updateStatusController = new UpdateStatusController(updateStatus, updateStatusValidation);
-        UUID uuid = UUID.randomUUID();
-        String caseTitle = "Case Title";
-        String description = "Case Description";
-        String status = "Original status";
-        String dueDate = "05-05-2025 17:00";
 
-        final String DB_URL = "jdbc:h2:file:database:/Taskmanager";
-        Connection conn;
-        conn = DriverManager.getConnection(DB_URL);
+        String dueDate = "20-05-2025 09:00:00";
+        Task task = new Task("1", "develop database", "create a database", "open status", dueDate);
+        String expectedOutput = "Status updated to working";
+        taskRepository.save(task);
+        ResponseEntity<String> actualOutput = updateStatusController.updateStatus("1", "working");
+        Task updatedTask = taskRepository.getReferenceById("1");
+        assertEquals(expectedOutput, actualOutput.getBody());
+        assertEquals("working", updatedTask.getStatus());
 
-        PreparedStatement pstmt = conn.prepareStatement("INSERT INTO Taskmanager(Id, Title, description, status, dueDate)" + "VALUES(?,?,?,?,?)");
-        pstmt.setString(1, uuid.toString());
-        pstmt.setString(2, caseTitle);
-        pstmt.setString(3, description);
-        pstmt.setString(4, status);
-        pstmt.setString(5, dueDate);
-
-        pstmt.executeUpdate();
-
-        String changedStatus = "This is a new status";
-        updateStatusController.updateStatus(uuid.toString(), changedStatus);
-
-        conn = DriverManager.getConnection(DB_URL);
-        Statement stmt = conn.createStatement();
-        String sql = "SELECT * FROM taskmanager";
-        ResultSet rs = stmt.executeQuery(sql);
-        List<String> results = new ArrayList<>();
-
-        while(rs.next()) {
-            results.add(rs.getString("id"));
-            results.add(rs.getString("title"));
-            results.add(rs.getString("status"));
-            results.add(rs.getString("dueDate"));
-            results.add(rs.getString("description"));
-        }
-
-        assert results.contains(changedStatus);
     }
 }
