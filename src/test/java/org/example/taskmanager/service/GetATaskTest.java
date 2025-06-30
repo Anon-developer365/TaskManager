@@ -1,5 +1,6 @@
 package org.example.taskmanager.service;
 
+import jakarta.persistence.EntityNotFoundException;
 import org.example.taskmanager.pojo.Task;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -27,7 +28,7 @@ public class GetATaskTest {
 
         String dueDate = "20-05-2025 09:00:00";
         Task task = new Task("1", "develop database", "create a database", "open status", dueDate);
-        Mockito.when(taskRepository.getReferenceById("1")).thenReturn(task);
+        Mockito.when(taskRepository.findById("1")).thenReturn(Optional.of(task));
         Task actualTask = getATask.getATask("1");
         assertEquals("1", actualTask.getId());
         assertEquals("develop database", actualTask.getTitle());
@@ -37,7 +38,7 @@ public class GetATaskTest {
     void checkIfATaskIsRequestedAndDoesNotExistsAnErrorIsThrown() {
 
         getATask = new GetATask(taskRepository);
-        Mockito.when(taskRepository.getReferenceById("1")).thenReturn(null);
+        Mockito.when(taskRepository.findById("1")).thenThrow(EntityNotFoundException.class);
         assertThrows(RuntimeException.class, () -> getATask.getATask("1"));
     }
 }

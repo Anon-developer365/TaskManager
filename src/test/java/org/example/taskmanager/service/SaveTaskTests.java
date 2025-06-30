@@ -2,6 +2,9 @@ package org.example.taskmanager.service;
 
 import org.example.taskmanager.pojo.Task;
 import org.junit.jupiter.api.Test;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.Commit;
@@ -11,49 +14,40 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
 @SpringBootTest
 public class SaveTaskTests {
 
-    @Autowired
+    @Mock
+    private TaskRepository taskRepository;
+
+    @InjectMocks
     private SaveTask saveTask;
+
+    public SaveTaskTests() {
+    }
 
 
     @Test
-    @Commit
     void testDataIsSavedInTheDatabase() {
-        UUID uuid = UUID.randomUUID();
+        saveTask = new SaveTask(taskRepository);
         String dueDate = "20-05-2025 09:00:00";
-        Task task = new Task("2", "develop database", "create a database", "open status", dueDate);
-        String result = saveTask.saveData(task);
-        System.out.println(result);
-        assert result.equals("2");
+        Task task = new Task("1", "develop database", "create a database", "open status", dueDate);
+        Mockito.when(taskRepository.save(task)).thenReturn(task);
+        String actualOutput = saveTask.saveData(task);
+        assertEquals("1", actualOutput);
     }
 
     @Test
-    void checkTheDataBaseIsUsedToSaveTheData() throws SQLException {
-
-        UUID uuid = UUID.randomUUID();
-        String dueDate = "20-05-2025 09:00";
-
-        Task task = new Task(uuid.toString(), "develop database", "", "open status", dueDate);
-        String result = saveTask.saveData(task);
-        assert result.equals(uuid.toString());
-
-        final String DB_URL = "jdbc:h2:file:database:/Taskmanager";
-        Connection conn;
-        Statement stmt;
-        conn = DriverManager.getConnection(DB_URL);
-        stmt = conn.createStatement();
-        String sql = "SELECT * FROM Taskmanager";
-        ResultSet rs = stmt.executeQuery(sql);
-        List<String> id = new ArrayList<>();
-
-        while(rs.next()) {
-            id.add(rs.getString("id"));
-        }
-        assert id.contains(uuid.toString());
-        stmt.close();
-        conn.close();
+    void checkIfTheTaskIdIsReturnedAsNullAnErrorIsThrown() {
+        saveTask = new SaveTask(taskRepository);
+        String dueDate = "20-05-2025 09:00:00";
+        Task task = new Task(null, null, null, null, null);
+        Task inputTask = new Task("1", "develop database", "create a database", "open status", dueDate);
+        Mockito.when(taskRepository.save(inputTask)).thenReturn(task);
+        assertThrows(RuntimeException.class, () -> saveTask.saveData(inputTask));
     }
 
 }

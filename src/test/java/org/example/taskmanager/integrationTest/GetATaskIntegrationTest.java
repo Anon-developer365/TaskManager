@@ -66,7 +66,7 @@ public class GetATaskIntegrationTest {
     }
 
     @Test
-    void IfThereAreTasksButTheIdDoesNotatchAnErrorIsReturned() {
+    void IfThereAreTasksButTheIdDoesNotMatchAnErrorIsReturned() {
         getATask = new GetATask(taskRepository);
         retrieveTaskController = new RetrieveTaskController(getATask);
 

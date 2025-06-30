@@ -47,7 +47,7 @@ public class UpdateStatusControllerTests {
         UUID uuid = UUID.randomUUID();
 
         String status = "This is a new status";
-        String expectedResult = "status updated to " + status;
+        String expectedResult = "Status updated to " + status;
         updateStatusController = new UpdateStatusController(updateStatus, updateStatusValidation);
         doNothing().when(updateStatusValidation).verifyStatus(uuid.toString(), status);
         when(updateStatus.updateStatus(uuid.toString(), status)).thenReturn(true);

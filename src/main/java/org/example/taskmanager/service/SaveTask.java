@@ -24,8 +24,11 @@ public class SaveTask {
      */
 
     public String saveData(Task task) {
-        taskRepository.save(task);
-        return task.getId();
+        Task savedTask = taskRepository.save(task);
+        if (savedTask.getId() == null) {
+            throw new RuntimeException("An error occurred saving the task");
+        }
+        return savedTask.getId();
     }
 }
 
