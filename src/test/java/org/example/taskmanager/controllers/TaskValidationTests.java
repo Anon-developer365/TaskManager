@@ -58,7 +58,7 @@ public class TaskValidationTests {
 
 
     @Test
-    void whenDescriptionDoesntMatchTheFormatAnErrorIsReturned() {
+    void whenDescriptionDoesNotMatchTheFormatAnErrorIsReturned() {
         title = "Task title";
         description = "||";
         status = "open status";
@@ -108,7 +108,7 @@ public class TaskValidationTests {
     }
 
     @Test
-    void whenStatusDoesntMatchTheCorrectFormatAnErrorIsReturned() {
+    void whenStatusDoesNotMatchTheCorrectFormatAnErrorIsReturned() {
         title = "Task 23";
         description = "Awaiting 3 new parts for hard drive";
         status = "||";

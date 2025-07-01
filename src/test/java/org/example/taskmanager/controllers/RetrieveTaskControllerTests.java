@@ -24,15 +24,17 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 public class RetrieveTaskControllerTests {
     @Autowired
-    private WebApplicationContext context;
-
-    private MockMvc mvc;
+    private final WebApplicationContext context;
 
     @Mock
     private GetATask getATask;
 
     @InjectMocks
     private RetrieveTaskController retrieveTaskController;
+
+    public RetrieveTaskControllerTests(WebApplicationContext context) {
+        this.context = context;
+    }
 
 
     @Test
@@ -50,7 +52,7 @@ public class RetrieveTaskControllerTests {
 
     @Test
     void whenAPostRequestIsSentAnErrorIsReceived() throws Exception {
-        mvc = MockMvcBuilders
+        MockMvc mvc = MockMvcBuilders
                 .webAppContextSetup(context)
                 .build();
         mvc.perform(post("/getTask")).andExpect(status().is4xxClientError());

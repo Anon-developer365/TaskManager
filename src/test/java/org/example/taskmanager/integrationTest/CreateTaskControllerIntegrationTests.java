@@ -2,6 +2,7 @@ package org.example.taskmanager.integrationTest;
 
 import org.example.taskmanager.controllers.CreateTaskController;
 import org.example.taskmanager.controllers.TaskValidation;
+import org.example.taskmanager.exceptions.TaskValidationErrorException;
 import org.example.taskmanager.pojo.Task;
 import org.example.taskmanager.service.CreateTask;
 import org.example.taskmanager.service.SaveTask;
@@ -12,6 +13,7 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.http.ResponseEntity;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @DataJpaTest
 public class CreateTaskControllerIntegrationTests {
@@ -44,6 +46,14 @@ public class CreateTaskControllerIntegrationTests {
         Task task = taskRepository.getReferenceById(splitOutput[0]);
         assertEquals("case title", task.getTitle());
 
+    }
 
+    @Test
+    void whenThereIsAValidationErrorThisIsReturned() {
+        createTask = new CreateTask();
+        taskValidation = new TaskValidation();
+        saveTask = new SaveTask(taskRepository);
+        createTaskController = new CreateTaskController(createTask, saveTask, taskValidation);
+        assertThrows(TaskValidationErrorException.class, () -> createTaskController.createTask("case title", "", "open status", "2025"));
     }
 }

@@ -20,7 +20,7 @@ public class UpdateStatus {
     }
 
     /**
-     * Method to update the task with the matching Id number to the new status.
+     * Method to update the task with the matching ID number to the new status.
      *
      * @param id id of the task to be updated.
      * @param status new status of the task.

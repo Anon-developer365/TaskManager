@@ -1,7 +1,6 @@
 package org.example.taskmanager.controllers;
 
 import org.example.taskmanager.exceptions.TaskValidationErrorException;
-import org.example.taskmanager.pojo.Task;
 import org.example.taskmanager.service.UpdateStatus;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -28,8 +27,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class UpdateStatusControllerTests {
     @Autowired
     private final WebApplicationContext context;
-
-    private MockMvc mvc;
 
     @Mock
     UpdateStatus updateStatus;
@@ -63,7 +60,7 @@ public class UpdateStatusControllerTests {
 
     @Test
     void whenAGetRequestIsSentAnErrorIsReceived() throws Exception {
-        mvc = MockMvcBuilders
+        MockMvc mvc = MockMvcBuilders
                 .webAppContextSetup(context)
                 .build();
         mvc.perform(get("/updateStatus")).andExpect(status().is4xxClientError());
@@ -74,7 +71,6 @@ public class UpdateStatusControllerTests {
         UUID uuid = UUID.randomUUID();
 
         String status = "This is a new status";
-        String expectedResult = "Status updated to " + status;
         updateStatusController = new UpdateStatusController(updateStatus, updateStatusValidation);
 
         String expectedError = "validation error";

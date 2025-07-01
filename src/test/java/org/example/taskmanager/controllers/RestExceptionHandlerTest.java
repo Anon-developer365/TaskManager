@@ -11,12 +11,10 @@ import java.util.Objects;
 
 public class RestExceptionHandlerTest extends ResponseEntityExceptionHandler {
 
-    private RestExceptionHandler restExceptionHandler;
-
     @Test
     void testTaskValidationErrorException() {
         TaskValidationErrorException emptyTaskException = new TaskValidationErrorException("Task is empty");
-        restExceptionHandler = new RestExceptionHandler();
+        RestExceptionHandler restExceptionHandler = new RestExceptionHandler();
         ResponseEntity<ErrorResponse> responseEntity = restExceptionHandler.handleEmptyTaskException(emptyTaskException);
         assert(Objects.requireNonNull(responseEntity.getBody()).getErrors().get(0).equals(emptyTaskException.getMessage()));
 

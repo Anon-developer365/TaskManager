@@ -1,11 +1,9 @@
 package org.example.taskmanager.service;
 
-import jakarta.persistence.EntityNotFoundException;
 import org.example.taskmanager.pojo.Task;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.swing.text.html.Option;
 import java.util.Optional;
 
 
@@ -38,17 +36,18 @@ public class GetATask {
     public Task getATask(String id) {
         Task transformedTask = new Task(null, null, null, null, null);
         Optional<Task> foundTask;
-        try {
-            foundTask = taskRepository.findById(id);
-        } catch (EntityNotFoundException exception) {
+
+        foundTask = taskRepository.findById(id);
+
+        if(foundTask.isPresent()) {
+            transformedTask.setId(foundTask.get().getId());
+            transformedTask.setTitle(foundTask.get().getTitle());
+            transformedTask.setStatus(foundTask.get().getStatus());
+            transformedTask.setDescription(foundTask.get().getDescription());
+            transformedTask.setDueDate(foundTask.get().getDueDate());
+        } else {
             throw new RuntimeException("Task with ID " + id + " not found");
         }
-        transformedTask.setId(foundTask.get().getId());
-        transformedTask.setTitle(foundTask.get().getTitle());
-        transformedTask.setStatus(foundTask.get().getStatus());
-        transformedTask.setDescription(foundTask.get().getDescription());
-        transformedTask.setDueDate(foundTask.get().getDueDate());
-
         return transformedTask;
 
     }

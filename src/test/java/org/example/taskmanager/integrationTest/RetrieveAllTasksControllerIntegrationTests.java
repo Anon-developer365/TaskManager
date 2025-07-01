@@ -10,7 +10,6 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -32,7 +31,7 @@ public class RetrieveAllTasksControllerIntegrationTests {
     }
 
     @Test
-    void checkTheServiceRunsSuccessfullyAndReturnsAllItemsInTheDatabase() throws SQLException {
+    void checkTheServiceRunsSuccessfullyAndReturnsAllItemsInTheDatabase() {
         retrieveTasks = new RetrieveTasks(taskRepository);
         retrieveAllTasksController = new RetrieveAllTasksController(retrieveTasks);
 
@@ -46,7 +45,7 @@ public class RetrieveAllTasksControllerIntegrationTests {
     }
 
     @Test
-    void checkTheServiceReturnsAnEmptyListIfTheDatabaseIsEmpty() throws SQLException {
+    void checkTheServiceReturnsAnEmptyListIfTheDatabaseIsEmpty() {
         retrieveTasks = new RetrieveTasks(taskRepository);
         retrieveAllTasksController = new RetrieveAllTasksController(retrieveTasks);
         List<Task> expected = new ArrayList<>();

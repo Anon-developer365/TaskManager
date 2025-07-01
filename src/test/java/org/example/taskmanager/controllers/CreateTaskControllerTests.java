@@ -15,8 +15,6 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -43,25 +41,27 @@ public class CreateTaskControllerTests {
     private CreateTaskController createTaskController;
 
     @Autowired
-    private WebApplicationContext context;
+    private final WebApplicationContext context;
 
-    private MockMvc mvc;
+    public CreateTaskControllerTests(WebApplicationContext context) {
+        this.context = context;
+    }
 
 
     @Test
     void aSuccessMessageIsReceivedWhenTheEndPointIsHit() {
         UUID uuid = UUID.randomUUID();
-        String casetitle = "case title";
+        String caseTitle = "case title";
         String description = "description";
         String status = "open status";
         String dueDate = "05-05-2025 17:00";
 
-        Task task = new Task(uuid.toString(), casetitle, description, status, dueDate);
+        Task task = new Task(uuid.toString(), caseTitle, description, status, dueDate);
         createTaskController = new CreateTaskController(createTask, saveTask, taskValidation);
-        doNothing().when(taskValidation).verifyTask(casetitle, description, status, dueDate);
-        when(createTask.createNewTask(casetitle, description, status, dueDate)).thenReturn(task);
+        doNothing().when(taskValidation).verifyTask(caseTitle, description, status, dueDate);
+        when(createTask.createNewTask(caseTitle, description, status, dueDate)).thenReturn(task);
         when(saveTask.saveData(task)).thenReturn(uuid.toString());
-        ResponseEntity<String> output = createTaskController.createTask(casetitle, description, status, dueDate);
+        ResponseEntity<String> output = createTaskController.createTask(caseTitle, description, status, dueDate);
         assert output != null;
         assert Objects.equals(output.getBody(), uuid + " Task Created");
 
@@ -69,7 +69,7 @@ public class CreateTaskControllerTests {
 
     @Test
     void whenAGetRequestIsSentAnErrorIsReceived() throws Exception {
-        mvc = MockMvcBuilders
+        MockMvc mvc = MockMvcBuilders
                 .webAppContextSetup(context)
                 .build();
         mvc.perform(get("/createTask")).andExpect(status().is4xxClientError());
@@ -78,21 +78,21 @@ public class CreateTaskControllerTests {
     @Test
     void whenThereIsAValidationErrorThisIsReturnedToTheConsumer() {
         UUID uuid = UUID.randomUUID();
-        String casetitle = "case title";
+        String caseTitle = "case title";
         String description = "description";
         String status = "open status";
         String dueDate = "05-05-2025 17:00";
 
-        Task task = new Task(uuid.toString(), casetitle, description, status, dueDate);
+        Task task = new Task(uuid.toString(), caseTitle, description, status, dueDate);
         createTaskController = new CreateTaskController(createTask, saveTask, taskValidation);
-        when(createTask.createNewTask(casetitle, description, status, dueDate)).thenReturn(task);
+        when(createTask.createNewTask(caseTitle, description, status, dueDate)).thenReturn(task);
         when(saveTask.saveData(task)).thenReturn(uuid.toString());
 
         String expectedError = "validation error";
 
         TaskValidationErrorException thrown = assertThrows(TaskValidationErrorException.class, () -> {
-            doThrow(new TaskValidationErrorException("validation error")).when(taskValidation).verifyTask(casetitle, description, status, dueDate);
-            createTaskController.createTask(casetitle,description,status,dueDate);
+            doThrow(new TaskValidationErrorException("validation error")).when(taskValidation).verifyTask(caseTitle, description, status, dueDate);
+            createTaskController.createTask(caseTitle,description,status,dueDate);
         });
         assertEquals(expectedError, thrown.getMessage());
 

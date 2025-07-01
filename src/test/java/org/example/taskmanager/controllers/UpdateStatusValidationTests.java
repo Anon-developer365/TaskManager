@@ -29,7 +29,7 @@ public class UpdateStatusValidationTests {
     }
 
     @Test
-    void whenStatusDoesntMatchTheCorrectFormatAnErrorIsReturned() {
+    void whenStatusDoesNotMatchTheCorrectFormatAnErrorIsReturned() {
         status = "||";
         id = "1";
         List<String> expectedErrors = new ArrayList<>();

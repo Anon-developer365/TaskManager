@@ -25,7 +25,7 @@ public class StatusValidationTests {
     }
 
     @Test
-    void whenStatusDoesntMatchTheCorrectFormatAnErrorIsReturned() {
+    void whenStatusDoesNotMatchTheCorrectFormatAnErrorIsReturned() {
         status = "||";
         List<String> expectedErrors = new ArrayList<>();
         expectedErrors.add("Task status does not match the pattern a-zA-Z0-9");
