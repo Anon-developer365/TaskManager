@@ -2,7 +2,7 @@ package org.example.taskmanager.controllers;
 
 import io.micrometer.common.util.StringUtils;
 import lombok.ToString;
-import org.example.taskmanager.exceptions.EmptyTaskException;
+import org.example.taskmanager.exceptions.TaskValidationErrorException;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -44,7 +44,7 @@ public class TaskValidation {
         allErrors.addAll(statusValidation.statusCheck(status));
         allErrors.addAll(dueDateCheck(dueDate));
         if (!allErrors.isEmpty()) {
-            throw new EmptyTaskException(allErrors.toString());
+            throw new TaskValidationErrorException(allErrors.toString());
         }
     }
 
@@ -62,7 +62,7 @@ public class TaskValidation {
             final Pattern pattern = Pattern.compile(TITLE_REGEX);
             final Matcher matcher = pattern.matcher(title);
             if (!matcher.find()) {
-                errors.add("Task title doesnt match pattern a-zA-Z0-9");
+                errors.add("Task title does not match the pattern a-zA-Z0-9");
             }
 
         }
@@ -81,7 +81,7 @@ public class TaskValidation {
             final Pattern pattern = Pattern.compile(DESCRIPTION_REGEX);
             final Matcher matcher = pattern.matcher(description);
             if (!matcher.find()) {
-                errors.add("Task description doesnt match pattern a-zA-Z0-9");
+                errors.add("Task description does not match the pattern a-zA-Z0-9");
             }
 
         }
@@ -102,7 +102,7 @@ public class TaskValidation {
             final Pattern pattern = Pattern.compile(DUE_DATE_REGEX);
             final Matcher matcher = pattern.matcher(dueDate);
             if (!matcher.find()) {
-                errors.add("Task due date doesnt match the pattern yyyy-dd-mm hh:mm:ss");
+                errors.add("Task due date does not match the pattern yyyy-dd-mm hh:mm:ss");
             }
 
         }

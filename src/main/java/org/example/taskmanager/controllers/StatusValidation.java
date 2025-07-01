@@ -30,7 +30,7 @@ public class StatusValidation {
             final Pattern pattern = Pattern.compile(STATUS_REGEX);
             final Matcher matcher = pattern.matcher(status);
             if (!matcher.find()) {
-                errors.add("Task status doesnt match pattern a-zA-Z0-9");
+                errors.add("Task status does not match the pattern a-zA-Z0-9");
             }
 
         }

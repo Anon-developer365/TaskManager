@@ -1,6 +1,6 @@
 package org.example.taskmanager.controllers;
 
-import org.example.taskmanager.exceptions.EmptyTaskException;
+import org.example.taskmanager.exceptions.TaskValidationErrorException;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
@@ -23,7 +23,7 @@ public class UpdateStatusValidationTests {
         List<String> expectedErrors = new ArrayList<>();
         expectedErrors.add("Task status is empty");
 
-        EmptyTaskException thrown = assertThrows(EmptyTaskException.class, () -> validation.verifyStatus(id, status));
+        TaskValidationErrorException thrown = assertThrows(TaskValidationErrorException.class, () -> validation.verifyStatus(id, status));
         assertEquals(expectedErrors.toString(), thrown.getMessage());
 
     }
@@ -33,9 +33,9 @@ public class UpdateStatusValidationTests {
         status = "||";
         id = "1";
         List<String> expectedErrors = new ArrayList<>();
-        expectedErrors.add("Task status doesnt match pattern a-zA-Z0-9");
+        expectedErrors.add("Task status does not match the pattern a-zA-Z0-9");
 
-        EmptyTaskException thrown = assertThrows(EmptyTaskException.class, () -> validation.verifyStatus(id, status));
+        TaskValidationErrorException thrown = assertThrows(TaskValidationErrorException.class, () -> validation.verifyStatus(id, status));
         assertEquals(expectedErrors.toString(), thrown.getMessage());
 
     }

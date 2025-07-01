@@ -45,6 +45,7 @@ public class UpdateStatusController {
      */
     @RequestMapping(value = "/updateStatus", method = RequestMethod.PUT)
     public ResponseEntity<String> updateStatus(String Id, String status) {
+        updateStatusValidation.verifyStatus(Id, status);
         updateStatus.updateStatus(Id, status);
         return ok("Status updated to " + status);
     }

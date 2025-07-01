@@ -1,5 +1,7 @@
 package org.example.taskmanager.controllers;
 
+import org.example.taskmanager.exceptions.TaskValidationErrorException;
+import org.example.taskmanager.pojo.Task;
 import org.example.taskmanager.service.UpdateStatus;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -15,8 +17,9 @@ import org.springframework.web.context.WebApplicationContext;
 import java.util.Objects;
 import java.util.UUID;
 
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.when;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -64,5 +67,23 @@ public class UpdateStatusControllerTests {
                 .webAppContextSetup(context)
                 .build();
         mvc.perform(get("/updateStatus")).andExpect(status().is4xxClientError());
+    }
+
+    @Test
+    void anExceptionIsThrownWhenThereIsAValidationError() {
+        UUID uuid = UUID.randomUUID();
+
+        String status = "This is a new status";
+        String expectedResult = "Status updated to " + status;
+        updateStatusController = new UpdateStatusController(updateStatus, updateStatusValidation);
+
+        String expectedError = "validation error";
+
+        TaskValidationErrorException thrown = assertThrows(TaskValidationErrorException.class, () -> {
+            doThrow(new TaskValidationErrorException("validation error")).when(updateStatusValidation).verifyStatus(uuid.toString(), status);
+            updateStatusController.updateStatus(uuid.toString(), status);
+        });
+        assertEquals(expectedError, thrown.getMessage());
+
     }
 }

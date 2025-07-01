@@ -4,12 +4,12 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class EmptyTaskExceptionTest {
+public class TaskValidationErrorExceptionTest {
 
     @Test
     void testCustomerVerificationNoRetryExceptionMessage() {
         String errorMessage = "This is an error message";
-        EmptyTaskException emptyTaskException = new EmptyTaskException(
+        TaskValidationErrorException emptyTaskException = new TaskValidationErrorException(
                 errorMessage);
         assertEquals(errorMessage, emptyTaskException.getMessage());
     }

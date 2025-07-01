@@ -2,7 +2,7 @@ package org.example.taskmanager.controllers;
 
 import io.micrometer.common.util.StringUtils;
 import lombok.ToString;
-import org.example.taskmanager.exceptions.EmptyTaskException;
+import org.example.taskmanager.exceptions.TaskValidationErrorException;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -32,7 +32,7 @@ public class UpdateStatusValidation {
         allErrors.addAll(statusValidation.statusCheck(status));
         allErrors.addAll(idCheck(id));
         if (!allErrors.isEmpty()) {
-            throw new EmptyTaskException(allErrors.toString());
+            throw new TaskValidationErrorException(allErrors.toString());
         }
     }
 

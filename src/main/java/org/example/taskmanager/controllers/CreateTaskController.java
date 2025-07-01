@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 import static org.springframework.http.ResponseEntity.ok;
 
 /**
- * Rest controller for the create task end point.
+ * Rest controller for create task end point to create and save a new task in the database.
  */
 @RestController
 public class CreateTaskController {

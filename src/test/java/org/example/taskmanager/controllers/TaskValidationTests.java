@@ -1,6 +1,6 @@
 package org.example.taskmanager.controllers;
 
-import org.example.taskmanager.exceptions.EmptyTaskException;
+import org.example.taskmanager.exceptions.TaskValidationErrorException;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
@@ -26,7 +26,7 @@ public class TaskValidationTests {
         List<String> expectedErrors = new ArrayList<>();
         expectedErrors.add("Task title is empty");
 
-        EmptyTaskException thrown = assertThrows(EmptyTaskException.class, () -> validation.verifyTask(title, description, status, dueDate));
+        TaskValidationErrorException thrown = assertThrows(TaskValidationErrorException.class, () -> validation.verifyTask(title, description, status, dueDate));
         assertEquals(expectedErrors.toString(), thrown.getMessage());
 
     }
@@ -38,9 +38,9 @@ public class TaskValidationTests {
         status = "open status";
         dueDate = "2025-05-05 17:00";
         List<String> expectedErrors = new ArrayList<>();
-        expectedErrors.add("Task title doesnt match pattern a-zA-Z0-9");
+        expectedErrors.add("Task title does not match the pattern a-zA-Z0-9");
 
-        EmptyTaskException thrown = assertThrows(EmptyTaskException.class, () -> validation.verifyTask(title, description, status, dueDate));
+        TaskValidationErrorException thrown = assertThrows(TaskValidationErrorException.class, () -> validation.verifyTask(title, description, status, dueDate));
         assertEquals(expectedErrors.toString(), thrown.getMessage());
 
     }
@@ -64,9 +64,9 @@ public class TaskValidationTests {
         status = "open status";
         dueDate = "2025-05-05 17:00";
         List<String> expectedErrors = new ArrayList<>();
-        expectedErrors.add("Task description doesnt match pattern a-zA-Z0-9");
+        expectedErrors.add("Task description does not match the pattern a-zA-Z0-9");
 
-        EmptyTaskException thrown = assertThrows(EmptyTaskException.class, () -> validation.verifyTask(title, description, status, dueDate));
+        TaskValidationErrorException thrown = assertThrows(TaskValidationErrorException.class, () -> validation.verifyTask(title, description, status, dueDate));
         assertEquals(expectedErrors.toString(), thrown.getMessage());
 
     }
@@ -102,7 +102,7 @@ public class TaskValidationTests {
         List<String> expectedErrors = new ArrayList<>();
         expectedErrors.add("Task status is empty");
 
-        EmptyTaskException thrown = assertThrows(EmptyTaskException.class, () -> validation.verifyTask(title, description, status, dueDate));
+        TaskValidationErrorException thrown = assertThrows(TaskValidationErrorException.class, () -> validation.verifyTask(title, description, status, dueDate));
         assertEquals(expectedErrors.toString(), thrown.getMessage());
 
     }
@@ -114,9 +114,9 @@ public class TaskValidationTests {
         status = "||";
         dueDate = "2025-05-05 17:00";
         List<String> expectedErrors = new ArrayList<>();
-        expectedErrors.add("Task status doesnt match pattern a-zA-Z0-9");
+        expectedErrors.add("Task status does not match the pattern a-zA-Z0-9");
 
-        EmptyTaskException thrown = assertThrows(EmptyTaskException.class, () -> validation.verifyTask(title, description, status, dueDate));
+        TaskValidationErrorException thrown = assertThrows(TaskValidationErrorException.class, () -> validation.verifyTask(title, description, status, dueDate));
         assertEquals(expectedErrors.toString(), thrown.getMessage());
 
     }
@@ -130,7 +130,7 @@ public class TaskValidationTests {
         List<String> expectedErrors = new ArrayList<>();
         expectedErrors.add("Task due date is empty");
 
-        EmptyTaskException thrown = assertThrows(EmptyTaskException.class, () -> validation.verifyTask(title, description, status, dueDate));
+        TaskValidationErrorException thrown = assertThrows(TaskValidationErrorException.class, () -> validation.verifyTask(title, description, status, dueDate));
         assertEquals(expectedErrors.toString(), thrown.getMessage());
 
     }
@@ -142,9 +142,9 @@ public class TaskValidationTests {
         status = "open status";
         dueDate = "2025-05-05";
         List<String> expectedErrors = new ArrayList<>();
-        expectedErrors.add("Task due date doesnt match the pattern yyyy-dd-mm hh:mm:ss");
+        expectedErrors.add("Task due date does not match the pattern yyyy-dd-mm hh:mm:ss");
 
-        EmptyTaskException thrown = assertThrows(EmptyTaskException.class, () -> validation.verifyTask(title, description, status, dueDate));
+        TaskValidationErrorException thrown = assertThrows(TaskValidationErrorException.class, () -> validation.verifyTask(title, description, status, dueDate));
         assertEquals(expectedErrors.toString(), thrown.getMessage());
 
     }
@@ -157,10 +157,10 @@ public class TaskValidationTests {
         dueDate = "2025-05-05";
         List<String> expectedErrors = new ArrayList<>();
         expectedErrors.add("Task title is empty");
-        expectedErrors.add("Task description doesnt match pattern a-zA-Z0-9");
-        expectedErrors.add("Task due date doesnt match the pattern yyyy-dd-mm hh:mm:ss");
+        expectedErrors.add("Task description does not match the pattern a-zA-Z0-9");
+        expectedErrors.add("Task due date does not match the pattern yyyy-dd-mm hh:mm:ss");
 
-        EmptyTaskException thrown = assertThrows(EmptyTaskException.class, () -> validation.verifyTask(title, description, status, dueDate));
+        TaskValidationErrorException thrown = assertThrows( TaskValidationErrorException.class, () -> validation.verifyTask(title, description, status, dueDate));
         assertEquals(expectedErrors.toString(), thrown.getMessage());
 
     }

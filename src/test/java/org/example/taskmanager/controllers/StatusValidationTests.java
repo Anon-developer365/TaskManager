@@ -28,7 +28,7 @@ public class StatusValidationTests {
     void whenStatusDoesntMatchTheCorrectFormatAnErrorIsReturned() {
         status = "||";
         List<String> expectedErrors = new ArrayList<>();
-        expectedErrors.add("Task status doesnt match pattern a-zA-Z0-9");
+        expectedErrors.add("Task status does not match the pattern a-zA-Z0-9");
 
         List<String> actualOutput = validation.statusCheck(status);
         assertEquals(expectedErrors.toString(), actualOutput.toString());

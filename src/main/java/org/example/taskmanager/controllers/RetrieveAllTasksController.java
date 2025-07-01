@@ -8,7 +8,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,9 +25,9 @@ public class RetrieveAllTasksController {
     private final RetrieveTasks retrieveTasks;
 
     /**
-     * Autowire constructor for retrieve all tasks controller.
+     * Autowired constructor for retrieve all tasks controller.
      *
-     * @param retrieveTasks retreive tasks service to be used in the controller.
+     * @param retrieveTasks retrieve tasks service to be used in the controller.
      */
     @Autowired
     public RetrieveAllTasksController(RetrieveTasks retrieveTasks) {
@@ -39,10 +38,9 @@ public class RetrieveAllTasksController {
      * Method to retrieve all tasks in the database
      *
      * @return a list of tasks within the database.
-     * @throws SQLException
      */
     @RequestMapping(value = "/getAllTasks", method = RequestMethod.GET)
-    public ResponseEntity<List<Task>> getAllTasks() throws SQLException {
+    public ResponseEntity<List<Task>> getAllTasks() {
         List<Task> tasks = new ArrayList<>(retrieveTasks.getAllTasks());
         return ok(tasks);
     }
