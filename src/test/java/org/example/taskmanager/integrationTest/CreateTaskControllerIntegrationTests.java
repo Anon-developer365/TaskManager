@@ -1,7 +1,8 @@
 package org.example.taskmanager.integrationTest;
 
 import org.example.taskmanager.controllers.CreateTaskController;
-import org.example.taskmanager.controllers.TaskValidation;
+import org.example.taskmanager.validation.StatusValidation;
+import org.example.taskmanager.validation.TaskValidation;
 import org.example.taskmanager.exceptions.TaskValidationErrorException;
 import org.example.taskmanager.pojo.Task;
 import org.example.taskmanager.service.CreateTask;
@@ -10,6 +11,7 @@ import org.example.taskmanager.service.TaskRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.ResponseEntity;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -17,6 +19,8 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @DataJpaTest
 public class CreateTaskControllerIntegrationTests {
+
+    private StatusValidation statusValidation;
 
     private CreateTaskController createTaskController;
 
@@ -31,12 +35,13 @@ public class CreateTaskControllerIntegrationTests {
     @Autowired
     public CreateTaskControllerIntegrationTests(TaskRepository taskRepository) {
         this.taskRepository = taskRepository;
+        this.statusValidation = new StatusValidation();
     }
 
     @Test
     void aSuccessMessageIsReceivedWhenTheEndPointIsHit() {
         createTask = new CreateTask();
-        taskValidation = new TaskValidation();
+        taskValidation = new TaskValidation(statusValidation);
         saveTask = new SaveTask(taskRepository);
         createTaskController = new CreateTaskController(createTask, saveTask, taskValidation);
         ResponseEntity<String> output = createTaskController.createTask("case title", "", "open status", "2025-05-05 17:00");
@@ -51,7 +56,7 @@ public class CreateTaskControllerIntegrationTests {
     @Test
     void whenThereIsAValidationErrorThisIsReturned() {
         createTask = new CreateTask();
-        taskValidation = new TaskValidation();
+        taskValidation = new TaskValidation(statusValidation);
         saveTask = new SaveTask(taskRepository);
         createTaskController = new CreateTaskController(createTask, saveTask, taskValidation);
         assertThrows(TaskValidationErrorException.class, () -> createTaskController.createTask("case title", "", "open status", "2025"));

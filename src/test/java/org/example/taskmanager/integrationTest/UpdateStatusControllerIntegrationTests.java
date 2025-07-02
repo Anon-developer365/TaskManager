@@ -1,7 +1,8 @@
 package org.example.taskmanager.integrationTest;
 
+import org.example.taskmanager.validation.StatusValidation;
 import org.example.taskmanager.controllers.UpdateStatusController;
-import org.example.taskmanager.controllers.UpdateStatusValidation;
+import org.example.taskmanager.validation.UpdateStatusValidation;
 import org.example.taskmanager.pojo.Task;
 import org.example.taskmanager.service.TaskRepository;
 import org.example.taskmanager.service.UpdateStatus;
@@ -11,11 +12,14 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.http.ResponseEntity;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @DataJpaTest
 public class UpdateStatusControllerIntegrationTests {
 
     private final TaskRepository taskRepository;
+
+    private final StatusValidation statusValidation;
 
     private UpdateStatusController updateStatusController;
 
@@ -26,12 +30,13 @@ public class UpdateStatusControllerIntegrationTests {
     @Autowired
     public UpdateStatusControllerIntegrationTests(TaskRepository taskRepository) {
         this.taskRepository = taskRepository;
+        this.statusValidation = new StatusValidation();
     }
 
     @Test
-    void checkAStatusIsUpdateWhenFoundInTheDatabase() {
+    void checkAStatusIsUpdatedWhenFoundInTheDatabase() {
         updateStatus = new UpdateStatus(taskRepository);
-        updateStatusValidation = new UpdateStatusValidation();
+        updateStatusValidation = new UpdateStatusValidation(statusValidation);
         updateStatusController = new UpdateStatusController(updateStatus, updateStatusValidation);
 
         String dueDate = "20-05-2025 09:00:00";
@@ -43,5 +48,14 @@ public class UpdateStatusControllerIntegrationTests {
         assertEquals(expectedOutput, actualOutput.getBody());
         assertEquals("working", updatedTask.getStatus());
 
+    }
+
+    @Test
+    void checkAnErrorIsReturnedIfTheIdIsNotInTheDatabase() {
+        updateStatus = new UpdateStatus(taskRepository);
+        updateStatusValidation = new UpdateStatusValidation(statusValidation);
+        updateStatusController = new UpdateStatusController(updateStatus, updateStatusValidation);
+
+        assertThrows(RuntimeException.class, () -> updateStatusController.updateStatus("1", "working"));
     }
 }

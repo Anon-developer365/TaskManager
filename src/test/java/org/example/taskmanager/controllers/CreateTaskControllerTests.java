@@ -4,6 +4,7 @@ import org.example.taskmanager.exceptions.TaskValidationErrorException;
 import org.example.taskmanager.pojo.Task;
 import org.example.taskmanager.service.CreateTask;
 import org.example.taskmanager.service.SaveTask;
+import org.example.taskmanager.validation.TaskValidation;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -78,7 +79,7 @@ public class CreateTaskControllerTests {
     @Test
     void whenThereIsAValidationErrorThisIsReturnedToTheConsumer() {
         UUID uuid = UUID.randomUUID();
-        String caseTitle = "case title";
+        String caseTitle = "";
         String description = "description";
         String status = "open status";
         String dueDate = "05-05-2025 17:00";
@@ -88,12 +89,32 @@ public class CreateTaskControllerTests {
         when(createTask.createNewTask(caseTitle, description, status, dueDate)).thenReturn(task);
         when(saveTask.saveData(task)).thenReturn(uuid.toString());
 
-        String expectedError = "validation error";
+        String expectedError = "Task title is empty";
 
         TaskValidationErrorException thrown = assertThrows(TaskValidationErrorException.class, () -> {
-            doThrow(new TaskValidationErrorException("validation error")).when(taskValidation).verifyTask(caseTitle, description, status, dueDate);
+            doThrow(new TaskValidationErrorException("Task title is empty")).when(taskValidation).verifyTask(caseTitle, description, status, dueDate);
             createTaskController.createTask(caseTitle,description,status,dueDate);
         });
+        assertEquals(expectedError, thrown.getMessage());
+
+    }
+
+    @Test
+    void whenThereIsAnErrorSavingTheTaskThisIsReturnedToTheConsumer() {
+        UUID uuid = UUID.randomUUID();
+        String caseTitle = "title";
+        String description = "description";
+        String status = "open status";
+        String dueDate = "05-05-2025 17:00";
+
+        Task task = new Task(uuid.toString(), caseTitle, description, status, dueDate);
+        createTaskController = new CreateTaskController(createTask, saveTask, taskValidation);
+        when(createTask.createNewTask(caseTitle, description, status, dueDate)).thenReturn(task);
+        when(saveTask.saveData(task)).thenThrow(new RuntimeException("An error occurred saving the task"));
+
+        String expectedError = "An error occurred saving the task";
+
+        RuntimeException thrown = assertThrows(RuntimeException.class, () -> createTaskController.createTask(caseTitle,description,status,dueDate));
         assertEquals(expectedError, thrown.getMessage());
 
     }

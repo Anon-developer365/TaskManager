@@ -37,7 +37,7 @@ public class RetrieveTaskController {
      * @param Id of the task to be retrieved
      * @return the task to be returned.
      */
-    @RequestMapping(value = "/getTask", method = RequestMethod.GET)
+    @RequestMapping(value = "/Task", method = RequestMethod.GET)
     public ResponseEntity<Task> getTask(String Id) {
         Task task = getATask.getATask(Id);
         return ok(task);

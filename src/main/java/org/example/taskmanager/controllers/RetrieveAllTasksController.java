@@ -39,7 +39,7 @@ public class RetrieveAllTasksController {
      *
      * @return a list of tasks within the database.
      */
-    @RequestMapping(value = "/getAllTasks", method = RequestMethod.GET)
+    @RequestMapping(value = "/allTasks", method = RequestMethod.GET)
     public ResponseEntity<List<Task>> getAllTasks() {
         List<Task> tasks = new ArrayList<>(retrieveTasks.getAllTasks());
         return ok(tasks);

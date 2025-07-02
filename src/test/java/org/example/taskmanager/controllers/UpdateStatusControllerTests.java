@@ -2,6 +2,7 @@ package org.example.taskmanager.controllers;
 
 import org.example.taskmanager.exceptions.TaskValidationErrorException;
 import org.example.taskmanager.service.UpdateStatus;
+import org.example.taskmanager.validation.UpdateStatusValidation;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;

@@ -1,8 +1,10 @@
-package org.example.taskmanager.controllers;
+package org.example.taskmanager.validation;
 
 import io.micrometer.common.util.StringUtils;
 import lombok.ToString;
 import org.example.taskmanager.exceptions.TaskValidationErrorException;
+import org.example.taskmanager.validation.StatusValidation;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -18,7 +20,12 @@ public class UpdateStatusValidation {
     /**
      * class to validate status
      */
-    private StatusValidation statusValidation;
+    private final StatusValidation statusValidation;
+
+    @Autowired
+    public UpdateStatusValidation(StatusValidation statusValidation) {
+        this.statusValidation = statusValidation;
+    }
 
     /**
      * Method to validate update status request.
@@ -27,7 +34,6 @@ public class UpdateStatusValidation {
      * @param status the new  status to be validated.
      */
     public void verifyStatus(String id, String status) {
-        statusValidation = new StatusValidation();
         final List<String> allErrors = new ArrayList<>();
         allErrors.addAll(statusValidation.statusCheck(status));
         allErrors.addAll(idCheck(id));

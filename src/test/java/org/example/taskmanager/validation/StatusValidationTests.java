@@ -1,5 +1,6 @@
-package org.example.taskmanager.controllers;
+package org.example.taskmanager.validation;
 
+import org.example.taskmanager.validation.StatusValidation;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
@@ -29,6 +30,17 @@ public class StatusValidationTests {
         status = "||";
         List<String> expectedErrors = new ArrayList<>();
         expectedErrors.add("Task status does not match the pattern a-zA-Z0-9");
+
+        List<String> actualOutput = validation.statusCheck(status);
+        assertEquals(expectedErrors.toString(), actualOutput.toString());
+
+    }
+
+    @Test
+    void whenStatusIsValidNoErrorIsThrown() {
+        status = "status";
+        List<String> expectedErrors = new ArrayList<>();
+
 
         List<String> actualOutput = validation.statusCheck(status);
         assertEquals(expectedErrors.toString(), actualOutput.toString());

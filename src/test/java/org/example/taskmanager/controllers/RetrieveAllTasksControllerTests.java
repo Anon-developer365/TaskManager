@@ -55,4 +55,23 @@ public class RetrieveAllTasksControllerTests {
         assert Objects.requireNonNull(actual.getBody()).size() == (expected.size());
 
     }
+
+    @Test
+    void whenAListWithMoreThanOneTaskIsReceivedBackFromTheServiceAllItemsAreReturned() {
+        retrieveAllTasksController = new RetrieveAllTasksController(retrieveTasks);
+        UUID id = UUID.randomUUID();
+        UUID id2 = UUID.randomUUID();
+        String dueDate = "20-05-2025 09:00";
+        Task task = new Task(id.toString(), "title", "description", "status", dueDate);
+        Task task2 = new Task(id2.toString(), "title", "description", "status", dueDate);
+        List<Task> expected = new ArrayList<>();
+        expected.add(task);
+        expected.add(task2);
+        when(retrieveTasks.getAllTasks()).thenReturn(expected);
+
+        ResponseEntity<List<Task>> actual = retrieveAllTasksController.getAllTasks();
+        assert actual.getStatusCode() == HttpStatus.OK;
+        assert Objects.requireNonNull(actual.getBody()).size() == (expected.size());
+
+    }
 }

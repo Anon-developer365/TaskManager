@@ -1,4 +1,4 @@
-package org.example.taskmanager.controllers;
+package org.example.taskmanager.validation;
 
 import io.micrometer.common.util.StringUtils;
 import lombok.ToString;
@@ -20,13 +20,17 @@ public class TaskValidation {
     /**
      * class to validate status and return outcome to task validation.
      */
-    private StatusValidation statusValidation;
+    private final StatusValidation statusValidation;
 
     private static final String TITLE_REGEX = "\\w";
 
     private static final String DESCRIPTION_REGEX = "\\w";
 
     private static final String DUE_DATE_REGEX = "\\d\\d\\d\\d-\\d\\d-\\d\\d \\d\\d:\\d\\d";
+
+    public TaskValidation(StatusValidation statusValidation) {
+        this.statusValidation = statusValidation;
+    }
 
     /**
      * Method to verify task details
@@ -38,7 +42,6 @@ public class TaskValidation {
      */
     public void verifyTask(String title, String description, String status, String dueDate) {
         final List<String> allErrors = new ArrayList<>();
-        statusValidation = new StatusValidation();
         allErrors.addAll(titleCheck(title));
         allErrors.addAll(descriptionCheck(description));
         allErrors.addAll(statusValidation.statusCheck(status));

@@ -3,6 +3,7 @@ package org.example.taskmanager.controllers;
 import org.example.taskmanager.pojo.Task;
 import org.example.taskmanager.service.CreateTask;
 import org.example.taskmanager.service.SaveTask;
+import org.example.taskmanager.validation.TaskValidation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -54,7 +55,7 @@ public class CreateTaskController {
      * @param dueDate date the task is due to be completed.
      * @return a string containing the newly created task id with a success message.
      */
-    @RequestMapping(value = "/createTask", method = RequestMethod.POST)
+    @RequestMapping(value = "/Task", method = RequestMethod.POST)
     public ResponseEntity<String> createTask(String title, String description, String status, String dueDate) {
         validation.verifyTask(title, description, status, dueDate);
         Task task = createTask.createNewTask(title, description, status, dueDate);

@@ -1,6 +1,7 @@
 package org.example.taskmanager.controllers;
 
 import org.example.taskmanager.service.UpdateStatus;
+import org.example.taskmanager.validation.UpdateStatusValidation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -43,7 +44,7 @@ public class UpdateStatusController {
      * @param status the new status of the task.
      * @return a success message with the updated status.
      */
-    @RequestMapping(value = "/updateStatus", method = RequestMethod.PUT)
+    @RequestMapping(value = "/Task", method = RequestMethod.PUT)
     public ResponseEntity<String> updateStatus(String Id, String status) {
         updateStatusValidation.verifyStatus(Id, status);
         updateStatus.updateStatus(Id, status);

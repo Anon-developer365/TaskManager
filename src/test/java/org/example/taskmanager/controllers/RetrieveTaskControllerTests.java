@@ -16,6 +16,8 @@ import org.springframework.web.context.WebApplicationContext;
 import java.util.Objects;
 import java.util.UUID;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -56,5 +58,17 @@ public class RetrieveTaskControllerTests {
                 .webAppContextSetup(context)
                 .build();
         mvc.perform(post("/getTask")).andExpect(status().is4xxClientError());
+    }
+
+    @Test
+    void ifTheIdDoesNotExistAMessageIsReturnedToTheConsumer() {
+        retrieveTaskController = new RetrieveTaskController(getATask);
+        final UUID uuid = UUID.randomUUID();
+        String dueDate = "20-05-2025 09:00";
+        when(getATask.getATask(uuid.toString())).thenThrow(new RuntimeException("Task with ID " + uuid + " not found"));
+
+        String expectedError = "Task with ID " + uuid + " not found";
+        RuntimeException thrown = assertThrows(RuntimeException.class, () -> retrieveTaskController.getTask(uuid.toString()));
+        assertEquals(expectedError, thrown.getMessage());
     }
 }

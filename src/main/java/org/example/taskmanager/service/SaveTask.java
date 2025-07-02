@@ -1,5 +1,6 @@
 package org.example.taskmanager.service;
 
+import lombok.ToString;
 import org.example.taskmanager.pojo.Task;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -8,6 +9,7 @@ import org.springframework.stereotype.Service;
  * Class to save a task in the task manager database.
  */
 @Service
+@ToString
 public class SaveTask {
 
     private final TaskRepository taskRepository;

@@ -1,6 +1,7 @@
-package org.example.taskmanager.controllers;
+package org.example.taskmanager.validation;
 
 import io.micrometer.common.util.StringUtils;
+import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,6 +11,7 @@ import java.util.regex.Pattern;
 /**
  * class to validate status of a task.
  */
+@Service
 public class StatusValidation {
     /**
      * Java regex to be used when validating status
