@@ -30,6 +30,10 @@
         <java.version>17</java.version>
         <jakarta-validation.version>3.1.1</jakarta-validation.version>
         <system.path>C:\Users\AnonDeveloper\org\example\TaskManagerApi\0.0.1-SNAPSHOT\TaskManagerApi-0.0.1-SNAPSHOT.jar</system.path>
+        <h2.version>2.1.214</h2.version>
+        <cucumber-java.version>7.14.0</cucumber-java.version>
+        <cucumber-junit.version>7.14.0</cucumber-junit.version>
+        <cucumber-spring.version>7.14.0</cucumber-spring.version>
     </properties>
     <dependencies>
         <dependency>
@@ -72,7 +76,26 @@
         <dependency>
             <groupId>com.h2database</groupId>
             <artifactId>h2</artifactId>
+            <version>${h2.version}</version>
             <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>io.cucumber</groupId>
+            <artifactId>cucumber-java</artifactId>
+            <version>${cucumber-java.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>io.cucumber</groupId>
+            <artifactId>cucumber-junit</artifactId>
+            <version>${cucumber-junit.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>io.cucumber</groupId>
+            <artifactId>cucumber-spring</artifactId>
+            <version>${cucumber-spring.version}</version>
+            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
