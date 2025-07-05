@@ -1,23 +1,20 @@
 package org.example.taskmanager.controllers;
 
-import org.example.taskmanager.pojo.Task;
 import org.example.taskmanager.service.GetATask;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
+import uk.gov.hmcts.taskmanager.domain.Task;
 
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.util.Date;
 import java.util.Objects;
 import java.util.UUID;
@@ -51,14 +48,16 @@ public class RetrieveTaskControllerTests {
         final UUID uuid = UUID.randomUUID();
         final DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
         Date date = dateFormat.parse("2025-05-05 17:00");
-        LocalDateTime dueDate = date.toInstant()
-                .atZone(ZoneId.systemDefault())
-                .toLocalDateTime();
-        Task task = new Task(uuid.toString(), "develop database", "", "open status", dueDate);
+
+        Task task = new Task();
+        task.setId(uuid.toString());
+        task.setTaskDescription("description");
+        task.setStatus("status");
+        task.setDueDate(date);
         when(getATask.getATask(uuid.toString())).thenReturn(task);
-        ResponseEntity<Task> output = retrieveTaskController.getTask(uuid.toString());
+        uk.gov.hmcts.taskmanager.domain.Task output = retrieveTaskController.getTask(uuid.toString());
         assert output != null;
-        assert Objects.equals(Objects.requireNonNull(output.getBody()).getId(), uuid.toString());
+        assert Objects.equals(output.getId(), uuid.toString());
 
     }
 

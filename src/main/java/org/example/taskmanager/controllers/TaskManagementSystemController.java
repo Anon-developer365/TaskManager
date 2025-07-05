@@ -15,9 +15,12 @@ public class TaskManagementSystemController implements TaskManagementSystemApi {
 
     private CreateTaskController createTaskController;
 
+    private RetrieveTaskController retrieveTaskController;
+
     @Autowired
-    public TaskManagementSystemController(CreateTaskController createTaskController) {
+    public TaskManagementSystemController(CreateTaskController createTaskController, RetrieveTaskController retrieveTaskController) {
         this.createTaskController = createTaskController;
+        this.retrieveTaskController = retrieveTaskController;
     }
 
     @Override
@@ -28,12 +31,13 @@ public class TaskManagementSystemController implements TaskManagementSystemApi {
     }
 
     @Override
-    public ResponseEntity<Task> getTask(String transactionId) {
-        return null;
+    @RequestMapping(value = "/Task", method = RequestMethod.GET)
+    public ResponseEntity<Task> getTask(String transactionId, String taskId) {
+        return ok(retrieveTaskController.getTask(taskId));
     }
 
     @Override
-    public ResponseEntity<TaskResponse> getTasks(String transactionId) {
+    public ResponseEntity<TaskResponse> getTasks(String transactionId, String taskId) {
         return null;
     }
 

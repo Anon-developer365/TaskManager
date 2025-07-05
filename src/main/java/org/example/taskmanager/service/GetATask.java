@@ -1,9 +1,13 @@
 package org.example.taskmanager.service;
 
-import org.example.taskmanager.pojo.Task;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import uk.gov.hmcts.taskmanager.domain.Task;
 
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.util.Date;
 import java.util.Optional;
 
 
@@ -34,8 +38,8 @@ public class GetATask {
      * @return the task that wants to be retrieved.
      */
     public Task getATask(String id) {
-        Task transformedTask = new Task(null, null, null, null, null);
-        Optional<Task> foundTask;
+        Task transformedTask = new Task();
+        Optional<org.example.taskmanager.pojo.Task> foundTask;
 
         foundTask = taskRepository.findById(id);
 
@@ -43,8 +47,12 @@ public class GetATask {
             transformedTask.setId(foundTask.get().getId());
             transformedTask.setTitle(foundTask.get().getTitle());
             transformedTask.setStatus(foundTask.get().getStatus());
-            transformedTask.setDescription(foundTask.get().getDescription());
-            transformedTask.setDueDate(foundTask.get().getDueDate());
+            transformedTask.setTaskDescription(foundTask.get().getDescription());
+            LocalDateTime date = foundTask.get().getDueDate();
+            Date dueDate = java.util.Date
+                    .from(date.atZone(ZoneId.systemDefault())
+                            .toInstant());
+            transformedTask.setDueDate(dueDate);
         } else {
             throw new RuntimeException("Task with ID " + id + " not found");
         }

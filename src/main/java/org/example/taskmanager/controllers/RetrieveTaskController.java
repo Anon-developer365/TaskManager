@@ -1,15 +1,12 @@
 package org.example.taskmanager.controllers;
 
-import org.example.taskmanager.pojo.Task;
 import org.example.taskmanager.service.GetATask;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
+import uk.gov.hmcts.taskmanager.domain.Task;
 
-
-import static org.springframework.http.ResponseEntity.ok;
 
 /**
  * Class to retrieve a task from the database with a given id.
@@ -38,8 +35,8 @@ public class RetrieveTaskController {
      * @return the task to be returned.
      */
     @RequestMapping(value = "/Task", method = RequestMethod.GET)
-    public ResponseEntity<Task> getTask(String Id) {
+    public Task getTask(String Id) {
         Task task = getATask.getATask(Id);
-        return ok(task);
+        return task;
     }
 }

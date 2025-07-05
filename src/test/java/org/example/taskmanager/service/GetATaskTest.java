@@ -45,7 +45,7 @@ public class GetATaskTest {
 
         Task task = new Task("1", "develop database", "create a database", "open status", dueDate);
         Mockito.when(taskRepository.findById("1")).thenReturn(Optional.of(task));
-        Task actualTask = getATask.getATask("1");
+        uk.gov.hmcts.taskmanager.domain.Task actualTask = getATask.getATask("1");
         assertEquals("1", actualTask.getId());
         assertEquals("develop database", actualTask.getTitle());
     }

@@ -10,7 +10,13 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
@@ -25,18 +31,26 @@ public class RetrieveAllTasksControllerIntegrationTests {
 
     private RetrieveTasks retrieveTasks;
 
+    private Date date;
+
+    private LocalDateTime dueDate;
+
     @Autowired
     public RetrieveAllTasksControllerIntegrationTests(TaskRepository taskRepository) {
         this.taskRepository = taskRepository;
     }
 
-    /**
     @Test
-    void checkTheServiceRunsSuccessfullyAndReturnsAllItemsInTheDatabase() {
+    void checkTheServiceRunsSuccessfullyAndReturnsAllItemsInTheDatabase() throws ParseException {
         retrieveTasks = new RetrieveTasks(taskRepository);
         retrieveAllTasksController = new RetrieveAllTasksController(retrieveTasks);
 
-        String dueDate = "20-05-2025 09:00:00";
+        final DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+
+        date = dateFormat.parse("2025-05-05 17:00");
+        dueDate = date.toInstant()
+                .atZone(ZoneId.systemDefault())
+                .toLocalDateTime();
         Task task = new Task("2", "develop database", "create a database", "open status", dueDate);
         taskRepository.save(task);
 
@@ -56,5 +70,5 @@ public class RetrieveAllTasksControllerIntegrationTests {
         assertEquals(output.getBody(), expected);
 
     }
-    **/
+
 }

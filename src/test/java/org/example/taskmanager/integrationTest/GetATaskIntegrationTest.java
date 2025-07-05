@@ -7,16 +7,15 @@ import org.example.taskmanager.service.TaskRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.http.ResponseEntity;
 
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.util.Objects;
 import java.util.Date;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @DataJpaTest
@@ -51,9 +50,9 @@ public class GetATaskIntegrationTest {
         Task task = new Task("2", "develop database", "create a database", "open status", dueDate);
         taskRepository.save(task);
 
-        ResponseEntity<Task> results =  retrieveTaskController.getTask("2");
-        assert Objects.requireNonNull(results.getBody()).getId().equals("2");
-        assert results.getBody().getDueDate().equals(dueDate);
+        uk.gov.hmcts.taskmanager.domain.Task results =  retrieveTaskController.getTask("2");
+        assertEquals("2", results.getId());
+        assertEquals(date, results.getDueDate());
     }
 
     @Test
@@ -72,9 +71,9 @@ public class GetATaskIntegrationTest {
         taskRepository.save(task);
         taskRepository.save(taskTwo);
 
-        ResponseEntity<Task> results =  retrieveTaskController.getTask("2");
-        assert Objects.requireNonNull(results.getBody()).getId().equals("2");
-        assert results.getBody().getDueDate().equals(dueDate);
+        uk.gov.hmcts.taskmanager.domain.Task results =  retrieveTaskController.getTask("2");
+        assertEquals("2", results.getId());
+        assertEquals(date, results.getDueDate());
     }
 
     @Test
