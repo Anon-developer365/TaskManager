@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
 import uk.gov.hmcts.taskmanager.api.controller.TaskManagementSystemApi;
 import uk.gov.hmcts.taskmanager.domain.*;
 
@@ -11,12 +12,14 @@ import java.text.ParseException;
 
 import static org.springframework.http.ResponseEntity.ok;
 
+
 public class TaskManagementSystemController implements TaskManagementSystemApi {
 
     private CreateTaskController createTaskController;
 
     private RetrieveTaskController retrieveTaskController;
 
+    private RetrieveAllTasksController allTasksController;
     @Autowired
     public TaskManagementSystemController(CreateTaskController createTaskController, RetrieveTaskController retrieveTaskController) {
         this.createTaskController = createTaskController;
@@ -37,8 +40,9 @@ public class TaskManagementSystemController implements TaskManagementSystemApi {
     }
 
     @Override
-    public ResponseEntity<TaskResponse> getTasks(String transactionId, String taskId) {
-        return null;
+    @RequestMapping(value = "/allTasks", method = RequestMethod.GET)
+    public ResponseEntity<TaskResponse> getTasks(String transactionId) {
+        return ok(allTasksController.getAllTasks());
     }
 
     @Override

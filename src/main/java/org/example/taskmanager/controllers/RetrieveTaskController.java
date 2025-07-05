@@ -2,8 +2,6 @@ package org.example.taskmanager.controllers;
 
 import org.example.taskmanager.service.GetATask;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import uk.gov.hmcts.taskmanager.domain.Task;
 
@@ -34,7 +32,6 @@ public class RetrieveTaskController {
      * @param Id of the task to be retrieved
      * @return the task to be returned.
      */
-    @RequestMapping(value = "/Task", method = RequestMethod.GET)
     public Task getTask(String Id) {
         Task task = getATask.getATask(Id);
         return task;

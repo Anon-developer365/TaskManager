@@ -7,20 +7,17 @@ import org.example.taskmanager.service.TaskRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import uk.gov.hmcts.taskmanager.domain.TaskResponse;
 
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
-import java.util.Objects;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 @DataJpaTest
 public class RetrieveAllTasksControllerIntegrationTests {
@@ -54,8 +51,8 @@ public class RetrieveAllTasksControllerIntegrationTests {
         Task task = new Task("2", "develop database", "create a database", "open status", dueDate);
         taskRepository.save(task);
 
-        ResponseEntity<List<Task>> output = retrieveAllTasksController.getAllTasks();
-        assert Objects.requireNonNull(output.getBody()).get(output.getBody().size() -1).getId().equals("2");
+        TaskResponse output = retrieveAllTasksController.getAllTasks();
+        assertEquals("2", output.getTasks().get(output.getTasks().size()-1).getId());
 
     }
 
@@ -63,11 +60,9 @@ public class RetrieveAllTasksControllerIntegrationTests {
     void checkTheServiceReturnsAnEmptyListIfTheDatabaseIsEmpty() {
         retrieveTasks = new RetrieveTasks(taskRepository);
         retrieveAllTasksController = new RetrieveAllTasksController(retrieveTasks);
-        List<Task> expected = new ArrayList<>();
 
-        ResponseEntity<List<Task>> output = retrieveAllTasksController.getAllTasks();
-        assertEquals(HttpStatus.OK, output.getStatusCode());
-        assertEquals(output.getBody(), expected);
+        TaskResponse output = retrieveAllTasksController.getAllTasks();
+        assertNull(output.getTasks());
 
     }
 

@@ -6,6 +6,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.boot.test.context.SpringBootTest;
+import uk.gov.hmcts.taskmanager.domain.TaskResponse;
 
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -17,6 +18,8 @@ import java.util.Date;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+
 @SpringBootTest
 public class RetrieveTasksTests {
 
@@ -44,9 +47,9 @@ public class RetrieveTasksTests {
         List<Task> expectedResult = new ArrayList<>();
         expectedResult.add(task);
         Mockito.when(taskRepository.findAll()).thenReturn(expectedResult);
-        List<Task> tasks = retrieveTasks.getAllTasks();
-        assertEquals(1, tasks.size());
-        assertEquals("1", tasks.get(0).getId());
+        TaskResponse tasks = retrieveTasks.getAllTasks();
+        assertEquals(1, tasks.getTasks().size());
+        assertEquals("1", tasks.getTasks().get(0).getId());
     }
 
     @Test
@@ -54,8 +57,8 @@ public class RetrieveTasksTests {
         List<Task> expectedResult = new ArrayList<>();
         Mockito.when(taskRepository.findAll()).thenReturn(expectedResult);
         retrieveTasks = new RetrieveTasks(taskRepository);
-        List<Task> tasks = retrieveTasks.getAllTasks();
-        assertEquals(0, tasks.size());
+        TaskResponse tasks = retrieveTasks.getAllTasks();
+        assertNull(tasks.getTasks());
     }
 
 }

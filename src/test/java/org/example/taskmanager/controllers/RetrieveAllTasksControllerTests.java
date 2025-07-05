@@ -1,22 +1,20 @@
 package org.example.taskmanager.controllers;
 
-import org.example.taskmanager.pojo.Task;
 import org.example.taskmanager.service.RetrieveTasks;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.web.WebAppConfiguration;
+import uk.gov.hmcts.taskmanager.domain.TaskResponse;
 
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.util.*;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.Mockito.when;
 
 @WebAppConfiguration
@@ -33,12 +31,11 @@ public class RetrieveAllTasksControllerTests {
     @Test
     void whenAnEmptyListIsReceivedBackFromTheServiceThisIsReturned() {
         retrieveAllTasksController = new RetrieveAllTasksController(retrieveTasks);
-        List<Task> expected = new ArrayList<>();
-        when(retrieveTasks.getAllTasks()).thenReturn(expected);
+        TaskResponse taskResponse = new TaskResponse();
+        when(retrieveTasks.getAllTasks()).thenReturn(taskResponse);
 
-        ResponseEntity<List<Task>> actual = retrieveAllTasksController.getAllTasks();
-        assert actual.getStatusCode() == HttpStatus.OK;
-        assert Objects.requireNonNull(actual.getBody()).isEmpty();
+        TaskResponse actual = retrieveAllTasksController.getAllTasks();
+        assertNull(actual.getTasks());
 
     }
 
@@ -48,17 +45,19 @@ public class RetrieveAllTasksControllerTests {
         UUID id = UUID.randomUUID();
         final DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
         Date date = dateFormat.parse("2025-05-05 17:00");
-        LocalDateTime dueDate = date.toInstant()
-                .atZone(ZoneId.systemDefault())
-                .toLocalDateTime();
-        Task task = new Task(id.toString(), "title", "description", "status", dueDate);
-        List<Task> expected = new ArrayList<>();
-        expected.add(task);
+
+        uk.gov.hmcts.taskmanager.domain.Task task = new uk.gov.hmcts.taskmanager.domain.Task();
+        task.setTaskDescription("description");
+        task.setId(id.toString());
+        task.setStatus("status");
+        task.setTitle("title");
+        task.setDueDate(date);
+        TaskResponse expected = new TaskResponse();
+        expected.addTasksItem(task);
         when(retrieveTasks.getAllTasks()).thenReturn(expected);
 
-        ResponseEntity<List<Task>> actual = retrieveAllTasksController.getAllTasks();
-        assert actual.getStatusCode() == HttpStatus.OK;
-        assert Objects.requireNonNull(actual.getBody()).size() == (expected.size());
+        TaskResponse actual = retrieveAllTasksController.getAllTasks();
+        assertEquals(expected.getTasks().size(), actual.getTasks().size());
 
     }
 
@@ -69,19 +68,25 @@ public class RetrieveAllTasksControllerTests {
         UUID id2 = UUID.randomUUID();
         final DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
         Date date = dateFormat.parse("2025-05-05 17:00");
-        LocalDateTime dueDate = date.toInstant()
-                .atZone(ZoneId.systemDefault())
-                .toLocalDateTime();
-        Task task = new Task(id.toString(), "title", "description", "status", dueDate);
-        Task task2 = new Task(id2.toString(), "title", "description", "status", dueDate);
-        List<Task> expected = new ArrayList<>();
-        expected.add(task);
-        expected.add(task2);
+        uk.gov.hmcts.taskmanager.domain.Task task = new uk.gov.hmcts.taskmanager.domain.Task();
+        task.setTaskDescription("description");
+        task.setId(id.toString());
+        task.setStatus("status");
+        task.setTitle("title");
+        task.setDueDate(date);
+        TaskResponse expected = new TaskResponse();
+        expected.addTasksItem(task);
+        uk.gov.hmcts.taskmanager.domain.Task task2 = new uk.gov.hmcts.taskmanager.domain.Task();
+        task.setTaskDescription("description");
+        task.setId(id2.toString());
+        task.setStatus("status");
+        task.setTitle("title");
+        task.setDueDate(date);
+        expected.addTasksItem(task2);
         when(retrieveTasks.getAllTasks()).thenReturn(expected);
 
-        ResponseEntity<List<Task>> actual = retrieveAllTasksController.getAllTasks();
-        assert actual.getStatusCode() == HttpStatus.OK;
-        assert Objects.requireNonNull(actual.getBody()).size() == (expected.size());
+        TaskResponse actual = retrieveAllTasksController.getAllTasks();
+        assertEquals(expected.getTasks().size(), actual.getTasks().size());
 
     }
 

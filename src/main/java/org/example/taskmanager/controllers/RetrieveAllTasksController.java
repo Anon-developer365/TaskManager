@@ -7,8 +7,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
+import uk.gov.hmcts.taskmanager.domain.TaskResponse;
 
+import java.time.ZoneId;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import static org.springframework.http.ResponseEntity.ok;
@@ -39,9 +42,7 @@ public class RetrieveAllTasksController {
      *
      * @return a list of tasks within the database.
      */
-    @RequestMapping(value = "/allTasks", method = RequestMethod.GET)
-    public ResponseEntity<List<Task>> getAllTasks() {
-        List<Task> tasks = new ArrayList<>(retrieveTasks.getAllTasks());
-        return ok(tasks);
+    public TaskResponse getAllTasks() {
+        return retrieveTasks.getAllTasks();
     }
 }
