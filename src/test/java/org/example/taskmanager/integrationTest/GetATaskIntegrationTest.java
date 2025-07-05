@@ -9,7 +9,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.http.ResponseEntity;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.Objects;
+import java.util.Date;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -21,18 +27,27 @@ public class GetATaskIntegrationTest {
     private GetATask getATask;
     private RetrieveTaskController retrieveTaskController;
 
+    private Date date;
+
+    private LocalDateTime dueDate;
+
     @Autowired
     public GetATaskIntegrationTest(TaskRepository taskRepository) {
         this.taskRepository = taskRepository;
     }
 
-    /**
     @Test
-    void checkIfATaskExistsItIsReturned() {
+    void checkIfATaskExistsItIsReturned() throws ParseException {
         getATask = new GetATask(taskRepository);
         retrieveTaskController = new RetrieveTaskController(getATask);
 
-        String dueDate = "20-05-2025 09:00:00";
+        final DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+
+        date = dateFormat.parse("2025-05-05 17:00");
+        dueDate = date.toInstant()
+                .atZone(ZoneId.systemDefault())
+                .toLocalDateTime();
+
         Task task = new Task("2", "develop database", "create a database", "open status", dueDate);
         taskRepository.save(task);
 
@@ -42,11 +57,16 @@ public class GetATaskIntegrationTest {
     }
 
     @Test
-    void checkIfThereIsMoreThanOneTaskOnlyTheRequestedTaskIsReturned() {
+    void checkIfThereIsMoreThanOneTaskOnlyTheRequestedTaskIsReturned() throws ParseException {
         getATask = new GetATask(taskRepository);
         retrieveTaskController = new RetrieveTaskController(getATask);
 
-        String dueDate = "20-05-2025 09:00:00";
+        final DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+
+        date = dateFormat.parse("2025-05-05 17:00");
+        dueDate = date.toInstant()
+                .atZone(ZoneId.systemDefault())
+                .toLocalDateTime();
         Task task = new Task("1", "develop database", "create a database", "open status", dueDate);
         Task taskTwo = new Task("2", "update database", "update a database", "working", dueDate);
         taskRepository.save(task);
@@ -67,16 +87,22 @@ public class GetATaskIntegrationTest {
     }
 
     @Test
-    void IfThereAreTasksButTheIdDoesNotMatchAnErrorIsReturned() {
+    void IfThereAreTasksButTheIdDoesNotMatchAnErrorIsReturned() throws ParseException {
         getATask = new GetATask(taskRepository);
         retrieveTaskController = new RetrieveTaskController(getATask);
 
-        String dueDate = "20-05-2025 09:00:00";
+        final DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+
+        date = dateFormat.parse("2025-05-05 17:00");
+        dueDate = date.toInstant()
+                .atZone(ZoneId.systemDefault())
+                .toLocalDateTime();
+
         Task task = new Task("1", "develop database", "create a database", "open status", dueDate);
         taskRepository.save(task);
 
         assertThrows(RuntimeException.class, () -> retrieveTaskController.getTask("2"));
 
     }
-    **/
+
 }
