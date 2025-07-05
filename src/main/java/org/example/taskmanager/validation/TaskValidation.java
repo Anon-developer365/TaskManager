@@ -3,9 +3,15 @@ package org.example.taskmanager.validation;
 import io.micrometer.common.util.StringUtils;
 import lombok.ToString;
 import org.example.taskmanager.exceptions.TaskValidationErrorException;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Service;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -26,8 +32,6 @@ public class TaskValidation {
 
     private static final String DESCRIPTION_REGEX = "\\w";
 
-    private static final String DUE_DATE_REGEX = "\\d\\d\\d\\d-\\d\\d-\\d\\d \\d\\d:\\d\\d";
-
     public TaskValidation(StatusValidation statusValidation) {
         this.statusValidation = statusValidation;
     }
@@ -40,7 +44,7 @@ public class TaskValidation {
      * @param status task status to be validated
      * @param dueDate due date to be validated.
      */
-    public void verifyTask(String title, String description, String status, String dueDate) {
+    public void verifyTask(String title, String description, String status, @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm") Date dueDate) {
         final List<String> allErrors = new ArrayList<>();
         allErrors.addAll(titleCheck(title));
         allErrors.addAll(descriptionCheck(description));
@@ -97,17 +101,10 @@ public class TaskValidation {
      * @param dueDate due date to be validated.
      * @return returns either an empty list or a list containing due date validation errors.
      */
-    private List<String> dueDateCheck(String dueDate) {
+    private List<String> dueDateCheck(Date dueDate) {
         final List<String> errors = new ArrayList<>();
-        if (StringUtils.isBlank(dueDate)) {
+        if (dueDate == null) {
             errors.add("Task due date is empty");
-        } else {
-            final Pattern pattern = Pattern.compile(DUE_DATE_REGEX);
-            final Matcher matcher = pattern.matcher(dueDate);
-            if (!matcher.find()) {
-                errors.add("Task due date does not match the pattern yyyy-dd-mm hh:mm:ss");
-            }
-
         }
         return errors;
     }

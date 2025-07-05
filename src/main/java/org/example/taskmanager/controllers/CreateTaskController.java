@@ -5,12 +5,14 @@ import org.example.taskmanager.service.CreateTask;
 import org.example.taskmanager.service.SaveTask;
 import org.example.taskmanager.validation.TaskValidation;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
+import uk.gov.hmcts.taskmanager.domain.CreateTaskRequest;
+import uk.gov.hmcts.taskmanager.domain.SuccessResponse;
 
-import static org.springframework.http.ResponseEntity.ok;
+import java.text.ParseException;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+
 
 /**
  * Rest controller for create task end point to create and save a new task in the database.
@@ -49,18 +51,19 @@ public class CreateTaskController {
     /**
      * Method to call required services in order to create a task and save this within the database.
      *
-     * @param title case title
-     * @param description description of the case.
-     * @param status case status
-     * @param dueDate date the task is due to be completed.
+     * @param transactionId ID of the transaction made to the service.
+     * @param taskRequest request data of the task to be created and saved in the database.
      * @return a string containing the newly created task id with a success message.
      */
-    @RequestMapping(value = "/Task", method = RequestMethod.POST)
-    public ResponseEntity<String> createTask(String title, String description, String status, String dueDate) {
-        validation.verifyTask(title, description, status, dueDate);
-        Task task = createTask.createNewTask(title, description, status, dueDate);
-        String id = saveTask.saveData(task);
-        return ok(id + " Task Created");
+
+    public SuccessResponse createTask(String transactionId, CreateTaskRequest taskRequest) {
+        validation.verifyTask(taskRequest.getTitle(), taskRequest.getTaskDescription(), taskRequest.getStatus(), taskRequest.getDueDate());
+        Task task = createTask.createNewTask(taskRequest.getTitle(), taskRequest.getTaskDescription(), taskRequest.getStatus(), taskRequest.getDueDate());
+        saveTask.saveData(task);
+        SuccessResponse response = new SuccessResponse();
+        response.setId(task.getId());
+        response.setMessage("Task Created successfully");
+        return response;
     }
 
 }

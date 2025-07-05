@@ -7,7 +7,13 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -19,11 +25,21 @@ public class RetrieveTasksTests {
     @InjectMocks
     private RetrieveTasks retrieveTasks;
 
+    private Date date;
+
+    private LocalDateTime dueDate;
+
 
     @Test
-    void checkWhenThereAreTasksInTheDatabaseTheseAreAllReturned() {
+    void checkWhenThereAreTasksInTheDatabaseTheseAreAllReturned() throws ParseException {
         retrieveTasks = new RetrieveTasks(taskRepository);
-        String dueDate = "20-05-2025 09:00:00";
+        final DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+
+        date = dateFormat.parse("2025-05-05 17:00");
+        dueDate = date.toInstant()
+                .atZone(ZoneId.systemDefault())
+                .toLocalDateTime();
+
         Task task = new Task("1", "develop database", "create a database", "open status", dueDate);
         List<Task> expectedResult = new ArrayList<>();
         expectedResult.add(task);
@@ -41,4 +57,5 @@ public class RetrieveTasksTests {
         List<Task> tasks = retrieveTasks.getAllTasks();
         assertEquals(0, tasks.size());
     }
+
 }

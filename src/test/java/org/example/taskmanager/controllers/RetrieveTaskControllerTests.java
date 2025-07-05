@@ -13,6 +13,12 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.util.Date;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -40,10 +46,14 @@ public class RetrieveTaskControllerTests {
 
 
     @Test
-    void aSuccessMessageIsReceivedWhenDetailsAreProvided() {
+    void aSuccessMessageIsReceivedWhenDetailsAreProvided() throws ParseException {
         retrieveTaskController = new RetrieveTaskController(getATask);
         final UUID uuid = UUID.randomUUID();
-        String dueDate = "20-05-2025 09:00";
+        final DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+        Date date = dateFormat.parse("2025-05-05 17:00");
+        LocalDateTime dueDate = date.toInstant()
+                .atZone(ZoneId.systemDefault())
+                .toLocalDateTime();
         Task task = new Task(uuid.toString(), "develop database", "", "open status", dueDate);
         when(getATask.getATask(uuid.toString())).thenReturn(task);
         ResponseEntity<Task> output = retrieveTaskController.getTask(uuid.toString());
@@ -64,11 +74,11 @@ public class RetrieveTaskControllerTests {
     void ifTheIdDoesNotExistAMessageIsReturnedToTheConsumer() {
         retrieveTaskController = new RetrieveTaskController(getATask);
         final UUID uuid = UUID.randomUUID();
-        String dueDate = "20-05-2025 09:00";
         when(getATask.getATask(uuid.toString())).thenThrow(new RuntimeException("Task with ID " + uuid + " not found"));
 
         String expectedError = "Task with ID " + uuid + " not found";
         RuntimeException thrown = assertThrows(RuntimeException.class, () -> retrieveTaskController.getTask(uuid.toString()));
         assertEquals(expectedError, thrown.getMessage());
     }
+
 }

@@ -28,6 +28,7 @@
     </scm>
     <properties>
         <java.version>17</java.version>
+        <system.path>C:\Users\AnonDeveloper\org\example\TaskManagerApi\0.0.1-SNAPSHOT\TaskManagerApi-0.0.1-SNAPSHOT.jar</system.path>
     </properties>
     <dependencies>
         <dependency>
@@ -56,6 +57,13 @@
             <artifactId>spring-boot-starter-data-jpa</artifactId>
         </dependency>
         <dependency>
+            <groupId>org.example</groupId>
+            <artifactId>TaskManagerApi</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+            <systemPath>${system.path}</systemPath>
+            <scope>system</scope>
+        </dependency>
+        <dependency>
             <groupId>com.h2database</groupId>
             <artifactId>h2</artifactId>
             <scope>runtime</scope>
@@ -68,11 +76,6 @@
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.h2database</groupId>
-            <artifactId>h2</artifactId>
-            <version>2.1.214</version>
         </dependency>
     </dependencies>
 

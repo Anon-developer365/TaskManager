@@ -7,6 +7,13 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.util.Date;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -19,14 +26,23 @@ public class SaveTaskTests {
     @InjectMocks
     private SaveTask saveTask;
 
-    public SaveTaskTests() {
-    }
+    private Date date;
+
+    private LocalDateTime dueDate;
 
 
     @Test
-    void testDataIsSavedInTheDatabase() {
+    void testDataIsSavedInTheDatabase() throws ParseException {
+
+        final DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+
+        date = dateFormat.parse("2025-05-05 17:00");
+        dueDate = date.toInstant()
+                .atZone(ZoneId.systemDefault())
+                .toLocalDateTime();
+
         saveTask = new SaveTask(taskRepository);
-        String dueDate = "20-05-2025 09:00:00";
+
         Task task = new Task("1", "develop database", "create a database", "open status", dueDate);
         Mockito.when(taskRepository.save(task)).thenReturn(task);
         String actualOutput = saveTask.saveData(task);
@@ -34,9 +50,16 @@ public class SaveTaskTests {
     }
 
     @Test
-    void checkIfTheTaskIdIsReturnedAsNullAnErrorIsThrown() {
+    void checkIfTheTaskIdIsReturnedAsNullAnErrorIsThrown() throws ParseException {
+
+        final DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+
+        date = dateFormat.parse("2025-05-05 17:00");
+        dueDate = date.toInstant()
+                .atZone(ZoneId.systemDefault())
+                .toLocalDateTime();
         saveTask = new SaveTask(taskRepository);
-        String dueDate = "20-05-2025 09:00:00";
+
         Task task = new Task(null, null, null, null, null);
         Task inputTask = new Task("1", "develop database", "create a database", "open status", dueDate);
         Mockito.when(taskRepository.save(inputTask)).thenReturn(task);

@@ -10,13 +10,19 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
+import uk.gov.hmcts.taskmanager.domain.CreateTaskRequest;
+import uk.gov.hmcts.taskmanager.domain.SuccessResponse;
 
-import java.util.Objects;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.util.Date;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -44,27 +50,38 @@ public class CreateTaskControllerTests {
     @Autowired
     private final WebApplicationContext context;
 
+    private CreateTaskRequest createTaskRequest;
+
     public CreateTaskControllerTests(WebApplicationContext context) {
         this.context = context;
     }
 
 
     @Test
-    void aSuccessMessageIsReceivedWhenTheEndPointIsHit() {
+    void aSuccessMessageIsReceivedWhenTheEndPointIsHit() throws ParseException {
         UUID uuid = UUID.randomUUID();
-        String caseTitle = "case title";
-        String description = "description";
-        String status = "open status";
-        String dueDate = "05-05-2025 17:00";
+        String transactionId = "1";
+        final DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
 
-        Task task = new Task(uuid.toString(), caseTitle, description, status, dueDate);
+        Date date = (dateFormat.parse("2025-05-05 17:00"));
+        createTaskRequest = new CreateTaskRequest();
+        createTaskRequest.setTitle("case title");
+        createTaskRequest.setTaskDescription("description");
+        createTaskRequest.setStatus("open status");
+        createTaskRequest.setDueDate(date);
+
+        LocalDateTime dueDate = date.toInstant()
+                .atZone(ZoneId.systemDefault())
+                .toLocalDateTime();
+
+        Task task = new Task(uuid.toString(), createTaskRequest.getTitle(), createTaskRequest.getTaskDescription(), createTaskRequest.getStatus(), dueDate);
         createTaskController = new CreateTaskController(createTask, saveTask, taskValidation);
-        doNothing().when(taskValidation).verifyTask(caseTitle, description, status, dueDate);
-        when(createTask.createNewTask(caseTitle, description, status, dueDate)).thenReturn(task);
+        doNothing().when(taskValidation).verifyTask(createTaskRequest.getTitle(), createTaskRequest.getTaskDescription(), createTaskRequest.getStatus(), createTaskRequest.getDueDate());
+        when(createTask.createNewTask(createTaskRequest.getTitle(), createTaskRequest.getTaskDescription(), createTaskRequest.getStatus(), createTaskRequest.getDueDate())).thenReturn(task);
         when(saveTask.saveData(task)).thenReturn(uuid.toString());
-        ResponseEntity<String> output = createTaskController.createTask(caseTitle, description, status, dueDate);
-        assert output != null;
-        assert Objects.equals(output.getBody(), uuid + " Task Created");
+        SuccessResponse output = createTaskController.createTask(transactionId, createTaskRequest);
+        assertEquals("Task Created successfully", output.getMessage());
+        assertEquals(uuid.toString(), output.getId());
 
     }
 
@@ -77,45 +94,67 @@ public class CreateTaskControllerTests {
     }
 
     @Test
-    void whenThereIsAValidationErrorThisIsReturnedToTheConsumer() {
+    void whenThereIsAValidationErrorThisIsReturnedToTheConsumer() throws ParseException {
         UUID uuid = UUID.randomUUID();
-        String caseTitle = "";
-        String description = "description";
-        String status = "open status";
-        String dueDate = "05-05-2025 17:00";
 
-        Task task = new Task(uuid.toString(), caseTitle, description, status, dueDate);
+        final DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+        Date date = (dateFormat.parse("2025-05-05 17:00"));
+
+        createTaskRequest = new CreateTaskRequest();
+        createTaskRequest.setTaskDescription("description");
+        createTaskRequest.setStatus("open status");
+        createTaskRequest.setTitle("");
+        createTaskRequest.setDueDate(date);
+
+        LocalDateTime dueDate = date.toInstant()
+                .atZone(ZoneId.systemDefault())
+                .toLocalDateTime();
+
+        Task task = new Task(uuid.toString(), createTaskRequest.getTitle(),
+                createTaskRequest.getTaskDescription(), createTaskRequest.getStatus(), dueDate);
         createTaskController = new CreateTaskController(createTask, saveTask, taskValidation);
-        when(createTask.createNewTask(caseTitle, description, status, dueDate)).thenReturn(task);
+        when(createTask.createNewTask(createTaskRequest.getTitle(), createTaskRequest.getTaskDescription(), createTaskRequest.getStatus(), date)).thenReturn(task);
         when(saveTask.saveData(task)).thenReturn(uuid.toString());
 
         String expectedError = "Task title is empty";
 
         TaskValidationErrorException thrown = assertThrows(TaskValidationErrorException.class, () -> {
-            doThrow(new TaskValidationErrorException("Task title is empty")).when(taskValidation).verifyTask(caseTitle, description, status, dueDate);
-            createTaskController.createTask(caseTitle,description,status,dueDate);
+            doThrow(new TaskValidationErrorException("Task title is empty")).when(taskValidation).verifyTask(createTaskRequest.getTitle(),
+                    createTaskRequest.getTaskDescription(), createTaskRequest.getStatus(), date);
+            createTaskController.createTask("1", createTaskRequest);
         });
         assertEquals(expectedError, thrown.getMessage());
 
     }
 
     @Test
-    void whenThereIsAnErrorSavingTheTaskThisIsReturnedToTheConsumer() {
+    void whenThereIsAnErrorSavingTheTaskThisIsReturnedToTheConsumer() throws ParseException {
         UUID uuid = UUID.randomUUID();
-        String caseTitle = "title";
-        String description = "description";
-        String status = "open status";
-        String dueDate = "05-05-2025 17:00";
+        final DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+        Date date = (dateFormat.parse("2025-05-05 17:00"));
 
-        Task task = new Task(uuid.toString(), caseTitle, description, status, dueDate);
+        createTaskRequest = new CreateTaskRequest();
+        createTaskRequest.setTaskDescription("description");
+        createTaskRequest.setStatus("open status");
+        createTaskRequest.setTitle("");
+        createTaskRequest.setDueDate(date);
+
+        LocalDateTime dueDate = date.toInstant()
+                .atZone(ZoneId.systemDefault())
+                .toLocalDateTime();
+
+        Task task = new Task(uuid.toString(), createTaskRequest.getTitle(),
+                createTaskRequest.getTaskDescription(), createTaskRequest.getStatus(), dueDate);
         createTaskController = new CreateTaskController(createTask, saveTask, taskValidation);
-        when(createTask.createNewTask(caseTitle, description, status, dueDate)).thenReturn(task);
+        when(createTask.createNewTask(createTaskRequest.getTitle(),
+                createTaskRequest.getTaskDescription(), createTaskRequest.getStatus(), date)).thenReturn(task);
         when(saveTask.saveData(task)).thenThrow(new RuntimeException("An error occurred saving the task"));
 
         String expectedError = "An error occurred saving the task";
 
-        RuntimeException thrown = assertThrows(RuntimeException.class, () -> createTaskController.createTask(caseTitle,description,status,dueDate));
+        RuntimeException thrown = assertThrows(RuntimeException.class, () -> createTaskController.createTask("1", createTaskRequest));
         assertEquals(expectedError, thrown.getMessage());
 
     }
+
 }

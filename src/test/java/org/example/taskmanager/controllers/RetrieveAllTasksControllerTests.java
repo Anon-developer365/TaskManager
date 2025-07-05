@@ -10,10 +10,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.web.WebAppConfiguration;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.UUID;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.util.*;
 
 import static org.mockito.Mockito.when;
 
@@ -41,10 +43,14 @@ public class RetrieveAllTasksControllerTests {
     }
 
     @Test
-    void whenAListWithATaskIsReceivedBackFromTheServiceThisIsReturned() {
+    void whenAListWithATaskIsReceivedBackFromTheServiceThisIsReturned() throws ParseException {
         retrieveAllTasksController = new RetrieveAllTasksController(retrieveTasks);
         UUID id = UUID.randomUUID();
-        String dueDate = "20-05-2025 09:00";
+        final DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+        Date date = dateFormat.parse("2025-05-05 17:00");
+        LocalDateTime dueDate = date.toInstant()
+                .atZone(ZoneId.systemDefault())
+                .toLocalDateTime();
         Task task = new Task(id.toString(), "title", "description", "status", dueDate);
         List<Task> expected = new ArrayList<>();
         expected.add(task);
@@ -57,11 +63,15 @@ public class RetrieveAllTasksControllerTests {
     }
 
     @Test
-    void whenAListWithMoreThanOneTaskIsReceivedBackFromTheServiceAllItemsAreReturned() {
+    void whenAListWithMoreThanOneTaskIsReceivedBackFromTheServiceAllItemsAreReturned() throws ParseException {
         retrieveAllTasksController = new RetrieveAllTasksController(retrieveTasks);
         UUID id = UUID.randomUUID();
         UUID id2 = UUID.randomUUID();
-        String dueDate = "20-05-2025 09:00";
+        final DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+        Date date = dateFormat.parse("2025-05-05 17:00");
+        LocalDateTime dueDate = date.toInstant()
+                .atZone(ZoneId.systemDefault())
+                .toLocalDateTime();
         Task task = new Task(id.toString(), "title", "description", "status", dueDate);
         Task task2 = new Task(id2.toString(), "title", "description", "status", dueDate);
         List<Task> expected = new ArrayList<>();
@@ -74,4 +84,5 @@ public class RetrieveAllTasksControllerTests {
         assert Objects.requireNonNull(actual.getBody()).size() == (expected.size());
 
     }
+
 }

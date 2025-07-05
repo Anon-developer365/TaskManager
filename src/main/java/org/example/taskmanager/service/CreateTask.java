@@ -3,6 +3,9 @@ package org.example.taskmanager.service;
 import org.example.taskmanager.pojo.Task;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.util.Date;
 import java.util.UUID;
 
 /**
@@ -21,9 +24,12 @@ public class CreateTask {
      * @return newly created task.
      */
     public Task createNewTask(String title, String description,
-                              String status, String dueDate) {
+                              String status, Date dueDate) {
+        LocalDateTime date = dueDate.toInstant()
+                .atZone(ZoneId.systemDefault())
+                .toLocalDateTime();
         UUID uuid = UUID.randomUUID();
-        return new Task(uuid.toString(), title, description, status, dueDate);
+        return new Task(uuid.toString(), title, description, status, date);
 
     }
 
