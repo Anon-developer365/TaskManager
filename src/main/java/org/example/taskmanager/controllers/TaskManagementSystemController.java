@@ -1,5 +1,6 @@
 package org.example.taskmanager.controllers;
 
+import org.aspectj.weaver.patterns.ThisOrTargetAnnotationPointcut;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -20,10 +21,15 @@ public class TaskManagementSystemController implements TaskManagementSystemApi {
     private RetrieveTaskController retrieveTaskController;
 
     private RetrieveAllTasksController allTasksController;
+
+    private UpdateStatusController updateStatusController;
     @Autowired
-    public TaskManagementSystemController(CreateTaskController createTaskController, RetrieveTaskController retrieveTaskController) {
+    public TaskManagementSystemController(CreateTaskController createTaskController, RetrieveTaskController retrieveTaskController,
+                                          RetrieveAllTasksController allTasksController, UpdateStatusController updateStatusController) {
         this.createTaskController = createTaskController;
         this.retrieveTaskController = retrieveTaskController;
+        this.allTasksController = allTasksController;
+        this.updateStatusController = updateStatusController;
     }
 
     @Override
@@ -48,7 +54,8 @@ public class TaskManagementSystemController implements TaskManagementSystemApi {
     @Override
     @RequestMapping(value = "/Task", method = RequestMethod.PUT)
     public ResponseEntity<SuccessResponse> updateStatus(String transactionId, UpdateStatusRequest body) {
-        return null;
+
+        return ok(updateStatusController.updateStatus(body));
     }
 
 }

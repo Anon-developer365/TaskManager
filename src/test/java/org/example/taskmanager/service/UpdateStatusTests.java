@@ -6,6 +6,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.boot.test.context.SpringBootTest;
+import uk.gov.hmcts.taskmanager.domain.UpdateStatusRequest;
 
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -41,13 +42,16 @@ public class UpdateStatusTests {
         dueDate = date.toInstant()
                 .atZone(ZoneId.systemDefault())
                 .toLocalDateTime();
+        UpdateStatusRequest updateStatusRequest = new UpdateStatusRequest();
+        updateStatusRequest.setId("1");
+        updateStatusRequest.setStatus("working");
 
         Task task = new Task("1", "develop database", "create a database", "open status", dueDate);
         Task updatedTask = new Task("1", "develop database", "create a database", "working", dueDate);
         Mockito.when(taskRepository.findById("1")).thenReturn(Optional.of(task));
         Mockito.when(taskRepository.save(updatedTask)).thenReturn(null);
 
-        boolean output = updateStatus.updateStatus("1", "working");
+        boolean output = updateStatus.updateStatus(updateStatusRequest);
         assertTrue(output);
     }
 
@@ -57,7 +61,11 @@ public class UpdateStatusTests {
         Task task = new Task(null, null, null, null, null);
         Mockito.when(taskRepository.findById("1")).thenReturn(Optional.of(task));
 
-        assertThrows(RuntimeException.class, () -> updateStatus.updateStatus("1", "working"));
+        UpdateStatusRequest updateStatusRequest = new UpdateStatusRequest();
+        updateStatusRequest.setId("1");
+        updateStatusRequest.setStatus("working");
+
+        assertThrows(RuntimeException.class, () -> updateStatus.updateStatus(updateStatusRequest));
 
     }
 

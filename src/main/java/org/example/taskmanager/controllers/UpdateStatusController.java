@@ -7,6 +7,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
+import uk.gov.hmcts.taskmanager.domain.SuccessResponse;
+import uk.gov.hmcts.taskmanager.domain.UpdateStatusRequest;
 
 import static org.springframework.http.ResponseEntity.ok;
 
@@ -45,10 +47,13 @@ public class UpdateStatusController {
      * @return a success message with the updated status.
      */
     @RequestMapping(value = "/Task", method = RequestMethod.PUT)
-    public ResponseEntity<String> updateStatus(String Id, String status) {
-        updateStatusValidation.verifyStatus(Id, status);
-        updateStatus.updateStatus(Id, status);
-        return ok("Status updated to " + status);
+    public SuccessResponse updateStatus(UpdateStatusRequest updateRequest) {
+        SuccessResponse successResponse = new SuccessResponse();
+        updateStatusValidation.verifyStatus(updateRequest.getId(), updateRequest.getStatus());
+        updateStatus.updateStatus(updateRequest);
+        successResponse.setId(updateRequest.getId());
+        successResponse.setMessage("Status updated to: " + updateRequest.getStatus());
+        return successResponse;
     }
 }
 

@@ -9,7 +9,8 @@ import org.example.taskmanager.service.UpdateStatus;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.http.ResponseEntity;
+import uk.gov.hmcts.taskmanager.domain.SuccessResponse;
+import uk.gov.hmcts.taskmanager.domain.UpdateStatusRequest;
 
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -57,12 +58,16 @@ public class UpdateStatusControllerIntegrationTests {
                 .atZone(ZoneId.systemDefault())
                 .toLocalDateTime();
 
+        UpdateStatusRequest updateStatusRequest = new UpdateStatusRequest();
+        updateStatusRequest.setId("1");
+        updateStatusRequest.setStatus("working");
+
         Task task = new Task("1", "develop database", "create a database", "open status", dueDate);
-        String expectedOutput = "Status updated to working";
+        String expectedOutput = "Status updated to: working";
         taskRepository.save(task);
-        ResponseEntity<String> actualOutput = updateStatusController.updateStatus("1", "working");
+        SuccessResponse actualOutput = updateStatusController.updateStatus(updateStatusRequest);
         Task updatedTask = taskRepository.getReferenceById("1");
-        assertEquals(expectedOutput, actualOutput.getBody());
+        assertEquals(expectedOutput, actualOutput.getMessage());
         assertEquals("working", updatedTask.getStatus());
 
     }
@@ -73,7 +78,11 @@ public class UpdateStatusControllerIntegrationTests {
         updateStatusValidation = new UpdateStatusValidation(statusValidation);
         updateStatusController = new UpdateStatusController(updateStatus, updateStatusValidation);
 
-        assertThrows(RuntimeException.class, () -> updateStatusController.updateStatus("1", "working"));
+        UpdateStatusRequest updateStatusRequest = new UpdateStatusRequest();
+        updateStatusRequest.setId("1");
+        updateStatusRequest.setStatus("working");
+
+        assertThrows(RuntimeException.class, () -> updateStatusController.updateStatus(updateStatusRequest));
     }
 
 }

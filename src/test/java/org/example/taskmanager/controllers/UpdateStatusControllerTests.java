@@ -8,13 +8,13 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
+import uk.gov.hmcts.taskmanager.domain.SuccessResponse;
+import uk.gov.hmcts.taskmanager.domain.UpdateStatusRequest;
 
-import java.util.Objects;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -47,14 +47,18 @@ public class UpdateStatusControllerTests {
     void aSuccessMessageIsReceivedWhenDetailsAreProvided() {
         UUID uuid = UUID.randomUUID();
 
-        String status = "This is a new status";
-        String expectedResult = "Status updated to " + status;
+        UpdateStatusRequest updateStatusRequest = new UpdateStatusRequest();
+        updateStatusRequest.setId(uuid.toString());
+        updateStatusRequest.setStatus("This is a new status");
+
+        String expectedResult = "Status updated to: " + updateStatusRequest.getStatus();
         updateStatusController = new UpdateStatusController(updateStatus, updateStatusValidation);
-        doNothing().when(updateStatusValidation).verifyStatus(uuid.toString(), status);
-        when(updateStatus.updateStatus(uuid.toString(), status)).thenReturn(true);
-        ResponseEntity<String> output = updateStatusController.updateStatus(uuid.toString(), status);
+        doNothing().when(updateStatusValidation).verifyStatus(updateStatusRequest.getId(), updateStatusRequest.getStatus());
+        when(updateStatus.updateStatus(updateStatusRequest)).thenReturn(true);
+        SuccessResponse output = updateStatusController.updateStatus(updateStatusRequest);
         assert output != null;
-        assert Objects.equals(output.getBody(), expectedResult);
+        assertEquals(expectedResult, output.getMessage());
+        assertEquals(updateStatusRequest.getId(), output.getId());
 
     }
 
@@ -71,14 +75,17 @@ public class UpdateStatusControllerTests {
     void anExceptionIsThrownWhenThereIsAValidationError() {
         UUID uuid = UUID.randomUUID();
 
-        String status = "This is a new status";
+        UpdateStatusRequest updateStatusRequest = new UpdateStatusRequest();
+        updateStatusRequest.setId(uuid.toString());
+        updateStatusRequest.setStatus("This is a new status");
+
         updateStatusController = new UpdateStatusController(updateStatus, updateStatusValidation);
 
         String expectedError = "validation error";
 
         TaskValidationErrorException thrown = assertThrows(TaskValidationErrorException.class, () -> {
-            doThrow(new TaskValidationErrorException("validation error")).when(updateStatusValidation).verifyStatus(uuid.toString(), status);
-            updateStatusController.updateStatus(uuid.toString(), status);
+            doThrow(new TaskValidationErrorException("validation error")).when(updateStatusValidation).verifyStatus(uuid.toString(), updateStatusRequest.getStatus());
+            updateStatusController.updateStatus(updateStatusRequest);
         });
         assertEquals(expectedError, thrown.getMessage());
 

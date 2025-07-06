@@ -3,6 +3,7 @@ package org.example.taskmanager.service;
 import org.example.taskmanager.pojo.Task;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import uk.gov.hmcts.taskmanager.domain.UpdateStatusRequest;
 
 import java.util.Optional;
 
@@ -22,18 +23,16 @@ public class UpdateStatus {
     /**
      * Method to update the task with the matching ID number to the new status.
      *
-     * @param id id of the task to be updated.
-     * @param status new status of the task.
+     * @param  updateRequest request containing the id and new status of the task to be updated.
      * @return boolean returns true if a task is updated.
      */
-    public boolean updateStatus(String id, String status) {
-        Optional<Task> task = taskRepository.findById(id);
+    public boolean updateStatus(UpdateStatusRequest updateRequest) {
+        Optional<Task> task = taskRepository.findById(updateRequest.getId());
         if(task.isEmpty() || task.get().getId() == null) {
-            throw new RuntimeException("Task with ID " + id + " not found");
+            throw new RuntimeException("Task with ID " + updateRequest.getId() + " not found");
         } else {
-            Task updatedTask = new Task(id, task.get().getTitle(), task.get().getDescription(), status, task.get().getDueDate());
+            Task updatedTask = new Task(updateRequest.getId(), task.get().getTitle(), task.get().getDescription(), updateRequest.getStatus(), task.get().getDueDate());
             taskRepository.save(updatedTask);
-
         }
         return true;
     }
