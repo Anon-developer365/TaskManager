@@ -25,7 +25,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @WebAppConfiguration
 @SpringBootTest
-public class UpdateStatusControllerTests {
+public class UpdateStatusOrchestrationTests {
     @Autowired
     private final WebApplicationContext context;
 
@@ -36,9 +36,9 @@ public class UpdateStatusControllerTests {
     UpdateStatusValidation updateStatusValidation;
 
     @InjectMocks
-    private UpdateStatusController updateStatusController;
+    private UpdateStatusOrchestration updateStatusOrchestration;
 
-    public UpdateStatusControllerTests(WebApplicationContext context) {
+    public UpdateStatusOrchestrationTests(WebApplicationContext context) {
         this.context = context;
     }
 
@@ -52,10 +52,10 @@ public class UpdateStatusControllerTests {
         updateStatusRequest.setStatus("This is a new status");
 
         String expectedResult = "Status updated to: " + updateStatusRequest.getStatus();
-        updateStatusController = new UpdateStatusController(updateStatus, updateStatusValidation);
+        updateStatusOrchestration = new UpdateStatusOrchestration(updateStatus, updateStatusValidation);
         doNothing().when(updateStatusValidation).verifyStatus(updateStatusRequest.getId(), updateStatusRequest.getStatus());
         when(updateStatus.updateStatus(updateStatusRequest)).thenReturn(true);
-        SuccessResponse output = updateStatusController.updateStatus(updateStatusRequest);
+        SuccessResponse output = updateStatusOrchestration.updateStatus(updateStatusRequest);
         assert output != null;
         assertEquals(expectedResult, output.getMessage());
         assertEquals(updateStatusRequest.getId(), output.getId());
@@ -79,13 +79,13 @@ public class UpdateStatusControllerTests {
         updateStatusRequest.setId(uuid.toString());
         updateStatusRequest.setStatus("This is a new status");
 
-        updateStatusController = new UpdateStatusController(updateStatus, updateStatusValidation);
+        updateStatusOrchestration = new UpdateStatusOrchestration(updateStatus, updateStatusValidation);
 
         String expectedError = "validation error";
 
         TaskValidationErrorException thrown = assertThrows(TaskValidationErrorException.class, () -> {
             doThrow(new TaskValidationErrorException("validation error")).when(updateStatusValidation).verifyStatus(uuid.toString(), updateStatusRequest.getStatus());
-            updateStatusController.updateStatus(updateStatusRequest);
+            updateStatusOrchestration.updateStatus(updateStatusRequest);
         });
         assertEquals(expectedError, thrown.getMessage());
 

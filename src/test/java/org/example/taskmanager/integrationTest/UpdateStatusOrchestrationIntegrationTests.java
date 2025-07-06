@@ -1,7 +1,7 @@
 package org.example.taskmanager.integrationTest;
 
+import org.example.taskmanager.controllers.UpdateStatusOrchestration;
 import org.example.taskmanager.validation.StatusValidation;
-import org.example.taskmanager.controllers.UpdateStatusController;
 import org.example.taskmanager.validation.UpdateStatusValidation;
 import org.example.taskmanager.pojo.Task;
 import org.example.taskmanager.service.TaskRepository;
@@ -23,13 +23,13 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @DataJpaTest
-public class UpdateStatusControllerIntegrationTests {
+public class UpdateStatusOrchestrationIntegrationTests {
 
     private final TaskRepository taskRepository;
 
     private final StatusValidation statusValidation;
 
-    private UpdateStatusController updateStatusController;
+    private UpdateStatusOrchestration updateStatusOrchestration;
 
     private UpdateStatus updateStatus;
 
@@ -40,7 +40,7 @@ public class UpdateStatusControllerIntegrationTests {
     private LocalDateTime dueDate;
 
     @Autowired
-    public UpdateStatusControllerIntegrationTests(TaskRepository taskRepository) {
+    public UpdateStatusOrchestrationIntegrationTests(TaskRepository taskRepository) {
         this.taskRepository = taskRepository;
         this.statusValidation = new StatusValidation();
     }
@@ -49,7 +49,7 @@ public class UpdateStatusControllerIntegrationTests {
     void checkAStatusIsUpdatedWhenFoundInTheDatabase() throws ParseException {
         updateStatus = new UpdateStatus(taskRepository);
         updateStatusValidation = new UpdateStatusValidation(statusValidation);
-        updateStatusController = new UpdateStatusController(updateStatus, updateStatusValidation);
+        updateStatusOrchestration = new UpdateStatusOrchestration(updateStatus, updateStatusValidation);
 
         final DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
 
@@ -65,7 +65,7 @@ public class UpdateStatusControllerIntegrationTests {
         Task task = new Task("1", "develop database", "create a database", "open status", dueDate);
         String expectedOutput = "Status updated to: working";
         taskRepository.save(task);
-        SuccessResponse actualOutput = updateStatusController.updateStatus(updateStatusRequest);
+        SuccessResponse actualOutput = updateStatusOrchestration.updateStatus(updateStatusRequest);
         Task updatedTask = taskRepository.getReferenceById("1");
         assertEquals(expectedOutput, actualOutput.getMessage());
         assertEquals("working", updatedTask.getStatus());
@@ -76,13 +76,13 @@ public class UpdateStatusControllerIntegrationTests {
     void checkAnErrorIsReturnedIfTheIdIsNotInTheDatabase() {
         updateStatus = new UpdateStatus(taskRepository);
         updateStatusValidation = new UpdateStatusValidation(statusValidation);
-        updateStatusController = new UpdateStatusController(updateStatus, updateStatusValidation);
+        updateStatusOrchestration = new UpdateStatusOrchestration(updateStatus, updateStatusValidation);
 
         UpdateStatusRequest updateStatusRequest = new UpdateStatusRequest();
         updateStatusRequest.setId("1");
         updateStatusRequest.setStatus("working");
 
-        assertThrows(RuntimeException.class, () -> updateStatusController.updateStatus(updateStatusRequest));
+        assertThrows(RuntimeException.class, () -> updateStatusOrchestration.updateStatus(updateStatusRequest));
     }
 
 }

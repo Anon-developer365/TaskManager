@@ -5,20 +5,17 @@ import org.example.taskmanager.service.CreateTask;
 import org.example.taskmanager.service.SaveTask;
 import org.example.taskmanager.validation.TaskValidation;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.stereotype.Service;
 import uk.gov.hmcts.taskmanager.domain.CreateTaskRequest;
 import uk.gov.hmcts.taskmanager.domain.SuccessResponse;
 
-import java.text.ParseException;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
 
 
 /**
  * Rest controller for create task end point to create and save a new task in the database.
  */
-@RestController
-public class CreateTaskController {
+@Service
+public class CreateTaskOrchestration {
     /**
      * service to create a new task, assign an ID and format the date.
      */
@@ -42,7 +39,7 @@ public class CreateTaskController {
      * @param validation task validation service.
      */
     @Autowired
-    public CreateTaskController(final CreateTask createTask, final SaveTask saveTask, final TaskValidation validation) {
+    public CreateTaskOrchestration(final CreateTask createTask, final SaveTask saveTask, final TaskValidation validation) {
         this.createTask = createTask;
         this.saveTask = saveTask;
         this.validation = validation;

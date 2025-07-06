@@ -33,7 +33,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @WebAppConfiguration
 @SpringBootTest
-public class CreateTaskControllerTests {
+public class CreateTaskOrchestrationTests {
 
     @Mock
     private CreateTask createTask;
@@ -45,14 +45,14 @@ public class CreateTaskControllerTests {
     TaskValidation taskValidation;
 
     @InjectMocks
-    private CreateTaskController createTaskController;
+    private CreateTaskOrchestration createTaskOrchestration;
 
     @Autowired
     private final WebApplicationContext context;
 
     private CreateTaskRequest createTaskRequest;
 
-    public CreateTaskControllerTests(WebApplicationContext context) {
+    public CreateTaskOrchestrationTests(WebApplicationContext context) {
         this.context = context;
     }
 
@@ -75,11 +75,11 @@ public class CreateTaskControllerTests {
                 .toLocalDateTime();
 
         Task task = new Task(uuid.toString(), createTaskRequest.getTitle(), createTaskRequest.getTaskDescription(), createTaskRequest.getStatus(), dueDate);
-        createTaskController = new CreateTaskController(createTask, saveTask, taskValidation);
+        createTaskOrchestration = new CreateTaskOrchestration(createTask, saveTask, taskValidation);
         doNothing().when(taskValidation).verifyTask(createTaskRequest.getTitle(), createTaskRequest.getTaskDescription(), createTaskRequest.getStatus(), createTaskRequest.getDueDate());
         when(createTask.createNewTask(createTaskRequest.getTitle(), createTaskRequest.getTaskDescription(), createTaskRequest.getStatus(), createTaskRequest.getDueDate())).thenReturn(task);
         when(saveTask.saveData(task)).thenReturn(uuid.toString());
-        SuccessResponse output = createTaskController.createTask(transactionId, createTaskRequest);
+        SuccessResponse output = createTaskOrchestration.createTask(transactionId, createTaskRequest);
         assertEquals("Task Created successfully", output.getMessage());
         assertEquals(uuid.toString(), output.getId());
 
@@ -112,7 +112,7 @@ public class CreateTaskControllerTests {
 
         Task task = new Task(uuid.toString(), createTaskRequest.getTitle(),
                 createTaskRequest.getTaskDescription(), createTaskRequest.getStatus(), dueDate);
-        createTaskController = new CreateTaskController(createTask, saveTask, taskValidation);
+        createTaskOrchestration = new CreateTaskOrchestration(createTask, saveTask, taskValidation);
         when(createTask.createNewTask(createTaskRequest.getTitle(), createTaskRequest.getTaskDescription(), createTaskRequest.getStatus(), date)).thenReturn(task);
         when(saveTask.saveData(task)).thenReturn(uuid.toString());
 
@@ -121,7 +121,7 @@ public class CreateTaskControllerTests {
         TaskValidationErrorException thrown = assertThrows(TaskValidationErrorException.class, () -> {
             doThrow(new TaskValidationErrorException("Task title is empty")).when(taskValidation).verifyTask(createTaskRequest.getTitle(),
                     createTaskRequest.getTaskDescription(), createTaskRequest.getStatus(), date);
-            createTaskController.createTask("1", createTaskRequest);
+            createTaskOrchestration.createTask("1", createTaskRequest);
         });
         assertEquals(expectedError, thrown.getMessage());
 
@@ -145,14 +145,14 @@ public class CreateTaskControllerTests {
 
         Task task = new Task(uuid.toString(), createTaskRequest.getTitle(),
                 createTaskRequest.getTaskDescription(), createTaskRequest.getStatus(), dueDate);
-        createTaskController = new CreateTaskController(createTask, saveTask, taskValidation);
+        createTaskOrchestration = new CreateTaskOrchestration(createTask, saveTask, taskValidation);
         when(createTask.createNewTask(createTaskRequest.getTitle(),
                 createTaskRequest.getTaskDescription(), createTaskRequest.getStatus(), date)).thenReturn(task);
         when(saveTask.saveData(task)).thenThrow(new RuntimeException("An error occurred saving the task"));
 
         String expectedError = "An error occurred saving the task";
 
-        RuntimeException thrown = assertThrows(RuntimeException.class, () -> createTaskController.createTask("1", createTaskRequest));
+        RuntimeException thrown = assertThrows(RuntimeException.class, () -> createTaskOrchestration.createTask("1", createTaskRequest));
         assertEquals(expectedError, thrown.getMessage());
 
     }

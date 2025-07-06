@@ -3,20 +3,18 @@ package org.example.taskmanager.controllers;
 import org.example.taskmanager.service.UpdateStatus;
 import org.example.taskmanager.validation.UpdateStatusValidation;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
 import uk.gov.hmcts.taskmanager.domain.SuccessResponse;
 import uk.gov.hmcts.taskmanager.domain.UpdateStatusRequest;
 
-import static org.springframework.http.ResponseEntity.ok;
 
 /**
  * Controller to update the status of an existing task.
  */
-@RestController
-public class UpdateStatusController {
+@Service
+public class UpdateStatusOrchestration {
 
     /**
      * Update status service to update the status in the database.
@@ -33,7 +31,7 @@ public class UpdateStatusController {
      * @param updateStatus update status service.
      */
     @Autowired
-    public UpdateStatusController(UpdateStatus updateStatus, UpdateStatusValidation updateStatusValidation) {
+    public UpdateStatusOrchestration(UpdateStatus updateStatus, UpdateStatusValidation updateStatusValidation) {
         this.updateStatus = updateStatus;
         this.updateStatusValidation = updateStatusValidation;
 
@@ -42,8 +40,7 @@ public class UpdateStatusController {
     /**
      * Method to update the status of an existing task.
      *
-     * @param Id id of the task in the database
-     * @param status the new status of the task.
+     * @param updateRequest update request containing the status and id of the task to be updated.
      * @return a success message with the updated status.
      */
     @RequestMapping(value = "/Task", method = RequestMethod.PUT)
