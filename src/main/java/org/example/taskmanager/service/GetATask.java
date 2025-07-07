@@ -1,6 +1,8 @@
 package org.example.taskmanager.service;
 
 
+import jakarta.persistence.EntityNotFoundException;
+import org.example.taskmanager.exceptions.TaskValidationErrorException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import uk.gov.hmcts.taskmanager.domain.Task;
@@ -41,20 +43,22 @@ public class GetATask {
         Task transformedTask = new Task();
         Optional<org.example.taskmanager.pojo.Task> foundTask;
 
-        foundTask = taskRepository.findById(id);
+        try {
+            foundTask = taskRepository.findById(id);
 
-        if(foundTask.isPresent()) {
-            transformedTask.setId(foundTask.get().getId());
-            transformedTask.setTitle(foundTask.get().getTitle());
-            transformedTask.setStatus(foundTask.get().getStatus());
-            transformedTask.setTaskDescription(foundTask.get().getDescription());
-            LocalDateTime date = foundTask.get().getDueDate();
-            Date dueDate = java.util.Date
-                    .from(date.atZone(ZoneId.systemDefault())
-                            .toInstant());
-            transformedTask.setDueDate(dueDate);
-        } else {
-            throw new RuntimeException("Task with ID " + id + " not found");
+            if (foundTask.isPresent()) {
+                transformedTask.setId(foundTask.get().getId());
+                transformedTask.setTitle(foundTask.get().getTitle());
+                transformedTask.setStatus(foundTask.get().getStatus());
+                transformedTask.setTaskDescription(foundTask.get().getDescription());
+                LocalDateTime date = foundTask.get().getDueDate();
+                Date dueDate = java.util.Date
+                        .from(date.atZone(ZoneId.systemDefault())
+                                .toInstant());
+                transformedTask.setDueDate(dueDate);
+            }
+        } catch (EntityNotFoundException exception){
+            throw new TaskValidationErrorException("Task with ID " + id + " not found");
         }
         return transformedTask;
 

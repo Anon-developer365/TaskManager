@@ -58,4 +58,10 @@ public class TaskManagementSystemController implements TaskManagementSystemApi {
         return ok(updateStatusOrchestration.updateStatus(body));
     }
 
+    @Override
+    @RequestMapping(value = "/Task", method = RequestMethod.DELETE)
+    public ResponseEntity<SuccessResponse> deleteTask(@Validated String transactionId, @Validated String TaskId) {
+        return null;
+    }
+
 }

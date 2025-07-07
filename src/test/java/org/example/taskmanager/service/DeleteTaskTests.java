@@ -8,6 +8,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.boot.test.context.SpringBootTest;
+import uk.gov.hmcts.taskmanager.domain.SuccessResponse;
 
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -19,24 +20,25 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.inOrder;
 
 @SpringBootTest
-public class GetATaskTest {
+public class DeleteTaskTests {
 
     @Mock
     private TaskRepository taskRepository;
 
     @InjectMocks
-    private GetATask getATask;
+    private DeleteTask deleteTask;
 
     private Date date;
 
     private LocalDateTime dueDate;
 
     @Test
-    void checkIfATaskIsRequestedAndExistsItIsReturned() throws ParseException {
-        getATask = new GetATask(taskRepository);
-
+    void checkWhenATaskIsInTheDataBaseAndIdMatchesThisIsDeleted() throws ParseException {
+        deleteTask = new DeleteTask(taskRepository);
         final DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
 
         date = dateFormat.parse("2025-05-05 17:00");
@@ -46,17 +48,17 @@ public class GetATaskTest {
 
         Task task = new Task("1", "develop database", "create a database", "open status", dueDate);
         Mockito.when(taskRepository.findById("1")).thenReturn(Optional.of(task));
-        uk.gov.hmcts.taskmanager.domain.Task actualTask = getATask.getATask("1");
-        assertEquals("1", actualTask.getId());
-        assertEquals("develop database", actualTask.getTitle());
+        doNothing().when(taskRepository).deleteById("1");
+        String expectedMessage = "Task 1 deleted.";
+        SuccessResponse response = deleteTask.deleteTask("1");
+        assertEquals("1", response.getId());
+        assertEquals(expectedMessage, response.getMessage());
     }
 
     @Test
-    void checkIfATaskIsRequestedAndDoesNotExistsAnErrorIsThrown() {
-
-        getATask = new GetATask(taskRepository);
+    void checkWhenATaskIsInTheDataBaseAndIdDoesNotMatchAnErrorIsThrown() {
+        deleteTask = new DeleteTask(taskRepository);
         Mockito.when(taskRepository.findById("1")).thenThrow(EntityNotFoundException.class);
-        assertThrows(TaskValidationErrorException.class, () -> getATask.getATask("1"));
+        assertThrows(TaskValidationErrorException.class, () -> deleteTask.deleteTask("1"));
     }
-
 }
