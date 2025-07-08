@@ -1,5 +1,7 @@
 package org.example.taskmanager.controllers;
 
+import jakarta.validation.Valid;
+import org.example.taskmanager.service.DeleteTask;
 import org.example.taskmanager.service.GetATask;
 import org.example.taskmanager.service.RetrieveTasks;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,45 +25,49 @@ public class TaskManagementSystemController implements TaskManagementSystemApi {
     private final RetrieveTasks getAllTasks;
 
     private final UpdateStatusOrchestration updateStatusOrchestration;
+
+    private final DeleteTask deleteTask;
     @Autowired
     public TaskManagementSystemController(CreateTaskOrchestration createTaskOrchestration, GetATask getATask,
-                                          RetrieveTasks getAllTasks, UpdateStatusOrchestration updateStatusOrchestration) {
+                                          RetrieveTasks getAllTasks, UpdateStatusOrchestration updateStatusOrchestration,
+                                          DeleteTask deleteTask) {
         this.createTaskOrchestration = createTaskOrchestration;
         this.getATask = getATask;
         this.getAllTasks = getAllTasks;
         this.updateStatusOrchestration = updateStatusOrchestration;
+        this.deleteTask = deleteTask;
     }
 
     @Override
     @RequestMapping(value = "/Task", method = RequestMethod.POST)
-    public ResponseEntity<SuccessResponse> createTask(@Validated String transactionId, @Validated CreateTaskRequest taskRequest) {
+    public ResponseEntity<SuccessResponse> createTask(@Valid String transactionId, @Valid CreateTaskRequest taskRequest) {
 
             return ok(createTaskOrchestration.createTask(transactionId, taskRequest));
     }
 
     @Override
     @RequestMapping(value = "/Task", method = RequestMethod.GET)
-    public ResponseEntity<Task> getTask(@Validated String transactionId, String taskId) {
+    public ResponseEntity<Task> getTask(@Valid String transactionId, @Valid String taskId) {
         return ok(getATask.getATask(taskId));
     }
 
     @Override
     @RequestMapping(value = "/allTasks", method = RequestMethod.GET)
-    public ResponseEntity<TaskResponse> getTasks(@Validated String transactionId) {
+    public ResponseEntity<TaskResponse> getTasks(@Valid String transactionId) {
         return ok(getAllTasks.getAllTasks());
     }
 
     @Override
     @RequestMapping(value = "/Task", method = RequestMethod.PUT)
-    public ResponseEntity<SuccessResponse> updateStatus(@Validated String transactionId, @Validated UpdateStatusRequest body) {
+    public ResponseEntity<SuccessResponse> updateStatus(@Valid String transactionId, @Valid UpdateStatusRequest body) {
 
         return ok(updateStatusOrchestration.updateStatus(body));
     }
 
     @Override
     @RequestMapping(value = "/Task", method = RequestMethod.DELETE)
-    public ResponseEntity<SuccessResponse> deleteTask(@Validated String transactionId, @Validated String TaskId) {
-        return null;
+    public ResponseEntity<SuccessResponse> deleteTask(@Valid String transactionId, @Valid String taskId) {
+        return ok(deleteTask.deleteTask(taskId));
     }
 
 }

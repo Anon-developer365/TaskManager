@@ -1,5 +1,7 @@
 package org.example.taskmanager.controllers;
 
+import org.example.taskmanager.exceptions.TaskValidationErrorException;
+import org.example.taskmanager.service.DeleteTask;
 import org.example.taskmanager.service.GetATask;
 import org.example.taskmanager.service.RetrieveTasks;
 import org.junit.jupiter.api.Test;
@@ -12,6 +14,7 @@ import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
+import uk.gov.hmcts.taskmanager.domain.SuccessResponse;
 import uk.gov.hmcts.taskmanager.domain.Task;
 import uk.gov.hmcts.taskmanager.domain.TaskResponse;
 
@@ -46,6 +49,9 @@ public class TaskManagementSystemControllerTest {
     @Mock
     private UpdateStatusOrchestration updateStatusOrchestration;
 
+    @Mock
+    private DeleteTask deleteTask;
+
     @InjectMocks
     private TaskManagementSystemController taskController;
 
@@ -55,10 +61,11 @@ public class TaskManagementSystemControllerTest {
 
     @Test
     void aSuccessMessageIsReceivedWhenDetailsAreProvided() throws ParseException {
-        taskController = new TaskManagementSystemController(createTaskOrchestration, getATask, getAllTasks, updateStatusOrchestration);
+        taskController = new TaskManagementSystemController(createTaskOrchestration, getATask, getAllTasks, updateStatusOrchestration, deleteTask);
         final UUID uuid = UUID.randomUUID();
         final DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
         Date date = dateFormat.parse("2025-05-05 17:00");
+        System.out.println(date);
 
         Task task = new Task();
         task.setId(uuid.toString());
@@ -82,7 +89,7 @@ public class TaskManagementSystemControllerTest {
 
     @Test
     void ifTheIdDoesNotExistAMessageIsReturnedToTheConsumer() {
-        taskController = new TaskManagementSystemController(createTaskOrchestration, getATask, getAllTasks, updateStatusOrchestration);
+        taskController = new TaskManagementSystemController(createTaskOrchestration, getATask, getAllTasks, updateStatusOrchestration, deleteTask);
         final UUID uuid = UUID.randomUUID();
         when(getATask.getATask(uuid.toString())).thenThrow(new RuntimeException("Task with ID " + uuid + " not found"));
 
@@ -93,7 +100,7 @@ public class TaskManagementSystemControllerTest {
 
     @Test
     void whenAnEmptyListIsReceivedBackFromTheServiceThisIsReturned() {
-        taskController = new TaskManagementSystemController(createTaskOrchestration, getATask, getAllTasks, updateStatusOrchestration);
+        taskController = new TaskManagementSystemController(createTaskOrchestration, getATask, getAllTasks, updateStatusOrchestration, deleteTask);
         TaskResponse taskResponse = new TaskResponse();
         when(getAllTasks.getAllTasks()).thenReturn(taskResponse);
 
@@ -104,7 +111,7 @@ public class TaskManagementSystemControllerTest {
 
     @Test
     void whenAListWithATaskIsReceivedBackFromTheServiceThisIsReturned() throws ParseException {
-        taskController = new TaskManagementSystemController(createTaskOrchestration, getATask, getAllTasks, updateStatusOrchestration);
+        taskController = new TaskManagementSystemController(createTaskOrchestration, getATask, getAllTasks, updateStatusOrchestration, deleteTask);
         UUID id = UUID.randomUUID();
         final DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
         Date date = dateFormat.parse("2025-05-05 17:00");
@@ -126,7 +133,7 @@ public class TaskManagementSystemControllerTest {
 
     @Test
     void whenAListWithMoreThanOneTaskIsReceivedBackFromTheServiceAllItemsAreReturned() throws ParseException {
-        taskController = new TaskManagementSystemController(createTaskOrchestration, getATask, getAllTasks, updateStatusOrchestration);
+        taskController = new TaskManagementSystemController(createTaskOrchestration, getATask, getAllTasks, updateStatusOrchestration, deleteTask);
         UUID id = UUID.randomUUID();
         UUID id2 = UUID.randomUUID();
         final DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
@@ -150,8 +157,29 @@ public class TaskManagementSystemControllerTest {
 
         ResponseEntity<TaskResponse> actual = taskController.getTasks("2");
         assertEquals(expected.getTasks().size(), actual.getBody().getTasks().size());
+    }
+
+    @Test
+    void checkWhenATaskIsDeletedASuccessMessageIsReceived(){
+        taskController = new TaskManagementSystemController(createTaskOrchestration, getATask, getAllTasks, updateStatusOrchestration, deleteTask);
+        SuccessResponse response = new SuccessResponse();
+        response.setId("1");
+        response.setMessage("Task 1 deleted.");
+        when(deleteTask.deleteTask("1")).thenReturn(response);
+        ResponseEntity<SuccessResponse> output = taskController.deleteTask("2", "1");
+        assertEquals("1", output.getBody().getId());
+        assertEquals(response.getMessage(), output.getBody().getMessage());
 
     }
 
+    @Test
+    void checkWhenATaskIdCanNotBeFoundAnErrorMessageIsReturned(){
+        taskController = new TaskManagementSystemController(createTaskOrchestration, getATask, getAllTasks, updateStatusOrchestration, deleteTask);
+
+        TaskValidationErrorException exception = new TaskValidationErrorException("No task found with that ID 1");
+        when(deleteTask.deleteTask("1")).thenThrow(exception);
+        TaskValidationErrorException actualException = assertThrows(TaskValidationErrorException.class, () -> taskController.deleteTask("2", "1"));
+        assertEquals(exception.getMessage(), actualException.getMessage());
+    }
 }
 
