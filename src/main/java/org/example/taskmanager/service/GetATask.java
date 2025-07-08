@@ -7,9 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import uk.gov.hmcts.taskmanager.domain.Task;
 
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.util.Date;
 import java.util.Optional;
 
 
@@ -51,11 +48,7 @@ public class GetATask {
                 transformedTask.setTitle(foundTask.get().getTitle());
                 transformedTask.setStatus(foundTask.get().getStatus());
                 transformedTask.setTaskDescription(foundTask.get().getDescription());
-                LocalDateTime date = foundTask.get().getDueDate();
-                Date dueDate = java.util.Date
-                        .from(date.atZone(ZoneId.systemDefault())
-                                .toInstant());
-                transformedTask.setDueDate(dueDate);
+                transformedTask.setDueDate(foundTask.get().getDueDate());
             }
         } catch (EntityNotFoundException exception){
             throw new TaskValidationErrorException("Task with ID " + id + " not found");

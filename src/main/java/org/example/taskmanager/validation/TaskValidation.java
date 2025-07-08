@@ -3,15 +3,10 @@ package org.example.taskmanager.validation;
 import io.micrometer.common.util.StringUtils;
 import lombok.ToString;
 import org.example.taskmanager.exceptions.TaskValidationErrorException;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Service;
 
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -44,7 +39,7 @@ public class TaskValidation {
      * @param status task status to be validated
      * @param dueDate due date to be validated.
      */
-    public void verifyTask(String title, String description, String status, @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm") Date dueDate) {
+    public void verifyTask(String title, String description, String status, LocalDateTime dueDate) {
         final List<String> allErrors = new ArrayList<>();
         allErrors.addAll(titleCheck(title));
         allErrors.addAll(descriptionCheck(description));
@@ -101,7 +96,7 @@ public class TaskValidation {
      * @param dueDate due date to be validated.
      * @return returns either an empty list or a list containing due date validation errors.
      */
-    private List<String> dueDateCheck(Date dueDate) {
+    private List<String> dueDateCheck(LocalDateTime dueDate) {
         final List<String> errors = new ArrayList<>();
         if (dueDate == null) {
             errors.add("Task due date is empty");

@@ -33,14 +33,11 @@ public class RetrieveTasks {
         TaskResponse taskResponse = new TaskResponse();
         List <Task> tasks = taskRepository.findAll();
         for (Task task : tasks) {
-            Date date = java.util.Date
-                    .from(task.getDueDate().atZone(ZoneId.systemDefault())
-                            .toInstant());
             uk.gov.hmcts.taskmanager.domain.Task aTask = new uk.gov.hmcts.taskmanager.domain.Task();
             aTask.setTaskDescription(task.getDescription());
             aTask.setStatus(task.getStatus());
             aTask.setId(task.getId());
-            aTask.setDueDate(date);
+            aTask.setDueDate(task.getDueDate());
             aTask.setTitle(task.getTitle());
             taskResponse.addTasksItem(aTask);
         }

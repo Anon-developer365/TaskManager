@@ -18,10 +18,9 @@ import uk.gov.hmcts.taskmanager.domain.SuccessResponse;
 import uk.gov.hmcts.taskmanager.domain.Task;
 import uk.gov.hmcts.taskmanager.domain.TaskResponse;
 
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Locale;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -60,18 +59,19 @@ public class TaskManagementSystemControllerTest {
     }
 
     @Test
-    void aSuccessMessageIsReceivedWhenDetailsAreProvided() throws ParseException {
+    void aSuccessMessageIsReceivedWhenDetailsAreProvided() {
         taskController = new TaskManagementSystemController(createTaskOrchestration, getATask, getAllTasks, updateStatusOrchestration, deleteTask);
         final UUID uuid = UUID.randomUUID();
-        final DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
-        Date date = dateFormat.parse("2025-05-05 17:00");
-        System.out.println(date);
+
+        String stringDate = "2025-05-05 17:00";
+        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm", Locale.UK);
+        LocalDateTime dueDate = LocalDateTime.parse(stringDate, dateTimeFormatter);
 
         Task task = new Task();
         task.setId(uuid.toString());
         task.setTaskDescription("description");
         task.setStatus("status");
-        task.setDueDate(date);
+        task.setDueDate(dueDate);
         when(getATask.getATask(uuid.toString())).thenReturn(task);
         ResponseEntity<Task> output = taskController.getTask("1", uuid.toString());
         assert output != null;
@@ -110,18 +110,20 @@ public class TaskManagementSystemControllerTest {
     }
 
     @Test
-    void whenAListWithATaskIsReceivedBackFromTheServiceThisIsReturned() throws ParseException {
+    void whenAListWithATaskIsReceivedBackFromTheServiceThisIsReturned() {
         taskController = new TaskManagementSystemController(createTaskOrchestration, getATask, getAllTasks, updateStatusOrchestration, deleteTask);
         UUID id = UUID.randomUUID();
-        final DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
-        Date date = dateFormat.parse("2025-05-05 17:00");
+
+        String stringDate = "2025-05-05 17:00";
+        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm", Locale.UK);
+        LocalDateTime dueDate = LocalDateTime.parse(stringDate, dateTimeFormatter);
 
         uk.gov.hmcts.taskmanager.domain.Task task = new uk.gov.hmcts.taskmanager.domain.Task();
         task.setTaskDescription("description");
         task.setId(id.toString());
         task.setStatus("status");
         task.setTitle("title");
-        task.setDueDate(date);
+        task.setDueDate(dueDate);
         TaskResponse expected = new TaskResponse();
         expected.addTasksItem(task);
         when(getAllTasks.getAllTasks()).thenReturn(expected);
@@ -132,18 +134,21 @@ public class TaskManagementSystemControllerTest {
     }
 
     @Test
-    void whenAListWithMoreThanOneTaskIsReceivedBackFromTheServiceAllItemsAreReturned() throws ParseException {
+    void whenAListWithMoreThanOneTaskIsReceivedBackFromTheServiceAllItemsAreReturned() {
         taskController = new TaskManagementSystemController(createTaskOrchestration, getATask, getAllTasks, updateStatusOrchestration, deleteTask);
         UUID id = UUID.randomUUID();
         UUID id2 = UUID.randomUUID();
-        final DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
-        Date date = dateFormat.parse("2025-05-05 17:00");
+
+        String stringDate = "2025-05-05 17:00";
+        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm", Locale.UK);
+        LocalDateTime dueDate = LocalDateTime.parse(stringDate, dateTimeFormatter);
+
         uk.gov.hmcts.taskmanager.domain.Task task = new uk.gov.hmcts.taskmanager.domain.Task();
         task.setTaskDescription("description");
         task.setId(id.toString());
         task.setStatus("status");
         task.setTitle("title");
-        task.setDueDate(date);
+        task.setDueDate(dueDate);
         TaskResponse expected = new TaskResponse();
         expected.addTasksItem(task);
         uk.gov.hmcts.taskmanager.domain.Task task2 = new uk.gov.hmcts.taskmanager.domain.Task();
@@ -151,7 +156,7 @@ public class TaskManagementSystemControllerTest {
         task.setId(id2.toString());
         task.setStatus("status");
         task.setTitle("title");
-        task.setDueDate(date);
+        task.setDueDate(dueDate);
         expected.addTasksItem(task2);
         when(getAllTasks.getAllTasks()).thenReturn(expected);
 
@@ -160,7 +165,7 @@ public class TaskManagementSystemControllerTest {
     }
 
     @Test
-    void checkWhenATaskIsDeletedASuccessMessageIsReceived(){
+    void checkWhenATaskIsDeletedASuccessMessageIsReceived() {
         taskController = new TaskManagementSystemController(createTaskOrchestration, getATask, getAllTasks, updateStatusOrchestration, deleteTask);
         SuccessResponse response = new SuccessResponse();
         response.setId("1");
@@ -173,7 +178,7 @@ public class TaskManagementSystemControllerTest {
     }
 
     @Test
-    void checkWhenATaskIdCanNotBeFoundAnErrorMessageIsReturned(){
+    void checkWhenATaskIdCanNotBeFoundAnErrorMessageIsReturned() {
         taskController = new TaskManagementSystemController(createTaskOrchestration, getATask, getAllTasks, updateStatusOrchestration, deleteTask);
 
         TaskValidationErrorException exception = new TaskValidationErrorException("No task found with that ID 1");

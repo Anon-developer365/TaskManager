@@ -14,10 +14,9 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import uk.gov.hmcts.taskmanager.domain.CreateTaskRequest;
 import uk.gov.hmcts.taskmanager.domain.SuccessResponse;
 
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Locale;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -46,19 +45,21 @@ public class CreateTaskOrchestrationIntegrationTests {
     }
 
     @Test
-    void aSuccessMessageIsReceivedWhenTheEndPointIsHit() throws ParseException {
+    void aSuccessMessageIsReceivedWhenTheEndPointIsHit() {
         createTask = new CreateTask();
         taskValidation = new TaskValidation(statusValidation);
         saveTask = new SaveTask(taskRepository);
         createTaskOrchestration = new CreateTaskOrchestration(createTask, saveTask, taskValidation);
-        final DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
 
-        Date date = (dateFormat.parse("2025-05-05 17:00"));
+        String stringDate = "2025-05-05 17:00";
+        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm", Locale.UK);
+        LocalDateTime dueDate = LocalDateTime.parse(stringDate, dateTimeFormatter);
+
         createTaskRequest = new CreateTaskRequest();
         createTaskRequest.setTitle("case title");
         createTaskRequest.setTaskDescription("");
         createTaskRequest.setStatus("open status");
-        createTaskRequest.setDueDate(date);
+        createTaskRequest.setDueDate(dueDate);
         SuccessResponse output = createTaskOrchestration.createTask("1", createTaskRequest);
         assert output != null;
         assert output.getMessage().equals("Task Created successfully");
@@ -68,18 +69,20 @@ public class CreateTaskOrchestrationIntegrationTests {
     }
 
     @Test
-    void whenThereIsAValidationErrorThisIsReturned() throws ParseException {
+    void whenThereIsAValidationErrorThisIsReturned() {
         createTask = new CreateTask();
         taskValidation = new TaskValidation(statusValidation);
         saveTask = new SaveTask(taskRepository);
-        final DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
 
-        Date date = (dateFormat.parse("2025-05-05 17:00"));
+        String stringDate = "2025-05-05 17:00";
+        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm", Locale.UK);
+        LocalDateTime dueDate = LocalDateTime.parse(stringDate, dateTimeFormatter);
+
         createTaskRequest = new CreateTaskRequest();
         createTaskRequest.setTitle("case title");
         createTaskRequest.setTaskDescription("");
         createTaskRequest.setStatus("#");
-        createTaskRequest.setDueDate(date);
+        createTaskRequest.setDueDate(dueDate);
         createTaskOrchestration = new CreateTaskOrchestration(createTask, saveTask, taskValidation);
         assertThrows(TaskValidationErrorException.class, () -> createTaskOrchestration.createTask("1", createTaskRequest));
     }

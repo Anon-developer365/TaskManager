@@ -17,12 +17,9 @@ import org.springframework.web.context.WebApplicationContext;
 import uk.gov.hmcts.taskmanager.domain.CreateTaskRequest;
 import uk.gov.hmcts.taskmanager.domain.SuccessResponse;
 
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.util.Date;
+import java.time.format.DateTimeFormatter;
+import java.util.Locale;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -58,21 +55,19 @@ public class CreateTaskOrchestrationTests {
 
 
     @Test
-    void aSuccessMessageIsReceivedWhenTheEndPointIsHit() throws ParseException {
+    void aSuccessMessageIsReceivedWhenTheEndPointIsHit() {
         UUID uuid = UUID.randomUUID();
         String transactionId = "1";
-        final DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
 
-        Date date = (dateFormat.parse("2025-05-05 17:00"));
+        String stringDate = "2025-05-05 17:00";
+        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm", Locale.UK);
+        LocalDateTime dueDate = LocalDateTime.parse(stringDate, dateTimeFormatter);
+
         createTaskRequest = new CreateTaskRequest();
         createTaskRequest.setTitle("case title");
         createTaskRequest.setTaskDescription("description");
         createTaskRequest.setStatus("open status");
-        createTaskRequest.setDueDate(date);
-
-        LocalDateTime dueDate = date.toInstant()
-                .atZone(ZoneId.systemDefault())
-                .toLocalDateTime();
+        createTaskRequest.setDueDate(dueDate);
 
         Task task = new Task(uuid.toString(), createTaskRequest.getTitle(), createTaskRequest.getTaskDescription(), createTaskRequest.getStatus(), dueDate);
         createTaskOrchestration = new CreateTaskOrchestration(createTask, saveTask, taskValidation);
@@ -94,33 +89,30 @@ public class CreateTaskOrchestrationTests {
     }
 
     @Test
-    void whenThereIsAValidationErrorThisIsReturnedToTheConsumer() throws ParseException {
+    void whenThereIsAValidationErrorThisIsReturnedToTheConsumer() {
         UUID uuid = UUID.randomUUID();
 
-        final DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
-        Date date = (dateFormat.parse("2025-05-05 17:00"));
+        String stringDate = "2025-05-05 17:00";
+        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm", Locale.UK);
+        LocalDateTime dueDate = LocalDateTime.parse(stringDate, dateTimeFormatter);
 
         createTaskRequest = new CreateTaskRequest();
         createTaskRequest.setTaskDescription("description");
         createTaskRequest.setStatus("open status");
         createTaskRequest.setTitle("");
-        createTaskRequest.setDueDate(date);
-
-        LocalDateTime dueDate = date.toInstant()
-                .atZone(ZoneId.systemDefault())
-                .toLocalDateTime();
+        createTaskRequest.setDueDate(dueDate);
 
         Task task = new Task(uuid.toString(), createTaskRequest.getTitle(),
                 createTaskRequest.getTaskDescription(), createTaskRequest.getStatus(), dueDate);
         createTaskOrchestration = new CreateTaskOrchestration(createTask, saveTask, taskValidation);
-        when(createTask.createNewTask(createTaskRequest.getTitle(), createTaskRequest.getTaskDescription(), createTaskRequest.getStatus(), date)).thenReturn(task);
+        when(createTask.createNewTask(createTaskRequest.getTitle(), createTaskRequest.getTaskDescription(), createTaskRequest.getStatus(), dueDate)).thenReturn(task);
         when(saveTask.saveData(task)).thenReturn(uuid.toString());
 
         String expectedError = "Task title is empty";
 
         TaskValidationErrorException thrown = assertThrows(TaskValidationErrorException.class, () -> {
             doThrow(new TaskValidationErrorException("Task title is empty")).when(taskValidation).verifyTask(createTaskRequest.getTitle(),
-                    createTaskRequest.getTaskDescription(), createTaskRequest.getStatus(), date);
+                    createTaskRequest.getTaskDescription(), createTaskRequest.getStatus(), dueDate);
             createTaskOrchestration.createTask("1", createTaskRequest);
         });
         assertEquals(expectedError, thrown.getMessage());
@@ -128,26 +120,24 @@ public class CreateTaskOrchestrationTests {
     }
 
     @Test
-    void whenThereIsAnErrorSavingTheTaskThisIsReturnedToTheConsumer() throws ParseException {
+    void whenThereIsAnErrorSavingTheTaskThisIsReturnedToTheConsumer() {
         UUID uuid = UUID.randomUUID();
-        final DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
-        Date date = (dateFormat.parse("2025-05-05 17:00"));
+
+        String stringDate = "2025-05-05 17:00";
+        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm", Locale.UK);
+        LocalDateTime dueDate = LocalDateTime.parse(stringDate, dateTimeFormatter);
 
         createTaskRequest = new CreateTaskRequest();
         createTaskRequest.setTaskDescription("description");
         createTaskRequest.setStatus("open status");
         createTaskRequest.setTitle("");
-        createTaskRequest.setDueDate(date);
-
-        LocalDateTime dueDate = date.toInstant()
-                .atZone(ZoneId.systemDefault())
-                .toLocalDateTime();
+        createTaskRequest.setDueDate(dueDate);
 
         Task task = new Task(uuid.toString(), createTaskRequest.getTitle(),
                 createTaskRequest.getTaskDescription(), createTaskRequest.getStatus(), dueDate);
         createTaskOrchestration = new CreateTaskOrchestration(createTask, saveTask, taskValidation);
         when(createTask.createNewTask(createTaskRequest.getTitle(),
-                createTaskRequest.getTaskDescription(), createTaskRequest.getStatus(), date)).thenReturn(task);
+                createTaskRequest.getTaskDescription(), createTaskRequest.getStatus(), dueDate)).thenReturn(task);
         when(saveTask.saveData(task)).thenThrow(new RuntimeException("An error occurred saving the task"));
 
         String expectedError = "An error occurred saving the task";

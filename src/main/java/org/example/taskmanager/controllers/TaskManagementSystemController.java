@@ -6,11 +6,11 @@ import org.example.taskmanager.service.GetATask;
 import org.example.taskmanager.service.RetrieveTasks;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import uk.gov.hmcts.taskmanager.api.controller.TaskManagementSystemApi;
+import uk.gov.hmcts.taskmanager.api.controller.TaskManagementSystemApiDelegate;
 import uk.gov.hmcts.taskmanager.domain.*;
 
 
@@ -36,6 +36,11 @@ public class TaskManagementSystemController implements TaskManagementSystemApi {
         this.getAllTasks = getAllTasks;
         this.updateStatusOrchestration = updateStatusOrchestration;
         this.deleteTask = deleteTask;
+    }
+
+    @Override
+    public TaskManagementSystemApiDelegate getDelegate() {
+        return null;
     }
 
     @Override
