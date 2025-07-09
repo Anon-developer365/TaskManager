@@ -26,7 +26,7 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
      */
     @ResponseBody
     @ExceptionHandler(TaskValidationErrorException.class)
-    public ResponseEntity<ErrorResponse> handleEmptyTaskException(final TaskValidationErrorException exception) {
+    public ResponseEntity<ErrorResponse> handleTaskValidationException(final TaskValidationErrorException exception) {
         List<String> errors = new ArrayList<>();
         errors.add(exception.getMessage());
         ErrorResponse errorResponse = new ErrorResponse(errors);

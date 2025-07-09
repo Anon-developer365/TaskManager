@@ -13,10 +13,10 @@ public class RestExceptionHandlerTest extends ResponseEntityExceptionHandler {
 
     @Test
     void testTaskValidationErrorException() {
-        TaskValidationErrorException emptyTaskException = new TaskValidationErrorException("Task is empty");
+        TaskValidationErrorException taskValidationException = new TaskValidationErrorException("Task is empty");
         RestExceptionHandler restExceptionHandler = new RestExceptionHandler();
-        ResponseEntity<ErrorResponse> responseEntity = restExceptionHandler.handleEmptyTaskException(emptyTaskException);
-        assert(Objects.requireNonNull(responseEntity.getBody()).getErrors().get(0).equals(emptyTaskException.getMessage()));
+        ResponseEntity<ErrorResponse> responseEntity = restExceptionHandler.handleTaskValidationException(taskValidationException);
+        assert(Objects.requireNonNull(responseEntity.getBody()).getErrors().get(0).equals(taskValidationException.getMessage()));
 
     }
 }
