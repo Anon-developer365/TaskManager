@@ -34,6 +34,11 @@
         <cucumber-java.version>7.14.0</cucumber-java.version>
         <cucumber-junit.version>7.14.0</cucumber-junit.version>
         <cucumber-spring.version>7.14.0</cucumber-spring.version>
+        <maven-surefire-plugin.version>3.5.3</maven-surefire-plugin.version>
+        <cucumber-junit-platform-engine.version>7.23.0</cucumber-junit-platform-engine.version>
+        <junit-platform-suite.version>1.13.3</junit-platform-suite.version>
+        <rest-assured.version>5.5.5</rest-assured.version>
+        <wiremock-standalone.version>3.13.1</wiremock-standalone.version>
     </properties>
     <dependencies>
         <dependency>
@@ -60,6 +65,11 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-jpa</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.rest-assured</groupId>
+            <artifactId>rest-assured</artifactId>
+            <version>${rest-assured.version}</version>
         </dependency>
         <dependency>
             <groupId>jakarta.validation</groupId>
@@ -98,6 +108,22 @@
             <scope>test</scope>
         </dependency>
         <dependency>
+            <groupId>io.cucumber</groupId>
+            <artifactId>cucumber-junit-platform-engine</artifactId>
+            <version>${cucumber-junit-platform-engine.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.platform</groupId>
+            <artifactId>junit-platform-suite</artifactId>
+            <version>${junit-platform-suite.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.wiremock</groupId>
+            <artifactId>wiremock-standalone</artifactId>
+            <version>${wiremock-standalone.version}</version>
+        </dependency>
+        <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
@@ -117,7 +143,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
-                <version>3.5.3</version>
+                <version>${maven-surefire-plugin.version}</version>
             </plugin>
         </plugins>
     </build>
