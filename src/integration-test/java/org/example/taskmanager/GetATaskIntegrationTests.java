@@ -87,4 +87,34 @@ public class GetATaskIntegrationTests {
                 .andExpect(jsonPath("$.errors").value("[Task with ID 2 not found]"))
                 .andReturn();
     }
+
+    @Test
+    void whenTheIsNoTaskIdInTheRequestAnErrorIsReturned() throws Exception {
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.add("transactionId", "2");
+        httpHeaders.add("taskId", "");
+
+
+        mvc.perform(get("/Task").contentType(MediaType.APPLICATION_JSON).headers(httpHeaders))
+                .andExpect(status().is(400))
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.errors").value("[Task ID is blank]"))
+                .andReturn();
+    }
+
+    @Test
+    void whenTheTaskIdIsInTheIncorrectFormatAnErrorIsReturned() throws Exception {
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.add("transactionId", "2");
+        httpHeaders.add("taskId", "dad9vu8ew4tqrguwr0-94tijrvkgjiu");
+
+
+        mvc.perform(get("/Task").contentType(MediaType.APPLICATION_JSON).headers(httpHeaders))
+                .andExpect(status().is(400))
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.errors").value("[Task ID does not match the pattern 0-9a-zA-Z-{1,10}]"))
+                .andReturn();
+    }
 }
+//test transaction id is missing from headers.
+//test format of transaction id.
