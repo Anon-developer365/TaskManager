@@ -3,6 +3,7 @@ package org.example.taskmanager.integrationTest;
 import org.example.taskmanager.TaskManagerApplication;
 import org.example.taskmanager.pojo.Task;
 import org.example.taskmanager.service.TaskRepository;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +13,8 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.web.context.WebApplicationContext;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -27,12 +30,22 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 public class GetATaskIntegrationTests {
 
-    @Autowired
+    private final WebApplicationContext webApplicationContext;
+
     private MockMvc mvc;
 
-    @Autowired
-    private TaskRepository taskRepository;
+    private final TaskRepository taskRepository;
 
+    @Autowired
+    public GetATaskIntegrationTests(TaskRepository taskRepository, WebApplicationContext webApplicationContext) {
+        this.taskRepository = taskRepository;
+        this.webApplicationContext = webApplicationContext;
+    }
+
+    @BeforeEach
+    public void setup() {
+        this.mvc = MockMvcBuilders.webAppContextSetup(this.webApplicationContext).build();
+    }
 
     @Test
     void whenTheIsATaskInTheDatabaseAndTheIdMatchesThisIsReturned() throws Exception {
@@ -145,5 +158,3 @@ public class GetATaskIntegrationTests {
                 .andReturn();
     }
 }
-
-//test format of transaction id.
