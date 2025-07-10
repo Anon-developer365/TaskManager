@@ -8,35 +8,35 @@ import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @SpringBootTest
-public class TaskIdValidationTests {
+public class IdValidationTests {
 
-    private TaskIdValidation taskIdValidation;
+    private IdValidation IdValidation;
 
     @Test
     void whenTaskIdContainsOneCharacterNoErrorIsThrown() {
-        taskIdValidation= new TaskIdValidation();
-        assertDoesNotThrow(() -> taskIdValidation.validateTaskId("2"));
+        IdValidation= new IdValidation();
+        assertDoesNotThrow(() -> IdValidation.validateId("Task", "2"));
     }
 
     @Test
     void whenTaskIdContainsLettersAndNumbersCharacterNoErrorIsThrown() {
-        taskIdValidation= new TaskIdValidation();
-        assertDoesNotThrow(() -> taskIdValidation.validateTaskId("2cff49fh5"));
+        IdValidation= new IdValidation();
+        assertDoesNotThrow(() -> IdValidation.validateId("Task","2cff49fh5"));
     }
 
     @Test
     void whenTaskIdIsLongerThanTheLimitAnErrorIsThrown() {
-        taskIdValidation= new TaskIdValidation();
+        IdValidation= new IdValidation();
         TaskValidationErrorException thrown = assertThrows(TaskValidationErrorException.class, ()
-                -> taskIdValidation.validateTaskId("2cff4vd7fysfrhwgyq3r8euqcnt48gynhfwaiygvbrughqcihvsfeb9fh5"));
+                -> IdValidation.validateId("Task", "2cff4vd7fysfrhwgyq3r8euqcnt48gynhfwaiygvbrughqcihvsfeb9fh5"));
 
     }
 
     @Test
     void whenTaskIdIsEmptyAnErrorIsThrown() {
-        taskIdValidation= new TaskIdValidation();
+        IdValidation= new IdValidation();
         TaskValidationErrorException thrown = assertThrows(TaskValidationErrorException.class, ()
-                -> taskIdValidation.validateTaskId(""));
+                -> IdValidation.validateId("Task", ""));
 
     }
 

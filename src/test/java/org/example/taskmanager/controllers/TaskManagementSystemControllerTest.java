@@ -4,15 +4,13 @@ import org.example.taskmanager.exceptions.TaskValidationErrorException;
 import org.example.taskmanager.service.DeleteTask;
 import org.example.taskmanager.service.GetATask;
 import org.example.taskmanager.service.RetrieveTasks;
-import org.example.taskmanager.validation.TaskIdValidation;
+import org.example.taskmanager.validation.IdValidation;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.web.WebAppConfiguration;
-import org.springframework.web.context.WebApplicationContext;
 import uk.gov.hmcts.taskmanager.domain.SuccessResponse;
 import uk.gov.hmcts.taskmanager.domain.Task;
 import uk.gov.hmcts.taskmanager.domain.TaskResponse;
@@ -46,14 +44,14 @@ public class TaskManagementSystemControllerTest {
     private DeleteTask deleteTask;
 
     @Mock
-    private TaskIdValidation taskIdValidation;
+    private IdValidation validation;
 
     @InjectMocks
     private TaskManagementSystemController taskController;
 
     @Test
     void aSuccessMessageIsReceivedWhenDetailsAreProvided() {
-        taskController = new TaskManagementSystemController(createTaskOrchestration, getATask, getAllTasks, updateStatusOrchestration, deleteTask, taskIdValidation);
+        taskController = new TaskManagementSystemController(createTaskOrchestration, getATask, getAllTasks, updateStatusOrchestration, deleteTask, validation);
         final UUID uuid = UUID.randomUUID();
 
         String stringDate = "2025-05-05 17:00";
@@ -66,7 +64,7 @@ public class TaskManagementSystemControllerTest {
         task.setStatus("status");
         task.setDueDate(dueDate);
         when(getATask.getATask(uuid.toString())).thenReturn(task);
-        doNothing().when(taskIdValidation).validateTaskId(uuid.toString());
+        doNothing().when(validation).validateId("Task", uuid.toString());
         ResponseEntity<Task> output = taskController.getTask("1", uuid.toString());
         assert output != null;
         assert Objects.equals(output.getBody().getId(), uuid.toString());
@@ -75,9 +73,9 @@ public class TaskManagementSystemControllerTest {
 
     @Test
     void ifTheIdDoesNotExistAMessageIsReturnedToTheConsumer() {
-        taskController = new TaskManagementSystemController(createTaskOrchestration, getATask, getAllTasks, updateStatusOrchestration, deleteTask, taskIdValidation);
+        taskController = new TaskManagementSystemController(createTaskOrchestration, getATask, getAllTasks, updateStatusOrchestration, deleteTask, validation);
         final UUID uuid = UUID.randomUUID();
-        doNothing().when(taskIdValidation).validateTaskId(uuid.toString());
+        doNothing().when(validation).validateId("Task", uuid.toString());
         when(getATask.getATask(uuid.toString())).thenThrow(new RuntimeException("Task with ID " + uuid + " not found"));
 
         String expectedError = "Task with ID " + uuid + " not found";
@@ -87,7 +85,7 @@ public class TaskManagementSystemControllerTest {
 
     @Test
     void whenAnEmptyListIsReceivedBackFromTheServiceThisIsReturned() {
-        taskController = new TaskManagementSystemController(createTaskOrchestration, getATask, getAllTasks, updateStatusOrchestration, deleteTask, taskIdValidation);
+        taskController = new TaskManagementSystemController(createTaskOrchestration, getATask, getAllTasks, updateStatusOrchestration, deleteTask, validation);
         TaskResponse taskResponse = new TaskResponse();
         when(getAllTasks.getAllTasks()).thenReturn(taskResponse);
 
@@ -98,7 +96,7 @@ public class TaskManagementSystemControllerTest {
 
     @Test
     void whenAListWithATaskIsReceivedBackFromTheServiceThisIsReturned() {
-        taskController = new TaskManagementSystemController(createTaskOrchestration, getATask, getAllTasks, updateStatusOrchestration, deleteTask, taskIdValidation);
+        taskController = new TaskManagementSystemController(createTaskOrchestration, getATask, getAllTasks, updateStatusOrchestration, deleteTask, validation);
         UUID id = UUID.randomUUID();
 
         String stringDate = "2025-05-05 17:00";
@@ -122,7 +120,7 @@ public class TaskManagementSystemControllerTest {
 
     @Test
     void whenAListWithMoreThanOneTaskIsReceivedBackFromTheServiceAllItemsAreReturned() {
-        taskController = new TaskManagementSystemController(createTaskOrchestration, getATask, getAllTasks, updateStatusOrchestration, deleteTask, taskIdValidation);
+        taskController = new TaskManagementSystemController(createTaskOrchestration, getATask, getAllTasks, updateStatusOrchestration, deleteTask, validation);
         UUID id = UUID.randomUUID();
         UUID id2 = UUID.randomUUID();
 
@@ -153,7 +151,7 @@ public class TaskManagementSystemControllerTest {
 
     @Test
     void checkWhenATaskIsDeletedASuccessMessageIsReceived() {
-        taskController = new TaskManagementSystemController(createTaskOrchestration, getATask, getAllTasks, updateStatusOrchestration, deleteTask, taskIdValidation);
+        taskController = new TaskManagementSystemController(createTaskOrchestration, getATask, getAllTasks, updateStatusOrchestration, deleteTask,validation);
         SuccessResponse response = new SuccessResponse();
         response.setId("1");
         response.setMessage("Task 1 deleted.");
@@ -166,7 +164,7 @@ public class TaskManagementSystemControllerTest {
 
     @Test
     void checkWhenATaskIdCanNotBeFoundAnErrorMessageIsReturned() {
-        taskController = new TaskManagementSystemController(createTaskOrchestration, getATask, getAllTasks, updateStatusOrchestration, deleteTask, taskIdValidation);
+        taskController = new TaskManagementSystemController(createTaskOrchestration, getATask, getAllTasks, updateStatusOrchestration, deleteTask, validation);
 
         TaskValidationErrorException exception = new TaskValidationErrorException("No task found with that ID 1");
         when(deleteTask.deleteTask("1")).thenThrow(exception);

@@ -1,5 +1,6 @@
-package org.example.taskmanager;
+package org.example.taskmanager.integrationTest;
 
+import org.example.taskmanager.TaskManagerApplication;
 import org.example.taskmanager.pojo.Task;
 import org.example.taskmanager.service.TaskRepository;
 import org.junit.jupiter.api.Test;
@@ -64,13 +65,13 @@ public class GetATaskIntegrationTests {
 
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.add("transactionId", "1");
-        httpHeaders.add("taskId", "2");
+        httpHeaders.add("taskId", "9");
 
 
         mvc.perform(get("/Task").contentType(MediaType.APPLICATION_JSON).headers(httpHeaders))
                 .andExpect(status().is(400))
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.errors").value("[Task with ID 2 not found]"))
+                .andExpect(jsonPath("$.errors").value("[Task with ID 9 not found]"))
                 .andReturn();
     }
 
@@ -78,13 +79,13 @@ public class GetATaskIntegrationTests {
     void whenTheIsNoTaskInTheDatabaseAndTheIdDoeNotMatchAnErrorIsReturned() throws Exception {
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.add("transactionId", "1");
-        httpHeaders.add("taskId", "2");
+        httpHeaders.add("taskId", "9");
 
 
         mvc.perform(get("/Task").contentType(MediaType.APPLICATION_JSON).headers(httpHeaders))
                 .andExpect(status().is(400))
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.errors").value("[Task with ID 2 not found]"))
+                .andExpect(jsonPath("$.errors").value("[Task with ID 9 not found]"))
                 .andReturn();
     }
 
@@ -115,6 +116,34 @@ public class GetATaskIntegrationTests {
                 .andExpect(jsonPath("$.errors").value("[Task ID does not match the pattern 0-9a-zA-Z-{1,10}]"))
                 .andReturn();
     }
+
+    @Test
+    void whenThereIsNoTransactionIdInTheRequestAnErrorIsReturned() throws Exception {
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.add("transactionId", "");
+        httpHeaders.add("taskId", "9");
+
+
+        mvc.perform(get("/Task").contentType(MediaType.APPLICATION_JSON).headers(httpHeaders))
+                .andExpect(status().is(400))
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.errors").value("[Transaction ID is blank]"))
+                .andReturn();
+    }
+
+    @Test
+    void whenTransactionIdIsInTheIncorrectFormatInTheRequestAnErrorIsReturned() throws Exception {
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.add("transactionId", "fihnfsdy8fhiefonu9dsofh");
+        httpHeaders.add("taskId", "9");
+
+
+        mvc.perform(get("/Task").contentType(MediaType.APPLICATION_JSON).headers(httpHeaders))
+                .andExpect(status().is(400))
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.errors").value("[Transaction ID does not match the pattern 0-9a-zA-Z-{1,10}]"))
+                .andReturn();
+    }
 }
-//test transaction id is missing from headers.
+
 //test format of transaction id.

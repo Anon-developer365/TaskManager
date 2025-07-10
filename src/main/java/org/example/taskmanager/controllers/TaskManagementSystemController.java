@@ -4,7 +4,7 @@ import jakarta.validation.Valid;
 import org.example.taskmanager.service.DeleteTask;
 import org.example.taskmanager.service.GetATask;
 import org.example.taskmanager.service.RetrieveTasks;
-import org.example.taskmanager.validation.TaskIdValidation;
+import org.example.taskmanager.validation.IdValidation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -33,17 +33,17 @@ public class TaskManagementSystemController implements TaskManagementSystemApi {
     /**
      * Validation service for TaskId
      */
-    private final TaskIdValidation taskIdValidation;
+    private final IdValidation idValidation;
     @Autowired
     public TaskManagementSystemController(CreateTaskOrchestration createTaskOrchestration, GetATask getATask,
                                           RetrieveTasks getAllTasks, UpdateStatusOrchestration updateStatusOrchestration,
-                                          DeleteTask deleteTask, TaskIdValidation taskIdValidation) {
+                                          DeleteTask deleteTask, IdValidation idValidation) {
         this.createTaskOrchestration = createTaskOrchestration;
         this.getATask = getATask;
         this.getAllTasks = getAllTasks;
         this.updateStatusOrchestration = updateStatusOrchestration;
         this.deleteTask = deleteTask;
-        this.taskIdValidation = taskIdValidation;
+        this.idValidation = idValidation;
     }
 
     @Override
@@ -61,20 +61,21 @@ public class TaskManagementSystemController implements TaskManagementSystemApi {
     @Override
     @RequestMapping(value = "/Task", method = RequestMethod.GET)
     public ResponseEntity<Task> getTask(@Valid String transactionId, @Valid String taskId) {
-        taskIdValidation.validateTaskId(taskId);
+        idValidation.validateId("Task", taskId);
+        idValidation.validateId("Transaction", transactionId);
         return ok(getATask.getATask(taskId));
     }
 
     @Override
     @RequestMapping(value = "/allTasks", method = RequestMethod.GET)
     public ResponseEntity<TaskResponse> getTasks(@Validated String transactionId) {
+        idValidation.validateId("Transaction", transactionId);
         return ok(getAllTasks.getAllTasks());
     }
 
     @Override
     @RequestMapping(value = "/Task", method = RequestMethod.PUT)
     public ResponseEntity<SuccessResponse> updateStatus(@Valid String transactionId, @Valid UpdateStatusRequest body) {
-
         return ok(updateStatusOrchestration.updateStatus(body));
     }
 

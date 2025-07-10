@@ -1,6 +1,6 @@
-package org.example.taskmanager;
+package org.example.taskmanager.integrationTest;
 
-import org.apache.catalina.connector.Response;
+import org.example.taskmanager.TaskManagerApplication;
 import org.example.taskmanager.pojo.Task;
 import org.example.taskmanager.service.TaskRepository;
 import org.junit.jupiter.api.Test;
@@ -52,6 +52,18 @@ public class GetAllTasksIntegrationTests {
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.tasks[0].id").value("2"))
                 .andExpect(jsonPath("$.tasks[1].id").value("3"))
+                .andReturn();
+    }
+
+    @Test
+    void whenThereAreNoTasksInTheDatabaseAnEmptyListIsReturned() throws Exception {
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.add("transactionId", "1");
+
+        mvc.perform(get("/allTasks").contentType(MediaType.APPLICATION_JSON).headers(httpHeaders))
+                .andExpect(status().isOk())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.tasks").isEmpty())
                 .andReturn();
     }
 }

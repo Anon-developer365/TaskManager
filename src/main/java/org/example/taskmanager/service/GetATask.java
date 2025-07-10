@@ -3,7 +3,6 @@ package org.example.taskmanager.service;
 
 import jakarta.persistence.EntityNotFoundException;
 import org.example.taskmanager.exceptions.TaskValidationErrorException;
-import org.example.taskmanager.validation.TaskIdValidation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import uk.gov.hmcts.taskmanager.domain.Task;
