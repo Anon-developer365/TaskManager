@@ -7,6 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import uk.gov.hmcts.taskmanager.domain.Task;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 
@@ -39,6 +41,7 @@ public class GetATask {
     public Task getATask(String id) {
         Task transformedTask = new Task();
         Optional<org.example.taskmanager.pojo.Task> foundTask;
+        final List<String> allErrors = new ArrayList<>();
 
         try {
             foundTask = taskRepository.findById(id);
@@ -49,9 +52,14 @@ public class GetATask {
                 transformedTask.setStatus(foundTask.get().getStatus());
                 transformedTask.setTaskDescription(foundTask.get().getDescription());
                 transformedTask.setDueDate(foundTask.get().getDueDate());
+            } else {
+                allErrors.add("Task with ID " + id + " not found");
             }
         } catch (EntityNotFoundException exception){
-            throw new TaskValidationErrorException("Task with ID " + id + " not found");
+            allErrors.add("Task with ID " + id + " not found");
+        }
+        if(!allErrors.isEmpty()) {
+            throw new TaskValidationErrorException(allErrors.toString());
         }
         return transformedTask;
 

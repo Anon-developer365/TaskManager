@@ -32,6 +32,7 @@ public class GetATaskIntegrationTests {
     @Autowired
     private TaskRepository taskRepository;
 
+
     @Test
     void whenTheIsATaskInTheDatabaseAndTheIdMatchesThisIsReturned() throws Exception {
         String stringDate = "2025-05-05 17:00";
@@ -53,5 +54,37 @@ public class GetATaskIntegrationTests {
 
     }
 
+    @Test
+    void whenTheIsATaskInTheDatabaseAndTheIdDoeNotMatchAnErrorIsReturned() throws Exception {
+        String stringDate = "2025-05-05 17:00";
+        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm", Locale.UK);
+        LocalDateTime dueDate = LocalDateTime.parse(stringDate, dateTimeFormatter);
+        Task task = new Task("4", "title", "description", "status",dueDate);
+        taskRepository.save(task);
 
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.add("transactionId", "1");
+        httpHeaders.add("taskId", "2");
+
+
+        mvc.perform(get("/Task").contentType(MediaType.APPLICATION_JSON).headers(httpHeaders))
+                .andExpect(status().is(400))
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.errors").value("[Task with ID 2 not found]"))
+                .andReturn();
+    }
+
+    @Test
+    void whenTheIsNoTaskInTheDatabaseAndTheIdDoeNotMatchAnErrorIsReturned() throws Exception {
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.add("transactionId", "1");
+        httpHeaders.add("taskId", "2");
+
+
+        mvc.perform(get("/Task").contentType(MediaType.APPLICATION_JSON).headers(httpHeaders))
+                .andExpect(status().is(400))
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.errors").value("[Task with ID 2 not found]"))
+                .andReturn();
+    }
 }
