@@ -35,13 +35,13 @@ public class CreateTaskIntegrationTests {
 
     private MockMvc mvc;
 
-    @Autowired
-    ObjectMapper objectMapper;
+    private final ObjectMapper objectMapper;
 
 
     @Autowired
-    public CreateTaskIntegrationTests(WebApplicationContext webApplicationContext) {
+    public CreateTaskIntegrationTests(WebApplicationContext webApplicationContext, ObjectMapper objectMapper) {
         this.webApplicationContext = webApplicationContext;
+        this.objectMapper = objectMapper;
     }
 
     @BeforeEach

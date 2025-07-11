@@ -76,6 +76,7 @@ public class TaskManagementSystemController implements TaskManagementSystemApi {
     @Override
     @RequestMapping(value = "/Task", method = RequestMethod.PUT)
     public ResponseEntity<SuccessResponse> updateStatus(@Valid String transactionId, @Valid UpdateStatusRequest body) {
+        idValidation.validateId("Transaction", transactionId);
         return ok(updateStatusOrchestration.updateStatus(body));
     }
 

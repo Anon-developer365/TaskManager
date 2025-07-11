@@ -35,15 +35,15 @@ public class UpdateStatusIntegrationTests {
 
     private MockMvc mvc;
 
-    private TaskRepository taskRepository;
+    private final TaskRepository taskRepository;
+
+    private final ObjectMapper objectMapper;
 
     @Autowired
-    private ObjectMapper objectMapper;
-
-    @Autowired
-    public UpdateStatusIntegrationTests(TaskRepository taskRepository, WebApplicationContext webApplicationContext) {
+    public UpdateStatusIntegrationTests(TaskRepository taskRepository, WebApplicationContext webApplicationContext, ObjectMapper objectMapper) {
         this.taskRepository = taskRepository;
         this.webApplicationContext = webApplicationContext;
+        this.objectMapper = objectMapper;
     }
 
     @BeforeEach
@@ -92,6 +92,30 @@ public class UpdateStatusIntegrationTests {
                 .andExpect(status().is(400))
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.errors").value("Task with ID 2 not found"))
+                .andReturn();
+    }
+
+    @Test
+    void checkAnErrorIsReturnedIfTheTransactionIdIsEmpty() throws Exception {
+        UpdateStatusRequest statusRequest = new UpdateStatusRequest();
+        statusRequest.setId("2");
+        statusRequest.setStatus("this is a new status");
+        String stringDate = "2025-05-05 17:00";
+        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm", Locale.UK);
+        LocalDateTime dueDate = LocalDateTime.parse(stringDate, dateTimeFormatter);
+        Task task = new Task("2", "title", "description", "status",dueDate);
+        taskRepository.save(task);
+
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.add("transactionId", "");
+        String json = objectMapper.writeValueAsString(statusRequest);
+
+        mvc.perform(put("/Task").contentType(MediaType.APPLICATION_JSON)
+                        .headers(httpHeaders)
+                        .content(json))
+                .andExpect(status().is(400))
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.errors").value("[Transaction ID is blank]"))
                 .andReturn();
     }
 
