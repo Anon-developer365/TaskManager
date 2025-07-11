@@ -1,6 +1,7 @@
 package org.example.taskmanager.controllers;
 
 import lombok.ToString;
+import org.example.taskmanager.exceptions.TaskNotFoundException;
 import org.example.taskmanager.exceptions.TaskValidationErrorException;
 import org.example.taskmanager.pojo.ErrorResponse;
 import org.springframework.http.HttpStatus;
@@ -18,8 +19,7 @@ import java.util.List;
 public class RestExceptionHandler extends ResponseEntityExceptionHandler {
 
     /**
-     * Customise the response for MissingRequestHeaderException.
-     * This occurs when spring boot detects that a required header is missing.
+     * Customise the response for TaskValidationException.
      *
      * @param exception the exception that was thrown.
      * @return a {@code ResponseEntity} instance.
@@ -33,5 +33,23 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
 
         return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
     }
+
+    /**
+     * Customise the response for TaskNotFoundException.
+     * This occurs when spring boot detects that a required header is missing.
+     *
+     * @param exception the exception that was thrown.
+     * @return a {@code ResponseEntity} instance.
+     */
+    @ResponseBody
+    @ExceptionHandler(TaskNotFoundException.class)
+    public ResponseEntity<ErrorResponse> handleTaskNotFoundException(final TaskNotFoundException exception) {
+        List<String> errors = new ArrayList<>();
+        errors.add(exception.getMessage());
+        ErrorResponse errorResponse = new ErrorResponse(errors);
+
+        return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+    }
+
 
 }

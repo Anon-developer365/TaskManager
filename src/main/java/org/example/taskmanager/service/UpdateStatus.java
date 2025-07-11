@@ -1,5 +1,6 @@
 package org.example.taskmanager.service;
 
+import org.example.taskmanager.exceptions.TaskNotFoundException;
 import org.example.taskmanager.pojo.Task;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -29,7 +30,7 @@ public class UpdateStatus {
     public boolean updateStatus(UpdateStatusRequest updateRequest) {
         Optional<Task> task = taskRepository.findById(updateRequest.getId());
         if(task.isEmpty() || task.get().getId() == null) {
-            throw new RuntimeException("Task with ID " + updateRequest.getId() + " not found");
+            throw new TaskNotFoundException("Task with ID " + updateRequest.getId() + " not found");
         } else {
             Task updatedTask = new Task(updateRequest.getId(), task.get().getTitle(), task.get().getDescription(), updateRequest.getStatus(), task.get().getDueDate());
             taskRepository.save(updatedTask);

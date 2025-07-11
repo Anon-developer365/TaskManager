@@ -49,7 +49,7 @@ public class UpdateStatusOrchestration {
         updateStatusValidation.verifyStatus(updateRequest.getId(), updateRequest.getStatus());
         updateStatus.updateStatus(updateRequest);
         successResponse.setId(updateRequest.getId());
-        successResponse.setMessage("Status updated to: " + updateRequest.getStatus());
+        successResponse.setMessage("Status updated to: \"" + updateRequest.getStatus()+ "\"");
         return successResponse;
     }
 }
