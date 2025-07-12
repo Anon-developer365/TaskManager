@@ -1,7 +1,7 @@
 package org.example.taskmanager.service;
 
 import jakarta.persistence.EntityNotFoundException;
-import org.example.taskmanager.exceptions.TaskValidationErrorException;
+import org.example.taskmanager.exceptions.TaskNotFoundException;
 import org.example.taskmanager.pojo.Task;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -21,7 +21,7 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.inOrder;
+
 
 @SpringBootTest
 public class DeleteTaskTests {
@@ -59,6 +59,6 @@ public class DeleteTaskTests {
     void checkWhenATaskIsInTheDataBaseAndIdDoesNotMatchAnErrorIsThrown() {
         deleteTask = new DeleteTask(taskRepository);
         Mockito.when(taskRepository.findById("1")).thenThrow(EntityNotFoundException.class);
-        assertThrows(TaskValidationErrorException.class, () -> deleteTask.deleteTask("1"));
+        assertThrows(TaskNotFoundException.class, () -> deleteTask.deleteTask("1"));
     }
 }

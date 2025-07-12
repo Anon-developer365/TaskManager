@@ -30,18 +30,14 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
         classes = TaskManagerApplication.class)
 @AutoConfigureMockMvc
 public class GetATaskIntegrationTests {
-
-    private final WebApplicationContext webApplicationContext;
-
-    private MockMvc mvc;
+    private final MockMvc mvc;
 
     private final TaskRepository taskRepository;
 
     @Autowired
     public GetATaskIntegrationTests(TaskRepository taskRepository, WebApplicationContext webApplicationContext) {
         this.taskRepository = taskRepository;
-        this.webApplicationContext = webApplicationContext;
-        this.mvc = MockMvcBuilders.webAppContextSetup(this.webApplicationContext).build();
+        this.mvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
     }
 
     @AfterEach

@@ -1,11 +1,13 @@
 package org.example.taskmanager.service;
 
 import jakarta.persistence.EntityNotFoundException;
-import org.example.taskmanager.exceptions.TaskValidationErrorException;
+import org.example.taskmanager.exceptions.TaskNotFoundException;
 import org.example.taskmanager.pojo.Task;
 import org.springframework.stereotype.Service;
 import uk.gov.hmcts.taskmanager.domain.SuccessResponse;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 
@@ -26,6 +28,7 @@ public class DeleteTask {
     }
 
     public SuccessResponse deleteTask(String taskId) {
+        final List<String> allErrors = new ArrayList<>();
         SuccessResponse successResponse = new SuccessResponse();
         Optional<Task> found;
         try {
@@ -34,8 +37,14 @@ public class DeleteTask {
             taskRepository.deleteById(taskId);
             successResponse.setId(taskId);
             successResponse.setMessage("Task " + taskId + " deleted.");
-        } } catch (EntityNotFoundException exception){
-            throw new TaskValidationErrorException("No task found with that ID " + taskId);
+        } else {
+            allErrors.add("No task found with that ID: " + taskId);
+        }
+        } catch (EntityNotFoundException exception){
+            allErrors.add("No task found with that ID: " + taskId);
+        }
+        if (!allErrors.isEmpty()){
+            throw new TaskNotFoundException(allErrors.toString());
         }
         return successResponse;
 
