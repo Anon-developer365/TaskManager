@@ -87,6 +87,47 @@ public class DeleteTaskIntegrationTests {
 
     }
 
+    @Test
+    void whenThereIsNoTaskIdInTheRequestAnErrorIsReturned() throws Exception {
+        String stringDate = "2025-05-05 17:00";
+        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm", Locale.UK);
+        LocalDateTime dueDate = LocalDateTime.parse(stringDate, dateTimeFormatter);
+        Task task = new Task("4", "title", "description", "status",dueDate);
+        taskRepository.save(task);
+
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.add("transactionId", "1");
+        httpHeaders.add("taskId", "");
+
+
+        mvc.perform(delete("/Task").contentType(MediaType.APPLICATION_JSON).headers(httpHeaders))
+                .andExpect(status().is(400))
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.errors").value("[Task ID is blank]"))
+                .andReturn();
+
+    }
+
+    @Test
+    void whenThereIsNoTransactionIdInTheRequestAnErrorIsReturned() throws Exception {
+        String stringDate = "2025-05-05 17:00";
+        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm", Locale.UK);
+        LocalDateTime dueDate = LocalDateTime.parse(stringDate, dateTimeFormatter);
+        Task task = new Task("4", "title", "description", "status",dueDate);
+        taskRepository.save(task);
+
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.add("transactionId", "");
+        httpHeaders.add("taskId", "2");
+
+
+        mvc.perform(delete("/Task").contentType(MediaType.APPLICATION_JSON).headers(httpHeaders))
+                .andExpect(status().is(400))
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.errors").value("[Transaction ID is blank]"))
+                .andReturn();
+
+    }
 
 
 }

@@ -43,11 +43,11 @@ public class TaskValidation {
         final List<String> allErrors = new ArrayList<>();
         allErrors.addAll(titleCheck(title));
         allErrors.addAll(descriptionCheck(description));
-        allErrors.addAll(statusValidation.statusCheck(status));
         allErrors.addAll(dueDateCheck(dueDate));
         if (!allErrors.isEmpty()) {
             throw new TaskValidationErrorException(allErrors.toString());
         }
+        statusValidation.statusCheck(status);
     }
 
     /**

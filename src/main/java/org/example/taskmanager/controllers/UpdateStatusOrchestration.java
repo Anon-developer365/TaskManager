@@ -1,11 +1,10 @@
 package org.example.taskmanager.controllers;
 
 import org.example.taskmanager.service.UpdateStatus;
-import org.example.taskmanager.validation.UpdateStatusValidation;
+import org.example.taskmanager.validation.IdValidation;
+import org.example.taskmanager.validation.StatusValidation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import uk.gov.hmcts.taskmanager.domain.SuccessResponse;
 import uk.gov.hmcts.taskmanager.domain.UpdateStatusRequest;
 
@@ -22,18 +21,26 @@ public class UpdateStatusOrchestration {
     private final UpdateStatus updateStatus;
 
     /**
-     * service to validate status and id.
+     * Validation service for Id's
      */
-    private final UpdateStatusValidation updateStatusValidation;
+    private final IdValidation idValidation;
+
+    /**
+     * class to validate status
+     */
+    private final StatusValidation statusValidation;
+
     /**
      * Autowired constructor for update service controller. ]
      *
      * @param updateStatus update status service.
      */
     @Autowired
-    public UpdateStatusOrchestration(UpdateStatus updateStatus, UpdateStatusValidation updateStatusValidation) {
+    public UpdateStatusOrchestration(UpdateStatus updateStatus, IdValidation idValidation,
+                                     StatusValidation statusValidation) {
         this.updateStatus = updateStatus;
-        this.updateStatusValidation = updateStatusValidation;
+        this.idValidation = idValidation;
+        this.statusValidation = statusValidation;
 
     }
 
@@ -43,14 +50,25 @@ public class UpdateStatusOrchestration {
      * @param updateRequest update request containing the status and id of the task to be updated.
      * @return a success message with the updated status.
      */
-    @RequestMapping(value = "/Task", method = RequestMethod.PUT)
-    public SuccessResponse updateStatus(UpdateStatusRequest updateRequest) {
+    public SuccessResponse updateStatus(String transactionId, UpdateStatusRequest updateRequest) {
         SuccessResponse successResponse = new SuccessResponse();
-        updateStatusValidation.verifyStatus(updateRequest.getId(), updateRequest.getStatus());
+        validate(transactionId, updateRequest);
         updateStatus.updateStatus(updateRequest);
         successResponse.setId(updateRequest.getId());
         successResponse.setMessage("Status updated to: \"" + updateRequest.getStatus()+ "\"");
         return successResponse;
+    }
+
+    /**
+     * Method to validate headers.
+     *
+     * @param transactionId
+     * @param updateRequest
+     */
+    private void validate(String transactionId, UpdateStatusRequest updateRequest) {
+        idValidation.validateId("Transaction", transactionId);
+        idValidation.validateId("Task", updateRequest.getId());
+        statusValidation.statusCheck(updateRequest.getStatus());
     }
 }
 

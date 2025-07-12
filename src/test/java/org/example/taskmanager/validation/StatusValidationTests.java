@@ -1,12 +1,12 @@
 package org.example.taskmanager.validation;
 
-import org.example.taskmanager.validation.StatusValidation;
+import org.example.taskmanager.exceptions.TaskValidationErrorException;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class StatusValidationTests {
 
@@ -20,8 +20,8 @@ public class StatusValidationTests {
         List<String> expectedErrors = new ArrayList<>();
         expectedErrors.add("Task status is empty");
 
-        List<String> actualOutput = validation.statusCheck(status);
-        assertEquals(expectedErrors.toString(), actualOutput.toString());
+        TaskValidationErrorException thrown = assertThrows(TaskValidationErrorException.class, () -> validation.statusCheck(status));
+        assertEquals(expectedErrors.toString(), thrown.getMessage());
 
     }
 
@@ -31,19 +31,16 @@ public class StatusValidationTests {
         List<String> expectedErrors = new ArrayList<>();
         expectedErrors.add("Task status does not match the pattern a-zA-Z0-9");
 
-        List<String> actualOutput = validation.statusCheck(status);
-        assertEquals(expectedErrors.toString(), actualOutput.toString());
+        TaskValidationErrorException thrown = assertThrows(TaskValidationErrorException.class, () -> validation.statusCheck(status));
+        assertEquals(expectedErrors.toString(), thrown.getMessage());
 
     }
 
     @Test
     void whenStatusIsValidNoErrorIsThrown() {
         status = "status";
-        List<String> expectedErrors = new ArrayList<>();
 
-
-        List<String> actualOutput = validation.statusCheck(status);
-        assertEquals(expectedErrors.toString(), actualOutput.toString());
+        assertDoesNotThrow(() -> validation.statusCheck(status));
 
     }
 }

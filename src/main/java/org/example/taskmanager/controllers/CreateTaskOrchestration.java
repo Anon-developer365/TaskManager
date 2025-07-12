@@ -12,12 +12,13 @@ import uk.gov.hmcts.taskmanager.domain.SuccessResponse;
 
 
 /**
- * Rest controller for create task end point to create and save a new task in the database.
+ * Orchestration service for create task.
+ * This orchestrates the validation and creation of a task before saving it.
  */
 @Service
 public class CreateTaskOrchestration {
     /**
-     * service to create a new task, assign an ID and format the date.
+     * service to create a new task and assign an ID.
      */
     private final CreateTask createTask;
 
@@ -56,9 +57,9 @@ public class CreateTaskOrchestration {
     public SuccessResponse createTask(String transactionId, CreateTaskRequest taskRequest) {
         validation.verifyTask(taskRequest.getTitle(), taskRequest.getTaskDescription(), taskRequest.getStatus(), taskRequest.getDueDate());
         Task task = createTask.createNewTask(taskRequest.getTitle(), taskRequest.getTaskDescription(), taskRequest.getStatus(), taskRequest.getDueDate());
-        saveTask.saveData(task);
+        String taskId = saveTask.saveData(task);
         SuccessResponse response = new SuccessResponse();
-        response.setId(task.getId());
+        response.setId(taskId);
         response.setMessage("Task Created Successfully");
         return response;
     }

@@ -32,7 +32,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 public class CreateTaskIntegrationTests {
 
-    private TaskRepository taskRepository;
+    private final TaskRepository taskRepository;
 
     private final MockMvc mvc;
 
@@ -243,8 +243,8 @@ public class CreateTaskIntegrationTests {
         LocalDateTime dueDate = LocalDateTime.parse(stringDate, dateTimeFormatter);
         CreateTaskRequest taskRequest = new CreateTaskRequest();
         taskRequest.setTaskDescription("##+^&");
-        taskRequest.setStatus("");
-        taskRequest.setTitle("Title");
+        taskRequest.setStatus("Status");
+        taskRequest.setTitle("");
         taskRequest.setDueDate(dueDate);
 
         HttpHeaders httpHeaders = new HttpHeaders();
@@ -256,7 +256,7 @@ public class CreateTaskIntegrationTests {
                         .content(json))
                 .andExpect(status().is(400))
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.errors").value("[Task description does not match the pattern a-zA-Z0-9, Task status is empty]"))
+                .andExpect(jsonPath("$.errors").value("[Task title is empty, Task description does not match the pattern a-zA-Z0-9]"))
                 .andReturn();
     }
 }

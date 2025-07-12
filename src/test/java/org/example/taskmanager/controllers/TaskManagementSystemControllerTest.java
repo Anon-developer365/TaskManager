@@ -4,7 +4,6 @@ import org.example.taskmanager.exceptions.TaskValidationErrorException;
 import org.example.taskmanager.service.DeleteTask;
 import org.example.taskmanager.service.GetATask;
 import org.example.taskmanager.service.RetrieveTasks;
-import org.example.taskmanager.validation.IdValidation;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -22,7 +21,6 @@ import java.util.Objects;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 
 @WebAppConfiguration
@@ -43,15 +41,12 @@ public class TaskManagementSystemControllerTest {
     @Mock
     private DeleteTask deleteTask;
 
-    @Mock
-    private IdValidation validation;
-
     @InjectMocks
     private TaskManagementSystemController taskController;
 
     @Test
     void aSuccessMessageIsReceivedWhenDetailsAreProvided() {
-        taskController = new TaskManagementSystemController(createTaskOrchestration, getATask, getAllTasks, updateStatusOrchestration, deleteTask, validation);
+        taskController = new TaskManagementSystemController(createTaskOrchestration, getATask, getAllTasks, updateStatusOrchestration, deleteTask);
         final UUID uuid = UUID.randomUUID();
 
         String stringDate = "2025-05-05 17:00";
@@ -63,9 +58,8 @@ public class TaskManagementSystemControllerTest {
         task.setTaskDescription("description");
         task.setStatus("status");
         task.setDueDate(dueDate);
-        when(getATask.getATask(uuid.toString())).thenReturn(task);
-        doNothing().when(validation).validateId("Task", uuid.toString());
-        ResponseEntity<Task> output = taskController.getTask("1", uuid.toString());
+        when(getATask.getATask("2", uuid.toString())).thenReturn(task);
+        ResponseEntity<Task> output = taskController.getTask("2", uuid.toString());
         assert output != null;
         assert Objects.equals(output.getBody().getId(), uuid.toString());
 
@@ -73,10 +67,9 @@ public class TaskManagementSystemControllerTest {
 
     @Test
     void ifTheIdDoesNotExistAMessageIsReturnedToTheConsumer() {
-        taskController = new TaskManagementSystemController(createTaskOrchestration, getATask, getAllTasks, updateStatusOrchestration, deleteTask, validation);
+        taskController = new TaskManagementSystemController(createTaskOrchestration, getATask, getAllTasks, updateStatusOrchestration, deleteTask);
         final UUID uuid = UUID.randomUUID();
-        doNothing().when(validation).validateId("Task", uuid.toString());
-        when(getATask.getATask(uuid.toString())).thenThrow(new RuntimeException("Task with ID " + uuid + " not found"));
+        when(getATask.getATask("2", uuid.toString())).thenThrow(new RuntimeException("Task with ID " + uuid + " not found"));
 
         String expectedError = "Task with ID " + uuid + " not found";
         RuntimeException thrown = assertThrows(RuntimeException.class, () -> taskController.getTask("2", uuid.toString()));
@@ -85,9 +78,9 @@ public class TaskManagementSystemControllerTest {
 
     @Test
     void whenAnEmptyListIsReceivedBackFromTheServiceThisIsReturned() {
-        taskController = new TaskManagementSystemController(createTaskOrchestration, getATask, getAllTasks, updateStatusOrchestration, deleteTask, validation);
+        taskController = new TaskManagementSystemController(createTaskOrchestration, getATask, getAllTasks, updateStatusOrchestration, deleteTask);
         TaskResponse taskResponse = new TaskResponse();
-        when(getAllTasks.getAllTasks()).thenReturn(taskResponse);
+        when(getAllTasks.getAllTasks("2")).thenReturn(taskResponse);
 
         ResponseEntity<TaskResponse> actual = taskController.getTasks("2");
         assertNull(actual.getBody().getTasks());
@@ -96,7 +89,7 @@ public class TaskManagementSystemControllerTest {
 
     @Test
     void whenAListWithATaskIsReceivedBackFromTheServiceThisIsReturned() {
-        taskController = new TaskManagementSystemController(createTaskOrchestration, getATask, getAllTasks, updateStatusOrchestration, deleteTask, validation);
+        taskController = new TaskManagementSystemController(createTaskOrchestration, getATask, getAllTasks, updateStatusOrchestration, deleteTask);
         UUID id = UUID.randomUUID();
 
         String stringDate = "2025-05-05 17:00";
@@ -111,7 +104,7 @@ public class TaskManagementSystemControllerTest {
         task.setDueDate(dueDate);
         TaskResponse expected = new TaskResponse();
         expected.addTasksItem(task);
-        when(getAllTasks.getAllTasks()).thenReturn(expected);
+        when(getAllTasks.getAllTasks("2")).thenReturn(expected);
 
         ResponseEntity<TaskResponse> actual = taskController.getTasks("2");
         assertEquals(expected.getTasks().size(), actual.getBody().getTasks().size());
@@ -120,7 +113,7 @@ public class TaskManagementSystemControllerTest {
 
     @Test
     void whenAListWithMoreThanOneTaskIsReceivedBackFromTheServiceAllItemsAreReturned() {
-        taskController = new TaskManagementSystemController(createTaskOrchestration, getATask, getAllTasks, updateStatusOrchestration, deleteTask, validation);
+        taskController = new TaskManagementSystemController(createTaskOrchestration, getATask, getAllTasks, updateStatusOrchestration, deleteTask);
         UUID id = UUID.randomUUID();
         UUID id2 = UUID.randomUUID();
 
@@ -143,7 +136,7 @@ public class TaskManagementSystemControllerTest {
         task.setTitle("title");
         task.setDueDate(dueDate);
         expected.addTasksItem(task2);
-        when(getAllTasks.getAllTasks()).thenReturn(expected);
+        when(getAllTasks.getAllTasks("2")).thenReturn(expected);
 
         ResponseEntity<TaskResponse> actual = taskController.getTasks("2");
         assertEquals(expected.getTasks().size(), actual.getBody().getTasks().size());
@@ -151,11 +144,11 @@ public class TaskManagementSystemControllerTest {
 
     @Test
     void checkWhenATaskIsDeletedASuccessMessageIsReceived() {
-        taskController = new TaskManagementSystemController(createTaskOrchestration, getATask, getAllTasks, updateStatusOrchestration, deleteTask,validation);
+        taskController = new TaskManagementSystemController(createTaskOrchestration, getATask, getAllTasks, updateStatusOrchestration, deleteTask);
         SuccessResponse response = new SuccessResponse();
         response.setId("1");
         response.setMessage("Task 1 deleted.");
-        when(deleteTask.deleteTask("1")).thenReturn(response);
+        when(deleteTask.deleteTask("2","1")).thenReturn(response);
         ResponseEntity<SuccessResponse> output = taskController.deleteTask("2", "1");
         assertEquals("1", output.getBody().getId());
         assertEquals(response.getMessage(), output.getBody().getMessage());
@@ -164,10 +157,10 @@ public class TaskManagementSystemControllerTest {
 
     @Test
     void checkWhenATaskIdCanNotBeFoundAnErrorMessageIsReturned() {
-        taskController = new TaskManagementSystemController(createTaskOrchestration, getATask, getAllTasks, updateStatusOrchestration, deleteTask, validation);
+        taskController = new TaskManagementSystemController(createTaskOrchestration, getATask, getAllTasks, updateStatusOrchestration, deleteTask);
 
         TaskValidationErrorException exception = new TaskValidationErrorException("No task found with that ID 1");
-        when(deleteTask.deleteTask("1")).thenThrow(exception);
+        when(deleteTask.deleteTask("2", "1")).thenThrow(exception);
         TaskValidationErrorException actualException = assertThrows(TaskValidationErrorException.class, () -> taskController.deleteTask("2", "1"));
         assertEquals(exception.getMessage(), actualException.getMessage());
     }

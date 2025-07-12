@@ -1,6 +1,7 @@
 package org.example.taskmanager.validation;
 
 import io.micrometer.common.util.StringUtils;
+import org.example.taskmanager.exceptions.TaskValidationErrorException;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -24,7 +25,7 @@ public class StatusValidation {
      * @param status the status to be validated.
      * @return a list either empty if the status is valid or containing the validation errors.
      */
-    public List<String> statusCheck(String status) {
+    public void statusCheck(String status) {
         final List<String> errors = new ArrayList<>();
         if (StringUtils.isBlank(status)) {
             errors.add("Task status is empty");
@@ -36,7 +37,9 @@ public class StatusValidation {
             }
 
         }
-        return errors;
+        if (!errors.isEmpty()) {
+            throw new TaskValidationErrorException(errors.toString());
+        }
     }
 
 }

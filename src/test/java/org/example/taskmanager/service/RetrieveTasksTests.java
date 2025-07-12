@@ -1,6 +1,7 @@
 package org.example.taskmanager.service;
 
 import org.example.taskmanager.pojo.Task;
+import org.example.taskmanager.validation.IdValidation;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -19,10 +20,13 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.mockito.Mockito.doNothing;
 
 @SpringBootTest
 public class RetrieveTasksTests {
 
+    @Mock
+    private IdValidation idValidation;
     @Mock
     private TaskRepository taskRepository;
     @InjectMocks
@@ -35,7 +39,7 @@ public class RetrieveTasksTests {
 
     @Test
     void checkWhenThereAreTasksInTheDatabaseTheseAreAllReturned() throws ParseException {
-        retrieveTasks = new RetrieveTasks(taskRepository);
+        retrieveTasks = new RetrieveTasks(taskRepository, idValidation);
         final DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
 
         date = dateFormat.parse("2025-05-05 17:00");
@@ -47,7 +51,8 @@ public class RetrieveTasksTests {
         List<Task> expectedResult = new ArrayList<>();
         expectedResult.add(task);
         Mockito.when(taskRepository.findAll()).thenReturn(expectedResult);
-        TaskResponse tasks = retrieveTasks.getAllTasks();
+        doNothing().when(idValidation).validateId("Transaction", "2");
+        TaskResponse tasks = retrieveTasks.getAllTasks("2");
         assertEquals(1, tasks.getTasks().size());
         assertEquals("1", tasks.getTasks().get(0).getId());
     }
@@ -56,8 +61,9 @@ public class RetrieveTasksTests {
     void checkWhenThereAreNoTasksInTheDatabaseAnEmptyListIsReturned() {
         List<Task> expectedResult = new ArrayList<>();
         Mockito.when(taskRepository.findAll()).thenReturn(expectedResult);
-        retrieveTasks = new RetrieveTasks(taskRepository);
-        TaskResponse tasks = retrieveTasks.getAllTasks();
+        doNothing().when(idValidation).validateId("Transaction", "2");
+        retrieveTasks = new RetrieveTasks(taskRepository, idValidation);
+        TaskResponse tasks = retrieveTasks.getAllTasks("2");
         assertNull(tasks.getTasks());
     }
 
