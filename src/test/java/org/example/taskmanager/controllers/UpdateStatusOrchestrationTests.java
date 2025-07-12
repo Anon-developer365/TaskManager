@@ -51,7 +51,7 @@ public class UpdateStatusOrchestrationTests {
         updateStatusRequest.setId(uuid.toString());
         updateStatusRequest.setStatus("This is a new status");
 
-        String expectedResult = "Status updated to: " + updateStatusRequest.getStatus();
+        String expectedResult = "Status updated to: \"" + updateStatusRequest.getStatus()+"\"";
         updateStatusOrchestration = new UpdateStatusOrchestration(updateStatus, updateStatusValidation);
         doNothing().when(updateStatusValidation).verifyStatus(updateStatusRequest.getId(), updateStatusRequest.getStatus());
         when(updateStatus.updateStatus(updateStatusRequest)).thenReturn(true);

@@ -2,7 +2,8 @@ package org.example.taskmanager.integrationTest;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.example.taskmanager.TaskManagerApplication;
-import org.junit.jupiter.api.BeforeEach;
+import org.example.taskmanager.service.TaskRepository;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,24 +32,25 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 public class CreateTaskIntegrationTests {
 
-    private final WebApplicationContext webApplicationContext;
+    private TaskRepository taskRepository;
 
-    private MockMvc mvc;
+    private final MockMvc mvc;
 
     private final ObjectMapper objectMapper;
 
 
     @Autowired
-    public CreateTaskIntegrationTests(WebApplicationContext webApplicationContext, ObjectMapper objectMapper) {
-        this.webApplicationContext = webApplicationContext;
+    public CreateTaskIntegrationTests(WebApplicationContext webApplicationContext, ObjectMapper objectMapper,
+                                      TaskRepository taskRepository) {
         this.objectMapper = objectMapper;
+        this.taskRepository = taskRepository;
+        this.mvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
     }
 
-    @BeforeEach
-    public void setup() {
-        this.mvc = MockMvcBuilders.webAppContextSetup(this.webApplicationContext).build();
+    @AfterEach
+    void reset() {
+        taskRepository.deleteAll();
     }
-
     @Test
     void whenAllDetailsAreValidATaskIsSavedInTheDatabase() throws Exception {
         String stringDate = "2025-05-05 17:00";

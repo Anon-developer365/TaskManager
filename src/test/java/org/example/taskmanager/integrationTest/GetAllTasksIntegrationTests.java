@@ -3,6 +3,7 @@ package org.example.taskmanager.integrationTest;
 import org.example.taskmanager.TaskManagerApplication;
 import org.example.taskmanager.pojo.Task;
 import org.example.taskmanager.service.TaskRepository;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -30,21 +31,19 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 public class GetAllTasksIntegrationTests {
 
-    private final WebApplicationContext webApplicationContext;
-
-    private MockMvc mvc;
+    private final MockMvc mvc;
 
     private final TaskRepository taskRepository;
 
     @Autowired
     public GetAllTasksIntegrationTests(TaskRepository taskRepository, WebApplicationContext webApplicationContext) {
         this.taskRepository = taskRepository;
-        this.webApplicationContext = webApplicationContext;
+        this.mvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
     }
 
-    @BeforeEach
-    public void setup() {
-        this.mvc = MockMvcBuilders.webAppContextSetup(this.webApplicationContext).build();
+    @AfterEach
+    void reset() {
+        taskRepository.deleteAll();
     }
 
     @Test

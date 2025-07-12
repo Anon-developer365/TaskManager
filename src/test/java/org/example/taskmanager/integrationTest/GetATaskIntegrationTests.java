@@ -3,6 +3,7 @@ package org.example.taskmanager.integrationTest;
 import org.example.taskmanager.TaskManagerApplication;
 import org.example.taskmanager.pojo.Task;
 import org.example.taskmanager.service.TaskRepository;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -40,11 +41,12 @@ public class GetATaskIntegrationTests {
     public GetATaskIntegrationTests(TaskRepository taskRepository, WebApplicationContext webApplicationContext) {
         this.taskRepository = taskRepository;
         this.webApplicationContext = webApplicationContext;
+        this.mvc = MockMvcBuilders.webAppContextSetup(this.webApplicationContext).build();
     }
 
-    @BeforeEach
-    public void setup() {
-        this.mvc = MockMvcBuilders.webAppContextSetup(this.webApplicationContext).build();
+    @AfterEach
+    void reset() {
+        taskRepository.deleteAll();
     }
 
     @Test

@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.example.taskmanager.TaskManagerApplication;
 import org.example.taskmanager.pojo.Task;
 import org.example.taskmanager.service.TaskRepository;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -31,9 +32,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
         classes = TaskManagerApplication.class)
 @AutoConfigureMockMvc
 public class UpdateStatusIntegrationTests {
-    private final WebApplicationContext webApplicationContext;
 
-    private MockMvc mvc;
+    private final MockMvc mvc;
 
     private final TaskRepository taskRepository;
 
@@ -42,13 +42,14 @@ public class UpdateStatusIntegrationTests {
     @Autowired
     public UpdateStatusIntegrationTests(TaskRepository taskRepository, WebApplicationContext webApplicationContext, ObjectMapper objectMapper) {
         this.taskRepository = taskRepository;
-        this.webApplicationContext = webApplicationContext;
         this.objectMapper = objectMapper;
+        this.mvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
     }
 
-    @BeforeEach
-    public void setup() {
-        this.mvc = MockMvcBuilders.webAppContextSetup(this.webApplicationContext).build();
+
+    @AfterEach
+    void reset() {
+        taskRepository.deleteAll();
     }
 
     @Test
@@ -79,7 +80,7 @@ public class UpdateStatusIntegrationTests {
     @Test
     void checkAnErrorIsReturnedIfTheIdIsNotInTheDatabase() throws Exception {
         UpdateStatusRequest statusRequest = new UpdateStatusRequest();
-        statusRequest.setId("2");
+        statusRequest.setId("7");
         statusRequest.setStatus("this is a new status");
 
         HttpHeaders httpHeaders = new HttpHeaders();
@@ -91,7 +92,7 @@ public class UpdateStatusIntegrationTests {
                         .content(json))
                 .andExpect(status().is(400))
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.errors").value("Task with ID 2 not found"))
+                .andExpect(jsonPath("$.errors").value("Task with ID 7 not found"))
                 .andReturn();
     }
 
