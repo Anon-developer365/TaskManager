@@ -12,8 +12,16 @@ import org.springframework.stereotype.Service;
 @ToString
 public class SaveTask {
 
+    /**
+     * Task repository for service.
+     */
     private final TaskRepository taskRepository;
 
+    /**
+     * Autowired constructor for Save Task service.
+     *
+     * @param taskRepository Task repository for the service.
+     */
     @Autowired
     public SaveTask(TaskRepository taskRepository) {
         this.taskRepository = taskRepository;
@@ -21,6 +29,7 @@ public class SaveTask {
 
     /**
      * Method to save data in the task manager database.
+     *
      * @param task task required to be saved in the database.
      * @return returns a success message with the assigned ID of the task.
      */

@@ -23,10 +23,20 @@ public class TaskValidation {
      */
     private final StatusValidation statusValidation;
 
+    /**
+     * Regex for title.
+     */
     private static final String TITLE_REGEX = "\\w";
 
+    /**
+     * Regex for description.
+     */
     private static final String DESCRIPTION_REGEX = "\\w";
 
+    /**
+     * Autowired constructor for Task Validation Service.
+     * @param statusValidation status validation service.
+     */
     public TaskValidation(StatusValidation statusValidation) {
         this.statusValidation = statusValidation;
     }

@@ -23,7 +23,6 @@ public class StatusValidation {
      * Method to validate status of a task
      *
      * @param status the status to be validated.
-     * @return a list either empty if the status is valid or containing the validation errors.
      */
     public void statusCheck(String status) {
         final List<String> errors = new ArrayList<>();

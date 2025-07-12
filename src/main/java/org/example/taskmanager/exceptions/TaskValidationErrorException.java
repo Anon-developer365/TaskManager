@@ -8,7 +8,7 @@ import org.hibernate.service.spi.ServiceException;
 public class TaskValidationErrorException extends ServiceException {
 
     /**
-     * Constructor for Empty Task Exception.
+     * Constructor for Task Validation Error Exception.
      *
      * @param message the message.
      */

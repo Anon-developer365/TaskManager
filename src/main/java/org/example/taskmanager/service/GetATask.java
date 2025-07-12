@@ -31,8 +31,10 @@ public class GetATask {
 
 
     /**
-     * Autowired constructor for task repository.
+     * Autowired constructor for Get a task service.
+     *
      * @param taskRepository task repository.
+     * @param idValidation validation service.
      */
     @Autowired
     public GetATask(TaskRepository taskRepository, IdValidation idValidation) {
@@ -43,6 +45,7 @@ public class GetATask {
     /**
      * Method to retrieve a task.
      *
+     * @param transactionId ID of the transaction
      * @param taskId the id of the task to be returned.
      * @return the task that wants to be retrieved.
      */

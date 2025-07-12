@@ -14,8 +14,16 @@ import java.util.Optional;
 @Service
 public class UpdateStatus {
 
+    /**
+     * Task repository for service.
+     */
     private final TaskRepository taskRepository;
 
+    /**
+     * Autowired constructor for Update status service.
+     *
+     * @param taskRepository Task repository for the service.
+     */
     @Autowired
     public UpdateStatus(TaskRepository taskRepository) {
         this.taskRepository = taskRepository;

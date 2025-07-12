@@ -8,11 +8,23 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+/**
+ * ID validation Service class.
+ */
 @Service
 public class IdValidation {
 
+    /**
+     * Regex for ID validation.
+     */
     private static final String ID_REGEX = "^[0-9a-zA-Z-]{1,10}$";
 
+    /**
+     * Method to validate ID.
+     *
+     * @param type type of ID being validated.
+     * @param id ID to be validated.
+     */
     public void validateId(String type, String id) {
         final List<String> allErrors = new ArrayList<>();
         if (id.isBlank() || id.isEmpty()) {

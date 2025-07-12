@@ -31,9 +31,11 @@ public class UpdateStatusOrchestration {
     private final StatusValidation statusValidation;
 
     /**
-     * Autowired constructor for update service controller. ]
+     * Autowired constructor for update service controller.
      *
      * @param updateStatus update status service.
+     * @param idValidation validation service.
+     * @param statusValidation status validation service.
      */
     @Autowired
     public UpdateStatusOrchestration(UpdateStatus updateStatus, IdValidation idValidation,
@@ -47,6 +49,7 @@ public class UpdateStatusOrchestration {
     /**
      * Method to update the status of an existing task.
      *
+     * @param transactionId ID of the transaction.
      * @param updateRequest update request containing the status and id of the task to be updated.
      * @return a success message with the updated status.
      */
@@ -60,10 +63,10 @@ public class UpdateStatusOrchestration {
     }
 
     /**
-     * Method to validate headers.
+     * Method to validate transactionID and update status request.
      *
-     * @param transactionId
-     * @param updateRequest
+     * @param transactionId transactionID to be validated.
+     * @param updateRequest update request with task ID and status to be validated.
      */
     private void validate(String transactionId, UpdateStatusRequest updateRequest) {
         idValidation.validateId("Transaction", transactionId);
