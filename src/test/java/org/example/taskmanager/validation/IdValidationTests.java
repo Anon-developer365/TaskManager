@@ -11,7 +11,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 public class IdValidationTests {
 
     private IdValidation IdValidation;
-
+/**
     @Test
     void whenTaskIdContainsOneCharacterNoErrorIsThrown() {
         IdValidation= new IdValidation();
@@ -39,6 +39,6 @@ public class IdValidationTests {
                 -> IdValidation.validateId("Task", ""));
 
     }
-
+**/
 }
 

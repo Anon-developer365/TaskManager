@@ -3,7 +3,7 @@ package org.example.taskmanager.service;
 import jakarta.persistence.EntityNotFoundException;
 import org.example.taskmanager.exceptions.TaskNotFoundException;
 import org.example.taskmanager.pojo.Task;
-import org.example.taskmanager.validation.IdValidation;
+import org.example.taskmanager.validation.ValidationOrchestration;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -28,7 +28,7 @@ import static org.mockito.Mockito.doNothing;
 public class DeleteTaskTests {
 
     @Mock
-    private IdValidation idValidation;
+    private ValidationOrchestration validationOrchestration;
 
     @Mock
     private TaskRepository taskRepository;
@@ -42,7 +42,7 @@ public class DeleteTaskTests {
 
     @Test
     void checkWhenATaskIsInTheDataBaseAndIdMatchesThisIsDeleted() throws ParseException {
-        deleteTask = new DeleteTask(taskRepository, idValidation);
+        deleteTask = new DeleteTask(taskRepository, validationOrchestration);
         final DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
 
         date = dateFormat.parse("2025-05-05 17:00");
@@ -53,8 +53,7 @@ public class DeleteTaskTests {
         Task task = new Task("1", "develop database", "create a database", "open status", dueDate);
         Mockito.when(taskRepository.findById("1")).thenReturn(Optional.of(task));
         doNothing().when(taskRepository).deleteById("1");
-        doNothing().when(idValidation).validateId("Transaction", "2");
-        doNothing().when(idValidation).validateId("Task", "1");
+        doNothing().when(validationOrchestration).generalTaskValidation("2", "1");
         String expectedMessage = "Task 1 deleted.";
         SuccessResponse response = deleteTask.deleteTask("2","1");
         assertEquals("1", response.getId());
@@ -63,9 +62,8 @@ public class DeleteTaskTests {
 
     @Test
     void checkWhenATaskIsInTheDataBaseAndIdDoesNotMatchAnErrorIsThrown() {
-        deleteTask = new DeleteTask(taskRepository, idValidation);
-        doNothing().when(idValidation).validateId("Transaction", "2");
-        doNothing().when(idValidation).validateId("Task", "1");
+        deleteTask = new DeleteTask(taskRepository, validationOrchestration);
+        doNothing().when(validationOrchestration).generalTaskValidation("2", "1");
         Mockito.when(taskRepository.findById("1")).thenThrow(EntityNotFoundException.class);
         assertThrows(TaskNotFoundException.class, () -> deleteTask.deleteTask("2","1"));
     }

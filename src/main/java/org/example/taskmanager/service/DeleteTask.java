@@ -4,6 +4,7 @@ import jakarta.persistence.EntityNotFoundException;
 import org.example.taskmanager.exceptions.TaskNotFoundException;
 import org.example.taskmanager.pojo.Task;
 import org.example.taskmanager.validation.IdValidation;
+import org.example.taskmanager.validation.ValidationOrchestration;
 import org.springframework.stereotype.Service;
 import uk.gov.hmcts.taskmanager.domain.SuccessResponse;
 
@@ -25,17 +26,17 @@ public class DeleteTask {
     /**
      * Validation service for Id's
      */
-    private final IdValidation idValidation;
+    private final ValidationOrchestration validationOrchestration;
 
     /**
      * Autowired constructor for task repository.
      *
      * @param taskRepository task repository.
-     * @param idValidation validation service.
+     * @param validationOrchestration validation service.
      */
-    public DeleteTask(TaskRepository taskRepository, IdValidation idValidation) {
+    public DeleteTask(TaskRepository taskRepository,ValidationOrchestration validationOrchestration) {
         this.taskRepository = taskRepository;
-        this.idValidation = idValidation;
+        this.validationOrchestration = validationOrchestration;
     }
 
     /**
@@ -46,19 +47,8 @@ public class DeleteTask {
      * @return success response containing the ID of the deleted task and a success message.
      */
     public SuccessResponse deleteTask(String transactionId, String taskId) {
-        validate(transactionId, taskId);
+        validationOrchestration.generalTaskValidation(transactionId, taskId);
         return delete(taskId);
-    }
-
-    /**
-     * Method to validate transactionID and TaskID
-     *
-     * @param transactionId transaction ID to be validated.
-     * @param taskId task ID to be validated.
-     */
-    private void validate(String transactionId, String taskId) {
-        idValidation.validateId("Transaction", transactionId);
-        idValidation.validateId("Task", taskId);
     }
 
     /**

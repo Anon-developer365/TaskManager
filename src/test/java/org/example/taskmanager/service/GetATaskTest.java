@@ -4,11 +4,13 @@ import jakarta.persistence.EntityNotFoundException;
 import org.example.taskmanager.exceptions.TaskValidationErrorException;
 import org.example.taskmanager.pojo.Task;
 import org.example.taskmanager.validation.IdValidation;
+import org.example.taskmanager.validation.ValidationOrchestration;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.validation.annotation.Validated;
 
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -26,7 +28,7 @@ import static org.mockito.Mockito.doNothing;
 public class GetATaskTest {
 
     @Mock
-    private IdValidation idValidation;
+    private ValidationOrchestration validationOrchestration;
 
     @Mock
     private TaskRepository taskRepository;
@@ -40,7 +42,7 @@ public class GetATaskTest {
 
     @Test
     void checkIfATaskIsRequestedAndExistsItIsReturned() throws ParseException {
-        getATask = new GetATask(taskRepository, idValidation);
+        getATask = new GetATask(taskRepository, validationOrchestration);
 
         final DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
 
@@ -51,8 +53,7 @@ public class GetATaskTest {
 
         Task task = new Task("1", "develop database", "create a database", "open status", dueDate);
         Mockito.when(taskRepository.findById("1")).thenReturn(Optional.of(task));
-        doNothing().when(idValidation).validateId("Transaction", "2");
-        doNothing().when(idValidation).validateId("Task", "1");
+        doNothing().when(validationOrchestration).generalTaskValidation("2", "1");
         uk.gov.hmcts.taskmanager.domain.Task actualTask = getATask.getATask("2","1");
         assertEquals("1", actualTask.getId());
         assertEquals("develop database", actualTask.getTitle());
@@ -61,9 +62,9 @@ public class GetATaskTest {
     @Test
     void checkIfATaskIsRequestedAndDoesNotExistsAnErrorIsThrown() {
 
-        getATask = new GetATask(taskRepository, idValidation);
-        doNothing().when(idValidation).validateId("Transaction", "2");
-        doNothing().when(idValidation).validateId("Task", "1");
+        getATask = new GetATask(taskRepository, validationOrchestration);
+        doNothing().when(validationOrchestration).generalTaskValidation("2", "1");
+
         Mockito.when(taskRepository.findById("1")).thenThrow(EntityNotFoundException.class);
         assertThrows(TaskValidationErrorException.class, () -> getATask.getATask("2","1"));
     }

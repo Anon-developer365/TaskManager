@@ -4,6 +4,7 @@ import org.example.taskmanager.exceptions.TaskValidationErrorException;
 import org.example.taskmanager.service.UpdateStatus;
 import org.example.taskmanager.validation.IdValidation;
 import org.example.taskmanager.validation.StatusValidation;
+import org.example.taskmanager.validation.ValidationOrchestration;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -12,6 +13,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.context.WebApplicationContext;
 import uk.gov.hmcts.taskmanager.domain.SuccessResponse;
 import uk.gov.hmcts.taskmanager.domain.UpdateStatusRequest;
@@ -34,7 +36,7 @@ public class UpdateStatusOrchestrationTests {
     private UpdateStatus updateStatus;
 
     @Mock
-    private IdValidation idValidation;
+    private ValidationOrchestration validationOrchestration;
 
     @Mock
     private StatusValidation statusValidation;
@@ -56,9 +58,8 @@ public class UpdateStatusOrchestrationTests {
         updateStatusRequest.setStatus("This is a new status");
 
         String expectedResult = "Status updated to: \"" + updateStatusRequest.getStatus()+"\"";
-        updateStatusOrchestration = new UpdateStatusOrchestration(updateStatus, idValidation, statusValidation);
-        doNothing().when(idValidation).validateId("Transaction", "2");
-        doNothing().when(idValidation).validateId("Task", taskId);
+        updateStatusOrchestration = new UpdateStatusOrchestration(updateStatus, validationOrchestration, statusValidation);
+        doNothing().when(validationOrchestration).updateStatusValidation("2", updateStatusRequest);
         when(updateStatus.updateStatus(updateStatusRequest)).thenReturn(true);
         SuccessResponse output = updateStatusOrchestration.updateStatus("2", updateStatusRequest);
         assert output != null;
@@ -83,12 +84,12 @@ public class UpdateStatusOrchestrationTests {
         updateStatusRequest.setId("1");
         updateStatusRequest.setStatus("This is a new status");
 
-        updateStatusOrchestration = new UpdateStatusOrchestration(updateStatus, idValidation, statusValidation);
-        doNothing().when(idValidation).validateId("Transaction", "2");
+        updateStatusOrchestration = new UpdateStatusOrchestration(updateStatus, validationOrchestration, statusValidation);
         String expectedError = "validation error";
 
         TaskValidationErrorException thrown = assertThrows(TaskValidationErrorException.class, () -> {
-            doThrow(new TaskValidationErrorException("validation error")).when(idValidation).validateId("Task", "1");
+            doThrow(new TaskValidationErrorException("validation error")).when(validationOrchestration).updateStatusValidation(
+                    "2", updateStatusRequest);
             updateStatusOrchestration.updateStatus("2", updateStatusRequest);
         });
         assertEquals(expectedError, thrown.getMessage());

@@ -2,6 +2,7 @@ package org.example.taskmanager.service;
 
 import org.example.taskmanager.pojo.Task;
 import org.example.taskmanager.validation.IdValidation;
+import org.example.taskmanager.validation.ValidationOrchestration;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import uk.gov.hmcts.taskmanager.domain.TaskResponse;
@@ -17,7 +18,7 @@ public class RetrieveTasks {
     /**
      * Validation service for Id's
      */
-    private final IdValidation idValidation;
+    private final ValidationOrchestration validationOrchestration;
 
     /**
      * Task repository for service.
@@ -28,12 +29,12 @@ public class RetrieveTasks {
      * Autowired constructor for task repository.
      *
      * @param taskRepository task repository.
-     * @param idValidation validation service.
+     * @param validationOrchestration validation service.
      */
     @Autowired
-    public RetrieveTasks(TaskRepository taskRepository, IdValidation idValidation) {
+    public RetrieveTasks(TaskRepository taskRepository, ValidationOrchestration validationOrchestration) {
         this.taskRepository = taskRepository;
-        this.idValidation = idValidation;
+        this.validationOrchestration = validationOrchestration;
     }
 
 
@@ -44,18 +45,9 @@ public class RetrieveTasks {
      * @return a list of tasks within the database.
      */
     public TaskResponse getAllTasks(String transactionId) {
-        validate(transactionId);
+        validationOrchestration.getAllTaskValidation(transactionId);
         return getTasks();
 
-    }
-
-    /**
-     * Method to validate transaction ID.
-     *
-     * @param transactionId ID to be validated.
-     */
-    private void validate(String transactionId) {
-        idValidation.validateId("Transaction", transactionId);
     }
 
     /**

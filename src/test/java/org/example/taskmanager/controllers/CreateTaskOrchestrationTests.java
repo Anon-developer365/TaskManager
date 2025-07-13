@@ -4,7 +4,7 @@ import org.example.taskmanager.exceptions.TaskValidationErrorException;
 import org.example.taskmanager.pojo.Task;
 import org.example.taskmanager.service.CreateTask;
 import org.example.taskmanager.service.SaveTask;
-import org.example.taskmanager.validation.TaskValidation;
+import org.example.taskmanager.validation.ValidationOrchestration;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -33,7 +33,7 @@ public class CreateTaskOrchestrationTests {
     private SaveTask saveTask;
 
     @Mock
-    TaskValidation taskValidation;
+    private ValidationOrchestration validationOrchestration;
 
     @InjectMocks
     private CreateTaskOrchestration createTaskOrchestration;
@@ -58,8 +58,8 @@ public class CreateTaskOrchestrationTests {
         createTaskRequest.setDueDate(dueDate);
 
         Task task = new Task(taskId, createTaskRequest.getTitle(), createTaskRequest.getTaskDescription(), createTaskRequest.getStatus(), dueDate);
-        createTaskOrchestration = new CreateTaskOrchestration(createTask, saveTask, taskValidation);
-        doNothing().when(taskValidation).verifyTask(createTaskRequest.getTitle(), createTaskRequest.getTaskDescription(), createTaskRequest.getStatus(), createTaskRequest.getDueDate());
+        createTaskOrchestration = new CreateTaskOrchestration(createTask, saveTask, validationOrchestration);
+        doNothing().when(validationOrchestration).createTaskValidation(transactionId, createTaskRequest);
         when(createTask.createNewTask(createTaskRequest.getTitle(), createTaskRequest.getTaskDescription(), createTaskRequest.getStatus(), createTaskRequest.getDueDate())).thenReturn(task);
         when(saveTask.saveData(task)).thenReturn(taskId);
         SuccessResponse output = createTaskOrchestration.createTask(transactionId, createTaskRequest);
@@ -84,15 +84,14 @@ public class CreateTaskOrchestrationTests {
 
         Task task = new Task(uuid.toString(), createTaskRequest.getTitle(),
                 createTaskRequest.getTaskDescription(), createTaskRequest.getStatus(), dueDate);
-        createTaskOrchestration = new CreateTaskOrchestration(createTask, saveTask, taskValidation);
+        createTaskOrchestration = new CreateTaskOrchestration(createTask, saveTask, validationOrchestration);
         when(createTask.createNewTask(createTaskRequest.getTitle(), createTaskRequest.getTaskDescription(), createTaskRequest.getStatus(), dueDate)).thenReturn(task);
         when(saveTask.saveData(task)).thenReturn(uuid.toString());
 
         String expectedError = "Task title is empty";
 
         TaskValidationErrorException thrown = assertThrows(TaskValidationErrorException.class, () -> {
-            doThrow(new TaskValidationErrorException("Task title is empty")).when(taskValidation).verifyTask(createTaskRequest.getTitle(),
-                    createTaskRequest.getTaskDescription(), createTaskRequest.getStatus(), dueDate);
+            doThrow(new TaskValidationErrorException("Task title is empty")).when(validationOrchestration).createTaskValidation("1", createTaskRequest);
             createTaskOrchestration.createTask("1", createTaskRequest);
         });
         assertEquals(expectedError, thrown.getMessage());
@@ -115,7 +114,7 @@ public class CreateTaskOrchestrationTests {
 
         Task task = new Task(uuid.toString(), createTaskRequest.getTitle(),
                 createTaskRequest.getTaskDescription(), createTaskRequest.getStatus(), dueDate);
-        createTaskOrchestration = new CreateTaskOrchestration(createTask, saveTask, taskValidation);
+        createTaskOrchestration = new CreateTaskOrchestration(createTask, saveTask, validationOrchestration);
         when(createTask.createNewTask(createTaskRequest.getTitle(),
                 createTaskRequest.getTaskDescription(), createTaskRequest.getStatus(), dueDate)).thenReturn(task);
         when(saveTask.saveData(task)).thenThrow(new RuntimeException("An error occurred saving the task"));

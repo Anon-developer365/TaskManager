@@ -25,7 +25,7 @@ public class IdValidation {
      * @param type type of ID being validated.
      * @param id ID to be validated.
      */
-    public void validateId(String type, String id) {
+    public List<String> validateId(String type, String id) {
         final List<String> allErrors = new ArrayList<>();
         if (id.isBlank() || id.isEmpty()) {
             allErrors.add(type + " ID is blank");
@@ -36,8 +36,6 @@ public class IdValidation {
                 allErrors.add(type + " ID does not match the pattern 0-9a-zA-Z-{1,10}");
             }
         }
-        if (!allErrors.isEmpty()) {
-            throw new TaskValidationErrorException(allErrors.toString());
-        }
+        return allErrors;
     }
 }

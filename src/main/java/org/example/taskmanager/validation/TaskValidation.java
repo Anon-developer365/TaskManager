@@ -46,18 +46,14 @@ public class TaskValidation {
      *
      * @param title task title to be validated
      * @param description description, if present to be validated.
-     * @param status task status to be validated
      * @param dueDate due date to be validated.
      */
-    public void verifyTask(String title, String description, String status, LocalDateTime dueDate) {
+    public List<String> verifyTask(String title, String description, LocalDateTime dueDate) {
         final List<String> allErrors = new ArrayList<>();
         allErrors.addAll(titleCheck(title));
         allErrors.addAll(descriptionCheck(description));
         allErrors.addAll(dueDateCheck(dueDate));
-        if (!allErrors.isEmpty()) {
-            throw new TaskValidationErrorException(allErrors.toString());
-        }
-        statusValidation.statusCheck(status);
+        return allErrors;
     }
 
     /**

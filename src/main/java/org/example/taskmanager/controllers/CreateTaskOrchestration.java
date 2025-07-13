@@ -3,7 +3,8 @@ package org.example.taskmanager.controllers;
 import org.example.taskmanager.pojo.Task;
 import org.example.taskmanager.service.CreateTask;
 import org.example.taskmanager.service.SaveTask;
-import org.example.taskmanager.validation.TaskValidation;
+
+import org.example.taskmanager.validation.ValidationOrchestration;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import uk.gov.hmcts.taskmanager.domain.CreateTaskRequest;
@@ -31,7 +32,7 @@ public class CreateTaskOrchestration {
     /**
      * service to validate submitted task data.
      */
-    private final TaskValidation validation;
+    private final ValidationOrchestration validation;
 
     /**
      * Autowired constructor for create task controller.
@@ -41,7 +42,7 @@ public class CreateTaskOrchestration {
      * @param validation task validation service.
      */
     @Autowired
-    public CreateTaskOrchestration(final CreateTask createTask, final SaveTask saveTask, final TaskValidation validation) {
+    public CreateTaskOrchestration(final CreateTask createTask, final SaveTask saveTask, final ValidationOrchestration validation) {
         this.createTask = createTask;
         this.saveTask = saveTask;
         this.validation = validation;
@@ -56,7 +57,7 @@ public class CreateTaskOrchestration {
      */
 
     public SuccessResponse createTask(String transactionId, CreateTaskRequest taskRequest) {
-        validation.verifyTask(taskRequest.getTitle(), taskRequest.getTaskDescription(), taskRequest.getStatus(), taskRequest.getDueDate());
+        validation.createTaskValidation(transactionId, taskRequest);
         Task task = createTask.createNewTask(taskRequest.getTitle(), taskRequest.getTaskDescription(), taskRequest.getStatus(), taskRequest.getDueDate());
         String taskId = saveTask.saveData(task);
         SuccessResponse response = new SuccessResponse();

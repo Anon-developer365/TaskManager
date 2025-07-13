@@ -2,6 +2,7 @@ package org.example.taskmanager.service;
 
 import org.example.taskmanager.pojo.Task;
 import org.example.taskmanager.validation.IdValidation;
+import org.example.taskmanager.validation.ValidationOrchestration;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -26,7 +27,7 @@ import static org.mockito.Mockito.doNothing;
 public class RetrieveTasksTests {
 
     @Mock
-    private IdValidation idValidation;
+    private ValidationOrchestration validationOrchestration;
     @Mock
     private TaskRepository taskRepository;
     @InjectMocks
@@ -39,7 +40,7 @@ public class RetrieveTasksTests {
 
     @Test
     void checkWhenThereAreTasksInTheDatabaseTheseAreAllReturned() throws ParseException {
-        retrieveTasks = new RetrieveTasks(taskRepository, idValidation);
+        retrieveTasks = new RetrieveTasks(taskRepository, validationOrchestration);
         final DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
 
         date = dateFormat.parse("2025-05-05 17:00");
@@ -51,7 +52,7 @@ public class RetrieveTasksTests {
         List<Task> expectedResult = new ArrayList<>();
         expectedResult.add(task);
         Mockito.when(taskRepository.findAll()).thenReturn(expectedResult);
-        doNothing().when(idValidation).validateId("Transaction", "2");
+        doNothing().when(validationOrchestration).getAllTaskValidation("2");
         TaskResponse tasks = retrieveTasks.getAllTasks("2");
         assertEquals(1, tasks.getTasks().size());
         assertEquals("1", tasks.getTasks().get(0).getId());
@@ -61,8 +62,8 @@ public class RetrieveTasksTests {
     void checkWhenThereAreNoTasksInTheDatabaseAnEmptyListIsReturned() {
         List<Task> expectedResult = new ArrayList<>();
         Mockito.when(taskRepository.findAll()).thenReturn(expectedResult);
-        doNothing().when(idValidation).validateId("Transaction", "2");
-        retrieveTasks = new RetrieveTasks(taskRepository, idValidation);
+        doNothing().when(validationOrchestration).getAllTaskValidation("2");
+        retrieveTasks = new RetrieveTasks(taskRepository, validationOrchestration);
         TaskResponse tasks = retrieveTasks.getAllTasks("2");
         assertNull(tasks.getTasks());
     }

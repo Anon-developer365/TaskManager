@@ -4,6 +4,7 @@ package org.example.taskmanager.service;
 import jakarta.persistence.EntityNotFoundException;
 import org.example.taskmanager.exceptions.TaskValidationErrorException;
 import org.example.taskmanager.validation.IdValidation;
+import org.example.taskmanager.validation.ValidationOrchestration;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import uk.gov.hmcts.taskmanager.domain.Task;
@@ -27,19 +28,18 @@ public class GetATask {
     /**
      * Validation service for Id's
      */
-    private final IdValidation idValidation;
-
+    private final ValidationOrchestration validationOrchestration;
 
     /**
      * Autowired constructor for Get a task service.
      *
      * @param taskRepository task repository.
-     * @param idValidation validation service.
+     * @param validationOrchestration validation service.
      */
     @Autowired
-    public GetATask(TaskRepository taskRepository, IdValidation idValidation) {
+    public GetATask(TaskRepository taskRepository, ValidationOrchestration validationOrchestration) {
         this.taskRepository = taskRepository;
-        this.idValidation = idValidation;
+        this.validationOrchestration = validationOrchestration;
     }
 
     /**
@@ -50,21 +50,9 @@ public class GetATask {
      * @return the task that wants to be retrieved.
      */
     public Task getATask(String transactionId, String taskId) {
-        validate(transactionId, taskId);
+        validationOrchestration.generalTaskValidation(transactionId, taskId);
         return getTask(taskId);
 
-    }
-
-    /**
-     * Method to validate transaction and task ID.
-     *
-     * @param transactionId transaction ID to be validated.
-     * @param taskId Task ID to be validated.
-     */
-
-    private void validate(String transactionId, String taskId) {
-        idValidation.validateId("Transaction", transactionId);
-        idValidation.validateId("Task", taskId);
     }
 
     /**
