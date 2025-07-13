@@ -27,7 +27,7 @@ public class StatusValidation {
     public List<String> statusCheck(String status) {
         final List<String> allErrors = new ArrayList<>();
         if (StringUtils.isBlank(status)) {
-            allErrors.add("Task status is empty");
+            allErrors.add("Task status is blank");
         } else {
             final Pattern pattern = Pattern.compile(STATUS_REGEX);
             final Matcher matcher = pattern.matcher(status);

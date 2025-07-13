@@ -243,7 +243,7 @@ public class CreateTaskIntegrationTests {
         LocalDateTime dueDate = LocalDateTime.parse(stringDate, dateTimeFormatter);
         CreateTaskRequest taskRequest = new CreateTaskRequest();
         taskRequest.setTaskDescription("##+^&");
-        taskRequest.setStatus("Status");
+        taskRequest.setStatus("");
         taskRequest.setTitle("");
         taskRequest.setDueDate(dueDate);
 
@@ -256,7 +256,7 @@ public class CreateTaskIntegrationTests {
                         .content(json))
                 .andExpect(status().is(400))
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.errors").value("[Task title is empty, Task description does not match the pattern a-zA-Z0-9]"))
+                .andExpect(jsonPath("$.errors").value("[Task title is empty, Task description does not match the pattern a-zA-Z0-9, Task status is empty]"))
                 .andReturn();
     }
 }

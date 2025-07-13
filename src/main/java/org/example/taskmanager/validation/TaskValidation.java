@@ -19,11 +19,6 @@ import java.util.regex.Pattern;
 public class TaskValidation {
 
     /**
-     * class to validate status and return outcome to task validation.
-     */
-    private final StatusValidation statusValidation;
-
-    /**
      * Regex for title.
      */
     private static final String TITLE_REGEX = "\\w";
@@ -32,14 +27,6 @@ public class TaskValidation {
      * Regex for description.
      */
     private static final String DESCRIPTION_REGEX = "\\w";
-
-    /**
-     * Autowired constructor for Task Validation Service.
-     * @param statusValidation status validation service.
-     */
-    public TaskValidation(StatusValidation statusValidation) {
-        this.statusValidation = statusValidation;
-    }
 
     /**
      * Method to verify task details
@@ -65,7 +52,7 @@ public class TaskValidation {
     private List<String> titleCheck(String title) {
         final List<String> errors = new ArrayList<>();
         if (StringUtils.isBlank(title)) {
-            errors.add("Task title is empty");
+            errors.add("Task title is blank");
         } else {
             final Pattern pattern = Pattern.compile(TITLE_REGEX);
             final Matcher matcher = pattern.matcher(title);
@@ -105,7 +92,7 @@ public class TaskValidation {
     private List<String> dueDateCheck(LocalDateTime dueDate) {
         final List<String> errors = new ArrayList<>();
         if (dueDate == null) {
-            errors.add("Task due date is empty");
+            errors.add("Task due date is blank");
         }
         return errors;
     }
