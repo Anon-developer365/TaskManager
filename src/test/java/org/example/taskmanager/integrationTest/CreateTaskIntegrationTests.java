@@ -94,7 +94,7 @@ public class CreateTaskIntegrationTests {
                         .content(json))
                 .andExpect(status().is(400))
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.errors").value("[Task status is empty]"))
+                .andExpect(jsonPath("$.errors").value("[Task status is blank]"))
                 .andReturn();
     }
 
@@ -117,7 +117,7 @@ public class CreateTaskIntegrationTests {
                         .content(json))
                 .andExpect(status().is(400))
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.errors").value("[Task title is empty]"))
+                .andExpect(jsonPath("$.errors").value("[Task title is blank]"))
                 .andReturn();
     }
 
@@ -137,7 +137,7 @@ public class CreateTaskIntegrationTests {
                         .content(json))
                 .andExpect(status().is(400))
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.errors").value("[Task due date is empty]"))
+                .andExpect(jsonPath("$.errors").value("[Task due date is blank]"))
                 .andReturn();
     }
 
@@ -256,7 +256,7 @@ public class CreateTaskIntegrationTests {
                         .content(json))
                 .andExpect(status().is(400))
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.errors").value("[Task title is empty, Task description does not match the pattern a-zA-Z0-9, Task status is empty]"))
+                .andExpect(jsonPath("$.errors").value("[Task title is blank, Task description does not match the pattern a-zA-Z0-9, Task status is blank]"))
                 .andReturn();
     }
 }

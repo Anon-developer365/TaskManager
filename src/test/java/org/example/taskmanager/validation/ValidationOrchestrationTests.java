@@ -6,6 +6,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.springframework.boot.test.context.SpringBootTest;
 import uk.gov.hmcts.taskmanager.domain.CreateTaskRequest;
+import uk.gov.hmcts.taskmanager.domain.UpdateStatusRequest;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -150,4 +151,88 @@ public class ValidationOrchestrationTests {
         assertEquals(errorList.toString(), exception.getMessage());
 
     }
+
+    @Test
+    void whenCreateTaskValidationIsUsedWithAnEmptyDescriptionNoErrorIsThrown() {
+        List<String> emptyList = new ArrayList<>();
+
+        String stringDate = "2025-05-05 17:00";
+        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm", Locale.UK);
+        LocalDateTime dueDate = LocalDateTime.parse(stringDate, dateTimeFormatter);
+
+        CreateTaskRequest createTaskRequest = new CreateTaskRequest();
+        createTaskRequest.setTitle("Title");
+        createTaskRequest.setTaskDescription("");
+        createTaskRequest.setStatus("Status");
+        createTaskRequest.setDueDate(dueDate);
+
+        when(idValidation.validateId("Transaction", "2")).thenReturn(emptyList);
+        when(taskValidation.verifyTask(createTaskRequest.getTitle(), createTaskRequest.getTaskDescription(),
+                createTaskRequest.getDueDate())).thenReturn(emptyList);
+        when(statusValidation.statusCheck(createTaskRequest.getStatus())).thenReturn(emptyList);
+
+        assertDoesNotThrow(() -> validationOrchestration.createTaskValidation("2", createTaskRequest));
+    }
+
+    @Test
+    void whenUpdateStatusValidationIsUsedWithValidDetailsNoErrorIsThrown() {
+        List<String> emptyList = new ArrayList<>();
+
+        UpdateStatusRequest updateStatusRequest = new UpdateStatusRequest();
+        updateStatusRequest.setStatus("new status");
+        updateStatusRequest.setId("1");
+
+        when(idValidation.validateId("Transaction", "2")).thenReturn(emptyList);
+        when(idValidation.validateId("Task", "2")).thenReturn(emptyList);
+        when(statusValidation.statusCheck(updateStatusRequest.getStatus())).thenReturn(emptyList);
+
+        assertDoesNotThrow(() -> validationOrchestration.updateStatusValidation("2", updateStatusRequest));
+    }
+
+    @Test
+    void whenUpdateStatusValidationIsUsedWithMoreThanOneErrorAllErrorsAreIncluded() {
+        List<String> transactionList = new ArrayList<>();
+        transactionList.add("Transaction ID is blank");
+        List<String> taskList = new ArrayList<>();
+        taskList.add("Task ID is blank");
+        List<String> statusList = new ArrayList<>();
+        statusList.add("Task status is blank");
+
+        UpdateStatusRequest updateStatusRequest = new UpdateStatusRequest();
+        updateStatusRequest.setStatus("");
+        updateStatusRequest.setId("");
+
+        when(idValidation.validateId("Transaction", "")).thenReturn(transactionList);
+        when(idValidation.validateId("Task", "")).thenReturn(taskList);
+        when(statusValidation.statusCheck(updateStatusRequest.getStatus())).thenReturn(statusList);
+
+        String expectedError = "[Transaction ID is blank, Task ID is blank, Task status is blank]";
+        Exception exception = assertThrows(TaskValidationErrorException.class, () ->
+                validationOrchestration.updateStatusValidation("", updateStatusRequest));
+        assertEquals(expectedError, exception.getMessage());
+
+    }
+
+    @Test
+    void whenGetAllTasksValidationIsUsedWithValidDetailsNoErrorIsThrown() {
+        List<String> emptyList = new ArrayList<>();
+
+        when(idValidation.validateId("Transaction", "2")).thenReturn(emptyList);
+
+        assertDoesNotThrow(() -> validationOrchestration.getAllTaskValidation("2"));
+    }
+
+    @Test
+    void whenGetAllTasksValidationIsUsedWithAMissingTransactionIdAnErrorIsThrown() {
+        List<String> transactionList = new ArrayList<>();
+        transactionList.add("Transaction ID is blank");
+
+        when(idValidation.validateId("Transaction", "")).thenReturn(transactionList);
+
+        Exception exception = assertThrows(TaskValidationErrorException.class, () ->
+               validationOrchestration.getAllTaskValidation(""));
+        assertEquals(transactionList.toString(), exception.getMessage());
+
+    }
+
 }
