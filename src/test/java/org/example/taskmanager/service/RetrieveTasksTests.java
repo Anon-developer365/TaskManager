@@ -1,7 +1,6 @@
 package org.example.taskmanager.service;
 
 import org.example.taskmanager.pojo.Task;
-import org.example.taskmanager.validation.IdValidation;
 import org.example.taskmanager.validation.ValidationOrchestration;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -33,18 +32,14 @@ public class RetrieveTasksTests {
     @InjectMocks
     private RetrieveTasks retrieveTasks;
 
-    private Date date;
-
-    private LocalDateTime dueDate;
-
 
     @Test
     void checkWhenThereAreTasksInTheDatabaseTheseAreAllReturned() throws ParseException {
         retrieveTasks = new RetrieveTasks(taskRepository, validationOrchestration);
         final DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
 
-        date = dateFormat.parse("2025-05-05 17:00");
-        dueDate = date.toInstant()
+        Date date = dateFormat.parse("2025-05-05 17:00");
+        LocalDateTime dueDate = date.toInstant()
                 .atZone(ZoneId.systemDefault())
                 .toLocalDateTime();
 

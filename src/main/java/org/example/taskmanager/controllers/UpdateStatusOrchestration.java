@@ -1,8 +1,6 @@
 package org.example.taskmanager.controllers;
 
 import org.example.taskmanager.service.UpdateStatus;
-import org.example.taskmanager.validation.IdValidation;
-import org.example.taskmanager.validation.StatusValidation;
 import org.example.taskmanager.validation.ValidationOrchestration;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -22,28 +20,21 @@ public class UpdateStatusOrchestration {
     private final UpdateStatus updateStatus;
 
     /**
-     * Validation service for Id's
+     * service to validate submitted data.
      */
     private final ValidationOrchestration validationOrchestration;
 
-    /**
-     * class to validate status
-     */
-    private final StatusValidation statusValidation;
 
     /**
      * Autowired constructor for update service controller.
      *
      * @param updateStatus update status service.
-     * @param idValidation validation service.
-     * @param statusValidation status validation service.
+     * @param validationOrchestration validation service.
      */
     @Autowired
-    public UpdateStatusOrchestration(UpdateStatus updateStatus, ValidationOrchestration validationOrchestration,
-                                     StatusValidation statusValidation) {
+    public UpdateStatusOrchestration(UpdateStatus updateStatus, ValidationOrchestration validationOrchestration) {
         this.updateStatus = updateStatus;
         this.validationOrchestration = validationOrchestration;
-        this.statusValidation = statusValidation;
 
     }
 

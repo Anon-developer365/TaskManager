@@ -36,17 +36,13 @@ public class DeleteTaskTests {
     @InjectMocks
     private DeleteTask deleteTask;
 
-    private Date date;
-
-    private LocalDateTime dueDate;
-
     @Test
     void checkWhenATaskIsInTheDataBaseAndIdMatchesThisIsDeleted() throws ParseException {
         deleteTask = new DeleteTask(taskRepository, validationOrchestration);
         final DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
 
-        date = dateFormat.parse("2025-05-05 17:00");
-        dueDate = date.toInstant()
+        Date date = dateFormat.parse("2025-05-05 17:00");
+        LocalDateTime dueDate = date.toInstant()
                 .atZone(ZoneId.systemDefault())
                 .toLocalDateTime();
 

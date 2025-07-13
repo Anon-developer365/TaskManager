@@ -28,18 +28,14 @@ public class UpdateStatusTests {
     @InjectMocks
     private UpdateStatus updateStatus;
 
-    private LocalDateTime dueDate;
-
-    private Date date;
-
 
     @Test
     void checkTheServiceUpdatesAStatusIfTheTaskExists() throws ParseException {
         updateStatus = new UpdateStatus(taskRepository);
         final DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
 
-        date = dateFormat.parse("2025-05-05 17:00");
-        dueDate = date.toInstant()
+        Date date = dateFormat.parse("2025-05-05 17:00");
+        LocalDateTime dueDate = date.toInstant()
                 .atZone(ZoneId.systemDefault())
                 .toLocalDateTime();
         UpdateStatusRequest updateStatusRequest = new UpdateStatusRequest();

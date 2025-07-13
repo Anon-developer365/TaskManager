@@ -2,7 +2,6 @@ package org.example.taskmanager.validation;
 
 import io.micrometer.common.util.StringUtils;
 import lombok.ToString;
-import org.example.taskmanager.exceptions.TaskValidationErrorException;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;

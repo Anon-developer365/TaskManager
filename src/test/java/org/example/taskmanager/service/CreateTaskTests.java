@@ -11,14 +11,12 @@ public class CreateTaskTests {
 
     private final CreateTask createTask = new CreateTask();
 
-    private LocalDateTime dueDate;
-
     @Test
     void whenDetailsAreGivenANewTaskIsCreated() {
 
         String stringDate = "2025-05-05 17:00";
         DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm", Locale.UK);
-        dueDate = LocalDateTime.parse(stringDate, dateTimeFormatter);
+        LocalDateTime dueDate = LocalDateTime.parse(stringDate, dateTimeFormatter);
         Task task = createTask.createNewTask("case title", "", "open status", dueDate);
         assert task != null;
         assert task.getDueDate().equals(dueDate);

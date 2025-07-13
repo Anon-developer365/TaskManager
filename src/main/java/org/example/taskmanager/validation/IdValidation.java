@@ -1,6 +1,5 @@
 package org.example.taskmanager.validation;
 
-import org.example.taskmanager.exceptions.TaskValidationErrorException;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
