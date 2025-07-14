@@ -94,7 +94,7 @@ public class CreateTaskIntegrationTests {
                         .content(json))
                 .andExpect(status().is(400))
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.errors").value("[Task status is blank]"))
+                .andExpect(jsonPath("$.message").value("[Task status is blank]"))
                 .andReturn();
     }
 
@@ -117,7 +117,7 @@ public class CreateTaskIntegrationTests {
                         .content(json))
                 .andExpect(status().is(400))
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.errors").value("[Task title is blank]"))
+                .andExpect(jsonPath("$.message").value("[Task title is blank]"))
                 .andReturn();
     }
 
@@ -137,7 +137,7 @@ public class CreateTaskIntegrationTests {
                         .content(json))
                 .andExpect(status().is(400))
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.errors").value("[Task due date is blank]"))
+                .andExpect(jsonPath("$.message").value("[Task due date is blank]"))
                 .andReturn();
     }
 
@@ -184,7 +184,7 @@ public class CreateTaskIntegrationTests {
                         .content(json))
                 .andExpect(status().is(400))
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.errors").value("[Task title does not match the pattern a-zA-Z0-9]"))
+                .andExpect(jsonPath("$.message").value("[Task title does not match the pattern a-zA-Z0-9]"))
                 .andReturn();
     }
 
@@ -208,7 +208,7 @@ public class CreateTaskIntegrationTests {
                         .content(json))
                 .andExpect(status().is(400))
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.errors").value("[Task status does not match the pattern a-zA-Z0-9]"))
+                .andExpect(jsonPath("$.message").value("[Task status does not match the pattern a-zA-Z0-9]"))
                 .andReturn();
     }
 
@@ -232,7 +232,7 @@ public class CreateTaskIntegrationTests {
                         .content(json))
                 .andExpect(status().is(400))
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.errors").value("[Task description does not match the pattern a-zA-Z0-9]"))
+                .andExpect(jsonPath("$.message").value("[Task description does not match the pattern a-zA-Z0-9]"))
                 .andReturn();
     }
 
@@ -256,7 +256,7 @@ public class CreateTaskIntegrationTests {
                         .content(json))
                 .andExpect(status().is(400))
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.errors").value("[Task title is blank, Task description does not match the pattern a-zA-Z0-9, Task status is blank]"))
+                .andExpect(jsonPath("$.message").value("[Task title is blank, Task description does not match the pattern a-zA-Z0-9, Task status is blank]"))
                 .andReturn();
     }
 }

@@ -87,7 +87,7 @@ public class GetAllTasksIntegrationTests {
         mvc.perform(get("/allTasks").contentType(MediaType.APPLICATION_JSON).headers(httpHeaders))
                 .andExpect(status().is(400))
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.errors").value("[Transaction ID does not match the pattern 0-9a-zA-Z-{1,10}]"))
+                .andExpect(jsonPath("$.message").value("[Transaction ID does not match the pattern 0-9a-zA-Z-{1,10}]"))
                 .andReturn();
     }
 
@@ -99,7 +99,7 @@ public class GetAllTasksIntegrationTests {
         mvc.perform(get("/allTasks").contentType(MediaType.APPLICATION_JSON).headers(httpHeaders))
                 .andExpect(status().is(400))
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.errors").value("[Transaction ID is blank]"))
+                .andExpect(jsonPath("$.message").value("[Transaction ID is blank]"))
                 .andReturn();
     }
 }

@@ -82,7 +82,7 @@ public class DeleteTaskIntegrationTests {
         mvc.perform(delete("/Task").contentType(MediaType.APPLICATION_JSON).headers(httpHeaders))
                 .andExpect(status().is(400))
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.errors").value("[No task found with that ID: 2]"))
+                .andExpect(jsonPath("$.message").value("[No task found with that ID: 2]"))
                 .andReturn();
 
     }
@@ -103,7 +103,7 @@ public class DeleteTaskIntegrationTests {
         mvc.perform(delete("/Task").contentType(MediaType.APPLICATION_JSON).headers(httpHeaders))
                 .andExpect(status().is(400))
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.errors").value("[Task ID is blank]"))
+                .andExpect(jsonPath("$.message").value("[Task ID is blank]"))
                 .andReturn();
 
     }
@@ -124,7 +124,7 @@ public class DeleteTaskIntegrationTests {
         mvc.perform(delete("/Task").contentType(MediaType.APPLICATION_JSON).headers(httpHeaders))
                 .andExpect(status().is(400))
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.errors").value("[Transaction ID is blank]"))
+                .andExpect(jsonPath("$.message").value("[Transaction ID is blank]"))
                 .andReturn();
 
     }

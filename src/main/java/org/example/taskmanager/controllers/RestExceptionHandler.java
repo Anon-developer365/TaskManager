@@ -3,16 +3,16 @@ package org.example.taskmanager.controllers;
 import lombok.ToString;
 import org.example.taskmanager.exceptions.TaskNotFoundException;
 import org.example.taskmanager.exceptions.TaskValidationErrorException;
-import org.example.taskmanager.pojo.ErrorResponse;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
+import uk.gov.hmcts.taskmanager.domain.ErrorResponse;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.time.LocalDateTime;
 
 @ControllerAdvice
 @ToString
@@ -27,9 +27,11 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
     @ResponseBody
     @ExceptionHandler(TaskValidationErrorException.class)
     public ResponseEntity<ErrorResponse> handleTaskValidationException(final TaskValidationErrorException exception) {
-        List<String> errors = new ArrayList<>();
-        errors.add(exception.getMessage());
-        ErrorResponse errorResponse = new ErrorResponse(errors);
+        LocalDateTime localDateTime = LocalDateTime.now();
+        ErrorResponse errorResponse = new ErrorResponse();
+        errorResponse.setError("Validation Error");
+        errorResponse.setDate(localDateTime);
+        errorResponse.setMessage(exception.getMessage());
 
         return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
     }
@@ -44,9 +46,11 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
     @ResponseBody
     @ExceptionHandler(TaskNotFoundException.class)
     public ResponseEntity<ErrorResponse> handleTaskNotFoundException(final TaskNotFoundException exception) {
-        List<String> errors = new ArrayList<>();
-        errors.add(exception.getMessage());
-        ErrorResponse errorResponse = new ErrorResponse(errors);
+        LocalDateTime localDateTime = LocalDateTime.now();
+        ErrorResponse errorResponse = new ErrorResponse();
+        errorResponse.setError("Task Not Found Error");
+        errorResponse.setDate(localDateTime);
+        errorResponse.setMessage(exception.getMessage());
 
         return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
     }

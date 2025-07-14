@@ -2,11 +2,11 @@ package org.example.taskmanager.controllers;
 
 import org.example.taskmanager.exceptions.TaskNotFoundException;
 import org.example.taskmanager.exceptions.TaskValidationErrorException;
-import org.example.taskmanager.pojo.ErrorResponse;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.ResponseEntity;
 
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
+import uk.gov.hmcts.taskmanager.domain.ErrorResponse;
 
 import java.util.Objects;
 
@@ -17,7 +17,7 @@ public class RestExceptionHandlerTest extends ResponseEntityExceptionHandler {
         TaskValidationErrorException taskValidationException = new TaskValidationErrorException("Task is empty");
         RestExceptionHandler restExceptionHandler = new RestExceptionHandler();
         ResponseEntity<ErrorResponse> responseEntity = restExceptionHandler.handleTaskValidationException(taskValidationException);
-        assert(Objects.requireNonNull(responseEntity.getBody()).getErrors().get(0).equals(taskValidationException.getMessage()));
+        assert(Objects.requireNonNull(responseEntity.getBody()).getMessage().equals(taskValidationException.getMessage()));
 
     }
 
@@ -26,7 +26,7 @@ public class RestExceptionHandlerTest extends ResponseEntityExceptionHandler {
         TaskNotFoundException taskNotFoundException = new TaskNotFoundException("Task is empty");
         RestExceptionHandler restExceptionHandler = new RestExceptionHandler();
         ResponseEntity<ErrorResponse> responseEntity = restExceptionHandler.handleTaskNotFoundException(taskNotFoundException);
-        assert(Objects.requireNonNull(responseEntity.getBody()).getErrors().get(0).equals(taskNotFoundException.getMessage()));
+        assert(Objects.requireNonNull(responseEntity.getBody()).getMessage().equals(taskNotFoundException.getMessage()));
 
     }
 }

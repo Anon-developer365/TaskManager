@@ -91,7 +91,7 @@ public class UpdateStatusIntegrationTests {
                         .content(json))
                 .andExpect(status().is(400))
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.errors").value("Task with ID 7 not found"))
+                .andExpect(jsonPath("$.message").value("Task with ID 7 not found"))
                 .andReturn();
     }
 
@@ -115,7 +115,7 @@ public class UpdateStatusIntegrationTests {
                         .content(json))
                 .andExpect(status().is(400))
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.errors").value("[Transaction ID is blank]"))
+                .andExpect(jsonPath("$.message").value("[Transaction ID is blank]"))
                 .andReturn();
     }
 
