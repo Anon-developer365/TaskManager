@@ -1,9 +1,9 @@
 package org.example.taskmanager.controllers;
 
 import jakarta.validation.Valid;
-import org.example.taskmanager.service.DeleteTask;
 import org.example.taskmanager.service.GetATask;
 import org.example.taskmanager.service.RetrieveTasks;
+import org.example.taskmanager.service.TaskRemoval;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -47,7 +47,7 @@ public class TaskManagementSystemController implements TaskManagementSystemApi {
     /**
      * Delete task service for delete task end point.
      */
-    private final DeleteTask deleteTask;
+    private final TaskRemoval taskRemoval;
 
 
     /**
@@ -57,17 +57,17 @@ public class TaskManagementSystemController implements TaskManagementSystemApi {
      * @param getATask get a task service.
      * @param getAllTasks get all tasks service.
      * @param updateStatusOrchestration update status service.
-     * @param deleteTask delete task service.
+     * @param taskRemoval delete task service.
      */
     @Autowired
-    public TaskManagementSystemController(CreateTaskOrchestration createTaskOrchestration, GetATask getATask,
-                                          RetrieveTasks getAllTasks, UpdateStatusOrchestration updateStatusOrchestration,
-                                          DeleteTask deleteTask) {
+    public TaskManagementSystemController(final CreateTaskOrchestration createTaskOrchestration, final GetATask getATask,
+                                          final RetrieveTasks getAllTasks, final UpdateStatusOrchestration updateStatusOrchestration,
+                                          final TaskRemoval taskRemoval) {
         this.createTaskOrchestration = createTaskOrchestration;
         this.getATask = getATask;
         this.getAllTasks = getAllTasks;
         this.updateStatusOrchestration = updateStatusOrchestration;
-        this.deleteTask = deleteTask;
+        this.taskRemoval = taskRemoval;
     }
 
     /**
@@ -140,7 +140,7 @@ public class TaskManagementSystemController implements TaskManagementSystemApi {
     @Override
     @RequestMapping(value = "/Task", method = RequestMethod.DELETE)
     public ResponseEntity<SuccessResponse> deleteTask(@Valid String transactionId, @Valid String taskId) {
-        return ok(deleteTask.deleteTask(transactionId, taskId));
+        return ok(taskRemoval.taskRemoval(transactionId, taskId));
     }
 
 }

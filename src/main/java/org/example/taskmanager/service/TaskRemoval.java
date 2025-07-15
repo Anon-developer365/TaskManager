@@ -3,7 +3,6 @@ package org.example.taskmanager.service;
 import jakarta.persistence.EntityNotFoundException;
 import org.example.taskmanager.exceptions.TaskNotFoundException;
 import org.example.taskmanager.pojo.Task;
-import org.example.taskmanager.validation.IdValidation;
 import org.example.taskmanager.validation.ValidationOrchestration;
 import org.springframework.stereotype.Service;
 import uk.gov.hmcts.taskmanager.domain.SuccessResponse;
@@ -16,7 +15,7 @@ import java.util.Optional;
  * Delete Task Service to delete a task from the database.
  */
 @Service
-public class DeleteTask {
+public class TaskRemoval {
 
     /**
      * Task repository for service.
@@ -34,7 +33,7 @@ public class DeleteTask {
      * @param taskRepository task repository.
      * @param validationOrchestration validation service.
      */
-    public DeleteTask(TaskRepository taskRepository,ValidationOrchestration validationOrchestration) {
+    public TaskRemoval(final TaskRepository taskRepository,final ValidationOrchestration validationOrchestration) {
         this.taskRepository = taskRepository;
         this.validationOrchestration = validationOrchestration;
     }
@@ -46,9 +45,9 @@ public class DeleteTask {
      * @param taskId ID of the task to be deleted.
      * @return success response containing the ID of the deleted task and a success message.
      */
-    public SuccessResponse deleteTask(String transactionId, String taskId) {
+    public SuccessResponse taskRemoval(String transactionId, String taskId) {
         validationOrchestration.generalTaskValidation(transactionId, taskId);
-        return delete(taskId);
+        return removal(taskId);
     }
 
     /**
@@ -58,7 +57,7 @@ public class DeleteTask {
      * @return success response with the ID of the deleted task and a success message.
      */
 
-    private SuccessResponse delete(String taskId) {
+    private SuccessResponse removal(String taskId) {
         final List<String> allErrors = new ArrayList<>();
         SuccessResponse successResponse = new SuccessResponse();
         Optional<Task> found;

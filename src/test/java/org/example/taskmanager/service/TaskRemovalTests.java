@@ -25,7 +25,7 @@ import static org.mockito.Mockito.doNothing;
 
 
 @SpringBootTest
-public class DeleteTaskTests {
+public class TaskRemovalTests {
 
     @Mock
     private ValidationOrchestration validationOrchestration;
@@ -34,11 +34,11 @@ public class DeleteTaskTests {
     private TaskRepository taskRepository;
 
     @InjectMocks
-    private DeleteTask deleteTask;
+    private TaskRemoval taskRemoval;
 
     @Test
     void checkWhenATaskIsInTheDataBaseAndIdMatchesThisIsDeleted() throws ParseException {
-        deleteTask = new DeleteTask(taskRepository, validationOrchestration);
+        taskRemoval = new TaskRemoval(taskRepository, validationOrchestration);
         final DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
 
         Date date = dateFormat.parse("2025-05-05 17:00");
@@ -51,16 +51,16 @@ public class DeleteTaskTests {
         doNothing().when(taskRepository).deleteById("1");
         doNothing().when(validationOrchestration).generalTaskValidation("2", "1");
         String expectedMessage = "Task 1 deleted.";
-        SuccessResponse response = deleteTask.deleteTask("2","1");
+        SuccessResponse response = taskRemoval.taskRemoval("2","1");
         assertEquals("1", response.getId());
         assertEquals(expectedMessage, response.getMessage());
     }
 
     @Test
     void checkWhenATaskIsInTheDataBaseAndIdDoesNotMatchAnErrorIsThrown() {
-        deleteTask = new DeleteTask(taskRepository, validationOrchestration);
+        taskRemoval = new TaskRemoval(taskRepository, validationOrchestration);
         doNothing().when(validationOrchestration).generalTaskValidation("2", "1");
         Mockito.when(taskRepository.findById("1")).thenThrow(EntityNotFoundException.class);
-        assertThrows(TaskNotFoundException.class, () -> deleteTask.deleteTask("2","1"));
+        assertThrows(TaskNotFoundException.class, () -> taskRemoval.taskRemoval("2","1"));
     }
 }
