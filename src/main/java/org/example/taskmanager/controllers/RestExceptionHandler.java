@@ -26,7 +26,8 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
      */
     @ResponseBody
     @ExceptionHandler(TaskValidationErrorException.class)
-    public ResponseEntity<ErrorResponse> handleTaskValidationException(final TaskValidationErrorException exception) {
+    public ResponseEntity<ErrorResponse> handleTaskValidationException(
+            final TaskValidationErrorException exception) {
         LocalDateTime localDateTime = LocalDateTime.now();
         ErrorResponse errorResponse = new ErrorResponse();
         errorResponse.setError("Validation Error");
@@ -45,7 +46,8 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
      */
     @ResponseBody
     @ExceptionHandler(TaskNotFoundException.class)
-    public ResponseEntity<ErrorResponse> handleTaskNotFoundException(final TaskNotFoundException exception) {
+    public ResponseEntity<ErrorResponse> handleTaskNotFoundException(
+            final TaskNotFoundException exception) {
         LocalDateTime localDateTime = LocalDateTime.now();
         ErrorResponse errorResponse = new ErrorResponse();
         errorResponse.setError("Task Not Found Error");

@@ -62,7 +62,7 @@ public class CreateTaskOrchestrationTests {
         doNothing().when(validationOrchestration).createTaskValidation(transactionId, createTaskRequest);
         when(createTask.createNewTask(createTaskRequest.getTitle(), createTaskRequest.getTaskDescription(), createTaskRequest.getStatus(), createTaskRequest.getDueDate())).thenReturn(task);
         when(saveTask.saveData(task)).thenReturn(taskId);
-        SuccessResponse output = createTaskOrchestration.createTask(transactionId, createTaskRequest);
+        SuccessResponse output = createTaskOrchestration.createATask(transactionId, createTaskRequest);
         assertEquals("Task Created Successfully", output.getMessage());
         assertEquals(taskId, output.getId());
 
@@ -92,7 +92,7 @@ public class CreateTaskOrchestrationTests {
 
         TaskValidationErrorException thrown = assertThrows(TaskValidationErrorException.class, () -> {
             doThrow(new TaskValidationErrorException("Task title is empty")).when(validationOrchestration).createTaskValidation("1", createTaskRequest);
-            createTaskOrchestration.createTask("1", createTaskRequest);
+            createTaskOrchestration.createATask("1", createTaskRequest);
         });
         assertEquals(expectedError, thrown.getMessage());
 
@@ -121,7 +121,7 @@ public class CreateTaskOrchestrationTests {
 
         String expectedError = "An error occurred saving the task";
 
-        RuntimeException thrown = assertThrows(RuntimeException.class, () -> createTaskOrchestration.createTask("1", createTaskRequest));
+        RuntimeException thrown = assertThrows(RuntimeException.class, () -> createTaskOrchestration.createATask("1", createTaskRequest));
         assertEquals(expectedError, thrown.getMessage());
 
     }
