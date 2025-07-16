@@ -13,7 +13,7 @@ import java.util.UUID;
 public class CreateTask {
 
     /**
-     * method to create a task, assign a unique id and parse the date into a local time format.
+     * method to create a task and assign a unique id.
      *
      * @param title case title
      * @param description case description
@@ -21,8 +21,9 @@ public class CreateTask {
      * @param dueDate due date for the task.
      * @return newly created task.
      */
-    public Task createNewTask(String title, String description,
-                              String status, LocalDateTime dueDate) {
+    public Task createNewTask(final String title, final String description,
+                              final String status,
+                              final LocalDateTime dueDate) {
         UUID uuid = UUID.randomUUID();
         return new Task(uuid.toString(), title, description, status, dueDate);
 

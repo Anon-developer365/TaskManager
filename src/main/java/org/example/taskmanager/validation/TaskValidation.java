@@ -11,7 +11,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * Class to validate a task
+ * Class to validate a task.
  */
 @Service
 @ToString
@@ -28,13 +28,17 @@ public class TaskValidation {
     private static final String DESCRIPTION_REGEX = "\\w";
 
     /**
-     * Method to verify task details
+     * Method to verify task details.
      *
      * @param title task title to be validated
      * @param description description, if present to be validated.
      * @param dueDate due date to be validated.
+     * @return a list of errors found or
+     * an empty list if there are no errors.
      */
-    public List<String> verifyTask(String title, String description, LocalDateTime dueDate) {
+    public List<String> verifyTask(final String title,
+                                   final String description,
+                                   final LocalDateTime dueDate) {
         final List<String> allErrors = new ArrayList<>();
         allErrors.addAll(titleCheck(title));
         allErrors.addAll(descriptionCheck(description));
@@ -43,12 +47,13 @@ public class TaskValidation {
     }
 
     /**
-     * Method to validate title
+     * Method to validate title.
      *
      * @param title title to be validated
-     * @return returns either an empty list or a list containing title validation errors.
+     * @return returns either an empty list
+     * or a list containing title validation errors.
      */
-    private List<String> titleCheck(String title) {
+    private List<String> titleCheck(final String title) {
         final List<String> errors = new ArrayList<>();
         if (StringUtils.isBlank(title)) {
             errors.add("Task title is blank");
@@ -64,18 +69,20 @@ public class TaskValidation {
     }
 
     /**
-     * Method to validate description
+     * Method to validate description.
      *
      * @param description description to be validated.
-     * @return returns either an empty list or a list containing description validation errors.
+     * @return returns either an empty list or
+     * a list containing description validation errors.
      */
-    private List<String> descriptionCheck(String description) {
+    private List<String> descriptionCheck(final String description) {
         final List<String> errors = new ArrayList<>();
         if (!StringUtils.isBlank(description)) {
             final Pattern pattern = Pattern.compile(DESCRIPTION_REGEX);
             final Matcher matcher = pattern.matcher(description);
             if (!matcher.find()) {
-                errors.add("Task description does not match the pattern a-zA-Z0-9");
+                errors.add("Task description does "
+                        + "not match the pattern a-zA-Z0-9");
             }
 
         }
@@ -86,9 +93,10 @@ public class TaskValidation {
      * Method to validate due date.
      *
      * @param dueDate due date to be validated.
-     * @return returns either an empty list or a list containing due date validation errors.
+     * @return returns either an empty list
+     * or a list containing due date validation errors.
      */
-    private List<String> dueDateCheck(LocalDateTime dueDate) {
+    private List<String> dueDateCheck(final LocalDateTime dueDate) {
         final List<String> errors = new ArrayList<>();
         if (dueDate == null) {
             errors.add("Task due date is blank");

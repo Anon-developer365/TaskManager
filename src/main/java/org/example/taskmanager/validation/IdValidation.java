@@ -23,8 +23,10 @@ public class IdValidation {
      *
      * @param type type of ID being validated.
      * @param id ID to be validated.
+     *
+     * @return a list of errors.
      */
-    public List<String> validateId(String type, String id) {
+    public List<String> validateId(final String type, final String id) {
         final List<String> allErrors = new ArrayList<>();
         if (id.isBlank() || id.isEmpty()) {
             allErrors.add(type + " ID is blank");
@@ -32,7 +34,8 @@ public class IdValidation {
             final Pattern pattern = Pattern.compile(ID_REGEX);
             final Matcher matcher = pattern.matcher(id);
             if (!matcher.find()) {
-                allErrors.add(type + " ID does not match the pattern 0-9a-zA-Z-{1,10}");
+                allErrors.add(type
+                        + " ID does not match the pattern 0-9a-zA-Z-{1,10}");
             }
         }
         return allErrors;

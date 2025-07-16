@@ -20,11 +20,11 @@ public class SaveTask {
     /**
      * Autowired constructor for Save Task service.
      *
-     * @param taskRepository Task repository for the service.
+     * @param aTaskRepository Task repository for the service.
      */
     @Autowired
-    public SaveTask(TaskRepository taskRepository) {
-        this.taskRepository = taskRepository;
+    public SaveTask(final TaskRepository aTaskRepository) {
+        this.taskRepository = aTaskRepository;
     }
 
     /**
@@ -34,7 +34,7 @@ public class SaveTask {
      * @return returns a success message with the assigned ID of the task.
      */
 
-    public String saveData(Task task) {
+    public String saveData(final Task task) {
         Task savedTask = taskRepository.save(task);
         if (savedTask.getId() == null) {
             throw new RuntimeException("An error occurred saving the task");

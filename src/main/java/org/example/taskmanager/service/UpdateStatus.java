@@ -22,25 +22,32 @@ public class UpdateStatus {
     /**
      * Autowired constructor for Update status service.
      *
-     * @param taskRepository Task repository for the service.
+     * @param aTaskRepository Task repository for the service.
      */
     @Autowired
-    public UpdateStatus(TaskRepository taskRepository) {
-        this.taskRepository = taskRepository;
+    public UpdateStatus(final TaskRepository aTaskRepository) {
+        this.taskRepository = aTaskRepository;
     }
 
     /**
      * Method to update the task with the matching ID number to the new status.
      *
-     * @param  updateRequest request containing the id and new status of the task to be updated.
+     * @param  updateRequest request containing the
+     *                       id and new status of the task to be updated.
      * @return boolean returns true if a task is updated.
      */
-    public boolean updateStatus(UpdateStatusRequest updateRequest) {
+    public boolean updateStatus(final UpdateStatusRequest updateRequest) {
         Optional<Task> task = taskRepository.findById(updateRequest.getId());
-        if(task.isEmpty() || task.get().getId() == null) {
-            throw new TaskNotFoundException("Task with ID " + updateRequest.getId() + " not found");
+        if (task.isEmpty() || task.get().getId() == null) {
+            throw new TaskNotFoundException("Task with ID "
+                    + updateRequest.getId() + " not found");
         } else {
-            Task updatedTask = new Task(updateRequest.getId(), task.get().getTitle(), task.get().getDescription(), updateRequest.getStatus(), task.get().getDueDate());
+            Task updatedTask = new Task(
+                    updateRequest.getId(),
+                    task.get().getTitle(),
+                    task.get().getDescription(),
+                    updateRequest.getStatus(),
+                    task.get().getDueDate());
             taskRepository.save(updatedTask);
         }
         return true;

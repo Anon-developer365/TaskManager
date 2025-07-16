@@ -1,9 +1,7 @@
 package org.example.taskmanager.service;
 
-
 import jakarta.persistence.EntityNotFoundException;
 import org.example.taskmanager.exceptions.TaskValidationErrorException;
-import org.example.taskmanager.validation.IdValidation;
 import org.example.taskmanager.validation.ValidationOrchestration;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -13,9 +11,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-
 /**
- * Get a task class retrieves a task if it is present in the database or returns an error message.
+ * Get a task class retrieves a task if it is present
+ * in the database or returns an error message.
  */
 @Service
 public class GetATask {
@@ -26,20 +24,22 @@ public class GetATask {
     private final TaskRepository taskRepository;
 
     /**
-     * Validation service for Id's
+     * Validation service.
      */
     private final ValidationOrchestration validationOrchestration;
 
     /**
      * Autowired constructor for Get a task service.
      *
-     * @param taskRepository task repository.
-     * @param validationOrchestration validation service.
+     * @param aTaskRepository task repository.
+     * @param aValidationOrchestration validation service.
      */
     @Autowired
-    public GetATask(TaskRepository taskRepository, ValidationOrchestration validationOrchestration) {
-        this.taskRepository = taskRepository;
-        this.validationOrchestration = validationOrchestration;
+    public GetATask(final TaskRepository aTaskRepository,
+                    final ValidationOrchestration
+                            aValidationOrchestration) {
+        this.taskRepository = aTaskRepository;
+        this.validationOrchestration = aValidationOrchestration;
     }
 
     /**
@@ -49,7 +49,7 @@ public class GetATask {
      * @param taskId the id of the task to be returned.
      * @return the task that wants to be retrieved.
      */
-    public Task getATask(String transactionId, String taskId) {
+    public Task getATask(final String transactionId, final String taskId) {
         validationOrchestration.generalTaskValidation(transactionId, taskId);
         return getTask(taskId);
 
@@ -61,7 +61,7 @@ public class GetATask {
      * @param taskId ID of the task to be retrieved.
      * @return the task found in the database.
      */
-    private Task getTask(String taskId) {
+    private Task getTask(final String taskId) {
         Task transformedTask = new Task();
         Optional<org.example.taskmanager.pojo.Task> foundTask;
         final List<String> allErrors = new ArrayList<>();
@@ -73,15 +73,16 @@ public class GetATask {
                 transformedTask.setId(foundTask.get().getId());
                 transformedTask.setTitle(foundTask.get().getTitle());
                 transformedTask.setStatus(foundTask.get().getStatus());
-                transformedTask.setTaskDescription(foundTask.get().getDescription());
+                transformedTask.setTaskDescription(
+                        foundTask.get().getDescription());
                 transformedTask.setDueDate(foundTask.get().getDueDate());
             } else {
                 allErrors.add("Task with ID " + taskId + " not found");
             }
-        } catch (EntityNotFoundException exception){
+        } catch (EntityNotFoundException exception) {
             allErrors.add("Task with ID " + taskId + " not found");
         }
-        if(!allErrors.isEmpty()) {
+        if (!allErrors.isEmpty()) {
             throw new TaskValidationErrorException(allErrors.toString());
         }
         return transformedTask;

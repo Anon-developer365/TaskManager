@@ -60,19 +60,21 @@ public class TaskManagementSystemController implements TaskManagementSystemApi {
      * @param aCreateTaskOrchestration create a task orchestration service.
      * @param aGetATask get a task service.
      * @param aGetAllTasks get all tasks service.
-     * @param anUpdateStatusOrchestration update status service.
+     * @param anUpdateStatus update status service.
      * @param aTaskRemoval delete task service.
      */
     @Autowired
-    public TaskManagementSystemController(final CreateTaskOrchestration aCreateTaskOrchestration,
+    public TaskManagementSystemController(final CreateTaskOrchestration
+                                                      aCreateTaskOrchestration,
                                           final GetATask aGetATask,
                                           final RetrieveTasks aGetAllTasks,
-                                          final UpdateStatusOrchestration anUpdateStatusOrchestration,
+                                          final UpdateStatusOrchestration
+                                                      anUpdateStatus,
                                           final TaskRemoval aTaskRemoval) {
         this.createTaskOrchestration = aCreateTaskOrchestration;
         this.getATask = aGetATask;
         this.getAllTasks = aGetAllTasks;
-        this.updateStatusOrchestration = anUpdateStatusOrchestration;
+        this.updateStatusOrchestration = anUpdateStatus;
         this.taskRemoval = aTaskRemoval;
     }
 

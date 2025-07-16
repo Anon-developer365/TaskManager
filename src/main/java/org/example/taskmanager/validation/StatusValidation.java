@@ -14,17 +14,17 @@ import java.util.regex.Pattern;
 @Service
 public class StatusValidation {
     /**
-     * Java regex to be used when validating status
+     * Java regex to be used when validating status.
      */
     private static final String STATUS_REGEX = "\\w";
 
     /**
-     * Method to validate status of a task
+     * Method to validate status of a task.
      *
      * @param status the status to be validated.
      * @return a list containing the errors.
      */
-    public List<String> statusCheck(String status) {
+    public List<String> statusCheck(final String status) {
         final List<String> allErrors = new ArrayList<>();
         if (StringUtils.isBlank(status)) {
             allErrors.add("Task status is blank");
@@ -32,7 +32,8 @@ public class StatusValidation {
             final Pattern pattern = Pattern.compile(STATUS_REGEX);
             final Matcher matcher = pattern.matcher(status);
             if (!matcher.find()) {
-                allErrors.add("Task status does not match the pattern a-zA-Z0-9");
+                allErrors.add(
+                        "Task status does not match the pattern a-zA-Z0-9");
             }
 
         }

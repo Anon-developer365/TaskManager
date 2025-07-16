@@ -1,7 +1,6 @@
 package org.example.taskmanager.service;
 
 import org.example.taskmanager.pojo.Task;
-import org.example.taskmanager.validation.IdValidation;
 import org.example.taskmanager.validation.ValidationOrchestration;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -16,7 +15,7 @@ import java.util.List;
 public class RetrieveTasks {
 
     /**
-     * Validation service for Id's
+     * Validation service.
      */
     private final ValidationOrchestration validationOrchestration;
 
@@ -28,13 +27,15 @@ public class RetrieveTasks {
     /**
      * Autowired constructor for task repository.
      *
-     * @param taskRepository task repository.
-     * @param validationOrchestration validation service.
+     * @param aTaskRepository task repository.
+     * @param aValidationOrchestration validation service.
      */
     @Autowired
-    public RetrieveTasks(TaskRepository taskRepository, ValidationOrchestration validationOrchestration) {
-        this.taskRepository = taskRepository;
-        this.validationOrchestration = validationOrchestration;
+    public RetrieveTasks(final TaskRepository aTaskRepository,
+                         final ValidationOrchestration
+                                 aValidationOrchestration) {
+        this.taskRepository = aTaskRepository;
+        this.validationOrchestration = aValidationOrchestration;
     }
 
 
@@ -44,7 +45,7 @@ public class RetrieveTasks {
      * @param transactionId ID of the transaction.
      * @return a list of tasks within the database.
      */
-    public TaskResponse getAllTasks(String transactionId) {
+    public TaskResponse getAllTasks(final String transactionId) {
         validationOrchestration.getAllTaskValidation(transactionId);
         return getTasks();
 
@@ -57,9 +58,10 @@ public class RetrieveTasks {
      */
     private TaskResponse getTasks() {
         TaskResponse taskResponse = new TaskResponse();
-        List <Task> tasks = taskRepository.findAll();
+        List<Task> tasks = taskRepository.findAll();
         for (Task task : tasks) {
-            uk.gov.hmcts.taskmanager.domain.Task aTask = new uk.gov.hmcts.taskmanager.domain.Task();
+            uk.gov.hmcts.taskmanager.domain.Task aTask
+                    = new uk.gov.hmcts.taskmanager.domain.Task();
             aTask.setTaskDescription(task.getDescription());
             aTask.setStatus(task.getStatus());
             aTask.setId(task.getId());

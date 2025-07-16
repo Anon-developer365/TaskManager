@@ -23,19 +23,21 @@ public class TaskRemoval {
     private final TaskRepository taskRepository;
 
     /**
-     * Validation service for Id's
+     * Validation service.
      */
     private final ValidationOrchestration validationOrchestration;
 
     /**
      * Autowired constructor for task repository.
      *
-     * @param taskRepository task repository.
-     * @param validationOrchestration validation service.
+     * @param aTaskRepository task repository.
+     * @param aValidationOrchestration validation service.
      */
-    public TaskRemoval(final TaskRepository taskRepository,final ValidationOrchestration validationOrchestration) {
-        this.taskRepository = taskRepository;
-        this.validationOrchestration = validationOrchestration;
+    public TaskRemoval(final TaskRepository aTaskRepository,
+                       final ValidationOrchestration
+                               aValidationOrchestration) {
+        this.taskRepository = aTaskRepository;
+        this.validationOrchestration = aValidationOrchestration;
     }
 
     /**
@@ -43,9 +45,11 @@ public class TaskRemoval {
      *
      * @param transactionId ID of the transaction.
      * @param taskId ID of the task to be deleted.
-     * @return success response containing the ID of the deleted task and a success message.
+     * @return success response containing the ID
+     * of the deleted task and a success message.
      */
-    public SuccessResponse taskRemoval(String transactionId, String taskId) {
+    public SuccessResponse taskRemoval(final String transactionId,
+                                       final String taskId) {
         validationOrchestration.generalTaskValidation(transactionId, taskId);
         return removal(taskId);
     }
@@ -54,10 +58,11 @@ public class TaskRemoval {
      * Method to delete the task from the database.
      *
      * @param taskId ID of the task to be deleted.
-     * @return success response with the ID of the deleted task and a success message.
+     * @return success response with the
+     * ID of the deleted task and a success message.
      */
 
-    private SuccessResponse removal(String taskId) {
+    private SuccessResponse removal(final String taskId) {
         final List<String> allErrors = new ArrayList<>();
         SuccessResponse successResponse = new SuccessResponse();
         Optional<Task> found;
@@ -70,10 +75,10 @@ public class TaskRemoval {
             } else {
                 allErrors.add("No task found with that ID: " + taskId);
             }
-        } catch (EntityNotFoundException exception){
+        } catch (EntityNotFoundException exception) {
             allErrors.add("No task found with that ID: " + taskId);
         }
-        if (!allErrors.isEmpty()){
+        if (!allErrors.isEmpty()) {
             throw new TaskNotFoundException(allErrors.toString());
         }
         return successResponse;

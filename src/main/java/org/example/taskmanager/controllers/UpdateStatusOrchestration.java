@@ -28,13 +28,15 @@ public class UpdateStatusOrchestration {
     /**
      * Autowired constructor for update service controller.
      *
-     * @param updateStatus update status service.
-     * @param validationOrchestration validation service.
+     * @param anUpdateStatus update status service.
+     * @param aValidationOrchestration validation service.
      */
     @Autowired
-    public UpdateStatusOrchestration(UpdateStatus updateStatus, ValidationOrchestration validationOrchestration) {
-        this.updateStatus = updateStatus;
-        this.validationOrchestration = validationOrchestration;
+    public UpdateStatusOrchestration(final UpdateStatus anUpdateStatus,
+                                     final ValidationOrchestration
+                                             aValidationOrchestration) {
+        this.updateStatus = anUpdateStatus;
+        this.validationOrchestration = aValidationOrchestration;
 
     }
 
@@ -42,15 +44,20 @@ public class UpdateStatusOrchestration {
      * Method to update the status of an existing task.
      *
      * @param transactionId ID of the transaction.
-     * @param updateRequest update request containing the status and id of the task to be updated.
+     * @param updateRequest update request containing
+     *                     the status and id of the task to be updated.
      * @return a success message with the updated status.
      */
-    public SuccessResponse updateStatus(String transactionId, UpdateStatusRequest updateRequest) {
+    public SuccessResponse updateStatus(final String transactionId,
+                                        final UpdateStatusRequest
+                                                updateRequest) {
         SuccessResponse successResponse = new SuccessResponse();
-        validationOrchestration.updateStatusValidation(transactionId, updateRequest);
+        validationOrchestration.updateStatusValidation(
+                transactionId, updateRequest);
         updateStatus.updateStatus(updateRequest);
         successResponse.setId(updateRequest.getId());
-        successResponse.setMessage("Status updated to: \"" + updateRequest.getStatus()+ "\"");
+        successResponse.setMessage("Status updated to: \""
+                + updateRequest.getStatus() + "\"");
         return successResponse;
     }
 }
