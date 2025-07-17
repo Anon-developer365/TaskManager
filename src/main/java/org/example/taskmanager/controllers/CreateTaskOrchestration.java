@@ -12,8 +12,6 @@ import uk.gov.hmcts.taskmanager.domain.SuccessResponse;
 
 /**
  * Orchestration service for create task.
- * This orchestrates the validation and creation of a task
- * before saving it in the database.
  */
 @Service
 public class CreateTaskOrchestration {

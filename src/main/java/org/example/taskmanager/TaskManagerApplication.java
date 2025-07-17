@@ -1,11 +1,11 @@
 package org.example.taskmanager;
-
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 /**
  * Task manager application class.
  */
+
 @SpringBootApplication
 public class TaskManagerApplication {
 
