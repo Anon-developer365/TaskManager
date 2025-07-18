@@ -68,7 +68,10 @@ Creates a new task object, assigns an ID, and populates the task object with the
 validated user input data. 
 
 ## Get a task
-Class to access the database using the supplied ID and return the task data. 
+Class to access the database using the supplied ID and return the task data.
+
+## Retrieve Tasks
+Class to retrieve all tasks in the database. 
 
 ## Save Task
 This class saves a new task in the database. 
