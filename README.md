@@ -82,6 +82,10 @@ Updates the status of the task using the ID.
 ## Task Removal 
 Class to delete a task from the database. 
 
+## Date Checker 
+Date Checker class which makes a call to Nager Date API to determine if a date is a uk bank holiday.
+The date checker also checks if the date lands on a bank holiday. 
+
 ## Task repository
 Interface repository which extends JPA repository to complete database requests. 
 
@@ -94,3 +98,13 @@ To run all tests:
 ```
 mvn clean test
 ```
+
+## Site Report 
+
+Site report includes checkstyle and spotbugs analysis of the project. 
+To generate the site report:
+```
+mvn compile site
+```
+These can then be viewed by going to the generated reports in:
+target>site>project-reports.html

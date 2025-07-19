@@ -2,6 +2,7 @@ package org.example.taskmanager.validation;
 
 import io.micrometer.common.util.StringUtils;
 import lombok.ToString;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -18,6 +19,11 @@ import java.util.regex.Pattern;
 public class TaskValidation {
 
     /**
+     * Date checker service.
+     */
+    private final DateChecker dateChecker;
+
+    /**
      * Regex for title.
      */
     private static final String TITLE_REGEX = "\\w";
@@ -26,6 +32,15 @@ public class TaskValidation {
      * Regex for description.
      */
     private static final String DESCRIPTION_REGEX = "\\w";
+
+    /**
+     * Autowired constructor for Task Validation.
+     * @param aDateChecker Date checker service.
+     */
+    @Autowired
+    public TaskValidation(final DateChecker aDateChecker) {
+        this.dateChecker = aDateChecker;
+    }
 
     /**
      * Method to verify task details.
@@ -98,8 +113,14 @@ public class TaskValidation {
      */
     private List<String> dueDateCheck(final LocalDateTime dueDate) {
         final List<String> errors = new ArrayList<>();
-        if (dueDate == null) {
-            errors.add("Task due date is blank");
+        if (!(dueDate == null)) {
+            if (dateChecker.checkDateIsBankHoliday(dueDate)) {
+                errors.add("Task due date is a Bank Holiday.");
+            } else if (dateChecker.checkDateIsWeekend(dueDate)) {
+                errors.add("Task due date is a Weekend");
+            }
+        } else {
+                errors.add("Task due date is Blank");
         }
         return errors;
     }

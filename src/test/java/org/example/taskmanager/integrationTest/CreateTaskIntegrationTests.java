@@ -53,7 +53,7 @@ public class CreateTaskIntegrationTests {
     }
     @Test
     void whenAllDetailsAreValidATaskIsSavedInTheDatabase() throws Exception {
-        String stringDate = "2025-05-05 17:00";
+        String stringDate = "2025-05-15 17:00";
         DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm", Locale.UK);
         LocalDateTime dueDate = LocalDateTime.parse(stringDate, dateTimeFormatter);
         CreateTaskRequest taskRequest = new CreateTaskRequest();
@@ -77,7 +77,7 @@ public class CreateTaskIntegrationTests {
 
     @Test
     void whenTaskStatusIsMissingAnErrorMessageIsReturned() throws Exception {
-        String stringDate = "2025-05-05 17:00";
+        String stringDate = "2025-05-15 17:00";
         DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm", Locale.UK);
         LocalDateTime dueDate = LocalDateTime.parse(stringDate, dateTimeFormatter);
         CreateTaskRequest taskRequest = new CreateTaskRequest();
@@ -100,7 +100,7 @@ public class CreateTaskIntegrationTests {
 
     @Test
     void whenTaskTitleIsMissingAnErrorMessageIsReturned() throws Exception {
-        String stringDate = "2025-05-05 17:00";
+        String stringDate = "2025-05-15 17:00";
         DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm", Locale.UK);
         LocalDateTime dueDate = LocalDateTime.parse(stringDate, dateTimeFormatter);
         CreateTaskRequest taskRequest = new CreateTaskRequest();
@@ -137,13 +137,13 @@ public class CreateTaskIntegrationTests {
                         .content(json))
                 .andExpect(status().is(400))
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.message").value("[Task due date is blank]"))
+                .andExpect(jsonPath("$.message").value("[Task due date is Blank]"))
                 .andReturn();
     }
 
     @Test
     void whenTaskDescriptionIsEmptyTheTaskIsSavedInTheDatabase() throws Exception {
-        String stringDate = "2025-05-05 17:00";
+        String stringDate = "2025-05-15 17:00";
         DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm", Locale.UK);
         LocalDateTime dueDate = LocalDateTime.parse(stringDate, dateTimeFormatter);
         CreateTaskRequest taskRequest = new CreateTaskRequest();
@@ -166,7 +166,7 @@ public class CreateTaskIntegrationTests {
 
     @Test
     void whenTaskTitleIsInAnIncorrectFormatAnErrorMessageIsReturned() throws Exception {
-        String stringDate = "2025-05-05 17:00";
+        String stringDate = "2025-05-15 17:00";
         DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm", Locale.UK);
         LocalDateTime dueDate = LocalDateTime.parse(stringDate, dateTimeFormatter);
         CreateTaskRequest taskRequest = new CreateTaskRequest();
@@ -190,7 +190,7 @@ public class CreateTaskIntegrationTests {
 
     @Test
     void whenTaskStatusIsInAnIncorrectFormatAnErrorMessageIsReturned() throws Exception {
-        String stringDate = "2025-05-05 17:00";
+        String stringDate = "2025-05-15 17:00";
         DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm", Locale.UK);
         LocalDateTime dueDate = LocalDateTime.parse(stringDate, dateTimeFormatter);
         CreateTaskRequest taskRequest = new CreateTaskRequest();
@@ -214,7 +214,7 @@ public class CreateTaskIntegrationTests {
 
     @Test
     void whenTaskDescriptionIsInAnIncorrectFormatAnErrorMessageIsReturned() throws Exception {
-        String stringDate = "2025-05-05 17:00";
+        String stringDate = "2025-05-15 17:00";
         DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm", Locale.UK);
         LocalDateTime dueDate = LocalDateTime.parse(stringDate, dateTimeFormatter);
         CreateTaskRequest taskRequest = new CreateTaskRequest();
@@ -238,7 +238,7 @@ public class CreateTaskIntegrationTests {
 
     @Test
     void whenThereIsMoreThanOneErrorAllErrorsAreReturned() throws Exception {
-        String stringDate = "2025-05-05 17:00";
+        String stringDate = "2025-05-15 17:00";
         DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm", Locale.UK);
         LocalDateTime dueDate = LocalDateTime.parse(stringDate, dateTimeFormatter);
         CreateTaskRequest taskRequest = new CreateTaskRequest();
