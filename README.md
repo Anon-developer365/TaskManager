@@ -4,6 +4,13 @@
 Task manager application to assist case workers in managing, tracking and updating their tasks. 
 The service creates a database in which to save required data, allowing case workers to retrieve and update task data. 
 
+## Requirements
+The Task manager utilising a task manager api which is not yet deployed. To use the manager api service you will need to 
+install the task manager api locally using the following steps:
+1. create the following path: C:\Users\AnonDeveloper\org\example\TaskManagerApi
+2. go to https://github.com/Anon-developer365/TaskManagerApi and clone the code locally. 
+3. use mvn install and copy the files over to the directory created in part 1. 
+
 ## Flowchart 
 ```mermaid
 flowchart TD
